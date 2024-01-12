@@ -37,6 +37,7 @@ if (Test-Path $ChocolateyProfile) {
 #
 # Set aliases
 #
+Set-Alias -Scope Global -Option AllScope -Name ls -Value Get-ChildItem
 if (Test-Command -Name git) {
     function Invoke-GitCommand { git $Args }
     function Invoke-GitCommit { git commit -vam $Args }
