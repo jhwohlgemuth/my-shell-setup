@@ -28,12 +28,6 @@ foreach ($Module in $Modules) {
     }
 }
 #
-# Initialize oh-my-posh and set custom theme
-#
-if (Test-Command -Name 'oh-my-posh') {
-    oh-my-posh init pwsh --config ~/.theme.omp.json | Invoke-Expression
-}
-#
 # Import Chocolatey profile
 #
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
@@ -96,4 +90,10 @@ for ($i = 1; $i -le 5; $i++) {
     $u =  ''.PadLeft($i, 'u')
     $d =  $u.Replace('u', '../')
     Invoke-Expression "function $u { push-location $d }"
+}
+#
+# Initialize oh-my-posh and set custom theme
+#
+if (Test-Command -Name 'oh-my-posh') {
+    oh-my-posh init pwsh --config ~/.theme.omp.json | Invoke-Expression
 }
