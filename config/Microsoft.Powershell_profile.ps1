@@ -28,13 +28,6 @@ foreach ($Module in $Modules) {
     }
 }
 #
-# Import Chocolatey profile
-#
-$ChocolateyProfile = "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path $ChocolateyProfile) {
-    Import-Module -Name $ChocolateyProfile
-}
-#
 # Set aliases
 #
 Set-Alias -Scope Global -Option AllScope -Name ls -Value Get-ChildItem
@@ -91,6 +84,13 @@ for ($i = 1; $i -le 5; $i++) {
     $u =  ''.PadLeft($i, 'u')
     $d =  $u.Replace('u', '../')
     Invoke-Expression "function $u { push-location $d }"
+}
+#
+# Import Chocolatey profile
+#
+$ChocolateyProfile = "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path $ChocolateyProfile) {
+    Import-Module -Name $ChocolateyProfile
 }
 #
 # Initialize oh-my-posh and set custom theme
