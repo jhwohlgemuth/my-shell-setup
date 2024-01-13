@@ -30,9 +30,9 @@ foreach ($Module in $Modules) {
 #
 # Import Chocolatey profile
 #
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+$ChocolateyProfile = "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path $ChocolateyProfile) {
-    Import-Module -Name "$ChocolateyProfile"
+    Import-Module -Name $ChocolateyProfile
 }
 #
 # Set aliases
