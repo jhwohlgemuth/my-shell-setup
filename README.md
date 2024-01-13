@@ -14,6 +14,7 @@ Contents
     - [`Microsoft.Powershell_profile.ps1`](./config/Microsoft.Powershell_profile.ps1) - Windows terminal profile file
     - [`settings.json`](./config/settings.json) - Windows terminal settings file
     - [`.theme.omp.json`](./config/.theme.omp.json) - Oh My Posh theme file
+    - [`.p10k.zsh`](./config/.p10k.zsh) - [powerlevel10k](https://github.com/romkatv/powerlevel10k) configuration file
 - [/fonts](./fonts/) - Fonts for use with advanced shell themes
 - [/scripts](./scripts/) - Powershell scripts for installing<sup>[2](#2)</sup> and configuring stuff
 
