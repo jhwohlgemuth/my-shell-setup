@@ -51,7 +51,6 @@ call plug#begin()
     Plug 'honza/vim-snippets'
     Plug 'mhinz/vim-startify'
     Plug 'tpope/vim-surround' " change (cd)/ delete (ds) / add (ys)/ visual (S)
-    Plug 'vim-syntastic/syntastic'
     Plug 'godlygeek/tabular'
     Plug 'mbbill/undotree'
     Plug 'mg979/vim-visual-multi', {'branch': 'master'}
@@ -117,26 +116,4 @@ let g:webdevicons_enable_startify = 1
 function! StartifyEntryFormat()
     return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
 endfunction
-" }}}
-" Syntastic Settings {{{
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_cs_checkers = ['cs']
-let g:syntastic_css_checkers = ['css']
-let g:syntastic_dockerfile_checkers = ['dockerfile']
-let g:syntastic_elixir_checkers = ['elixir']
-let g:syntastic_html_checkers = ['html']
-let g:syntastic_javascript_checkers = ['javascript']
-let g:syntastic_json_checkers = ['json']
-let g:syntastic_markdown_checkers = ['markdown']
-let g:syntastic_python_checkers = ['python']
-let g:syntastic_text_checkers = ['text', 'proselint']
-let g:syntastic_vim_checkers = ['vim']
-let g:syntastic_xml_checkers = ['xml']
-let g:syntastic_yaml_checkers = ['yaml']
 " }}}
