@@ -17,6 +17,7 @@ autocmd VimEnter *
 
 call plug#begin()
     " Plugins {{{
+    Plug 'dense-analysis/ale'
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'jiangmiao/auto-pairs'
