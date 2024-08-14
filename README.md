@@ -14,8 +14,7 @@ Applications to Configure with [Stow](https://www.gnu.org/software/stow/)
 -----------------------------------
 ```shell
 git clone https://github.com/jhwohlgemuth/my-shell-setup
-cd my-shell-setup
-stow powershell powerlevel10k neovim ohmyposh
+stow -d my-shell-setup -d ~ powershell powerlevel10k neovim ohmyposh
 ```
 ### Application files
 - Powerlevel10K
@@ -60,7 +59,7 @@ cd my-neovim-setup
 
 What Next?!
 -----------
-Now that you have an amazing shell, [install Neovim](https://github.com/jhwohlgemuth/my-neovim-setup), and/or [try developing with containers!](https://github.com/jhwohlgemuth/env/tree/master/dev-with-containers)
+Now that you have an amazing shell, [try developing with containers!](https://github.com/jhwohlgemuth/env/tree/master/dev-with-containers)
 
 
 -------------
