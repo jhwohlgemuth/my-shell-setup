@@ -10,9 +10,9 @@ function Test-Installed {
 }
 if (Test-Installed PSReadLine) {
     Import-Module PSReadLine
-    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-    Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-    Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
 
 $Modules = @(
@@ -56,7 +56,7 @@ if (Test-Command -Name git) {
     Set-Alias -Scope Global -Option AllScope -Name gco -Value Invoke-GitCheckout
 }
 if (Test-Command -Name docker) {
-    $Format = "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"
+    $Format = 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}'
     function Invoke-DockerProcess { docker ps --format $Format }
     function Invoke-DockerProcessAll { docker ps -a --format $Format }
     function Invoke-DockerInspectAddress { docker inspect --format '{{ .NetworkSettings.IPAddress }}' $Args[0] }
@@ -73,17 +73,17 @@ if (Test-Command -Name docker) {
 #
 if (Test-Command -Name zoxide) {
     Invoke-Expression (& {
-        $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
-        (zoxide init --hook $hook powershell) -join "`n"
+        $Hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
+        (zoxide init --hook $Hook powershell) -join "`n"
     })
 }
 #
 # Create directory traversal shortcuts
 #
-for ($i = 1; $i -le 5; $i++) {
-    $u =  ''.PadLeft($i, 'u')
-    $d =  $u.Replace('u', '../')
-    Invoke-Expression "function $u { push-location $d }"
+for ($Index = 1; $Index -le 5; $Index++) {
+    $Up = ''.PadLeft($Index, 'u')
+    $Location = $Up.Replace('u', '../')
+    Invoke-Expression "function ${Up} { push-location ${Location} }"
 }
 #
 # Import Chocolatey profile
