@@ -1,3 +1,6 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('RequireDirective', '')]
+Param()
 #
 # Import Powershell modules
 #
@@ -14,14 +17,13 @@ if (Test-Installed PSReadLine) {
     Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
-
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 $Modules = @(
     'PSScriptAnalyzer'
     'posh-git'
     'Terminal-Icons'
     'Prelude'
 )
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 foreach ($Module in $Modules) {
     if (Test-Installed $Module) {
         Import-Module -Name $Module
@@ -56,6 +58,9 @@ if (Test-Command -Name git) {
     Set-Alias -Scope Global -Option AllScope -Name gco -Value Invoke-GitCheckout
 }
 if (Test-Command -Name docker) {
+    if (Test-Installed DockerCompletion) {
+        Import-Module -Name DockerCompletion
+    }
     $Format = 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}'
     function Invoke-DockerProcess { docker ps --format $Format }
     function Invoke-DockerProcessAll { docker ps -a --format $Format }
@@ -72,10 +77,7 @@ if (Test-Command -Name docker) {
 # Zoxide setup
 #
 if (Test-Command -Name zoxide) {
-    Invoke-Expression (& {
-        $Hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
-        (zoxide init --hook $Hook powershell) -join "`n"
-    })
+    Invoke-Expression (& { (zoxide init powershell | Out-String) })
 }
 #
 # Create directory traversal shortcuts
