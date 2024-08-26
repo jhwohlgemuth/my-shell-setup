@@ -14,9 +14,11 @@ Applications to Configure with [Stow](https://www.gnu.org/software/stow/)
 -----------------------------------
 ```shell
 git clone https://github.com/jhwohlgemuth/my-shell-setup
-stow -d my-shell-setup -d ~ powershell powerlevel10k neovim ohmyposh
+stow -d my-shell-setup -d ~ git powershell powerlevel10k neovim ohmyposh
 ```
 ### Application files
+- Git
+  - [`.gitconfig`](./git/.gitconfig) - Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases
 - Powerlevel10K
   - [`.p10k.zsh`](./powerlevel10k/.p10k.zsh) - [powerlevel10k](https://github.com/romkatv/powerlevel10k) configuration file
 - Powershell
