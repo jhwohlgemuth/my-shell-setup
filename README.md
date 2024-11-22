@@ -14,7 +14,7 @@ Applications to Configure with [Stow](https://www.gnu.org/software/stow/)
 -----------------------------------
 ```shell
 git clone https://github.com/jhwohlgemuth/my-shell-setup
-stow -d my-shell-setup -d ~ git powershell powerlevel10k neovim ohmyposh
+stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh powershell powerlevel10k
 ```
 ### Application files
 - Git
