@@ -14,22 +14,24 @@ Configure with [Stow](https://www.gnu.org/software/stow/)
 -----------------------------------
 ```shell
 git clone https://github.com/jhwohlgemuth/my-shell-setup
-stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh powershell powerlevel10k
+stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh powerlevel10k powershell
 ```
 ### Applications
-- Git
+- git
   - [`.gitconfig`](./git/.gitconfig) - Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases
-- Powerlevel10K
+- neovim
+  - Editor configuration - [init.vim](./neovim/.config/nvim/init.vim) and [general/](./neovim/.config/nvim/general/)
+  - Themes - [themes/](./neovim/.config/nvim/themes/)
+  - Plugin configurations - [plug-config/](./neovim/.config/nvim/plug-config/)
+- powerlevel10k
   - [`.p10k.zsh`](./powerlevel10k/.p10k.zsh) - [powerlevel10k](https://github.com/romkatv/powerlevel10k) configuration file
-- Powershell
+- powershell
   - [`Microsoft.Powershell_profile.ps1`](./powershell/.config/powershell/Microsoft.Powershell_profile.ps1) - Windows terminal profile file
   - [`settings.json`](./public/settings.json) - Windows terminal settings file
-- Oh-my-posh
+- ohmyposh
   - [`.theme.omp.json`](./ohmyposh/.theme.omp.json) - Oh My Posh theme file
-- Neovim
-    > [!TIP]
-    > Turn your terminal into a full-fledged integrated development environment (IDE) using [Neovim](https://neovim.io/)
 
+### Example Neovim configuration
 <div align="center">
     <a href="https://gyazo.com/57ccdc67266ee53eb6911a3a9b75be58"><img id="screenshot" alt="Neovim in action!" src="https://i.gyazo.com/57ccdc67266ee53eb6911a3a9b75be58.gif" width="750"/></a>
 </div>
