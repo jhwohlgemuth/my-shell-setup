@@ -1,9 +1,9 @@
-My Shell Setup
-==============
+🐚 My Shell Setup
+=================
 This project codifies how I configure my development environment across Windows, Linux, and OSX, using Windows Terminal<sup>[1](#1)</sup>, Powerlevel10k<sup>[2](#2)</sup>, Neovim<sup>[3](#3)</sup>, and more.
 
-Getting Started
----------------
+🚀 Getting Started
+------------------
 ### Make sure you have these things
 - [Git](https://git-scm.com/) - easiest way to get the files within this project
 - [Stow](https://www.gnu.org/software/stow/) - primary technology for configuration
@@ -38,8 +38,6 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
   - Settings - [`settings.json`](./public/settings.json)
 
 ### Install packages (`--target /usr/local/bin`)
-> [!NOTE]
-> The "gold" package is a collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for example usage.
 
 > [!WARNING]
 > It is assumed `/usr/local/bin` is in your `PATH`
@@ -47,9 +45,11 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 ```shell
 stow --dir "${HOME}/.dotfiles" --target /usr/local/bin --stow gold
 ```
+> [!NOTE]
+> The "gold" package is a collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for example usage.
 
-What Next?!
------------
+🔮 What Next?!
+--------------
 [Add or improve some packages](./CONTRIBUTING.md) and/or [try developing with containers!](https://github.com/jhwohlgemuth/gold)
 
 -------------
