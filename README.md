@@ -41,6 +41,9 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 > [!NOTE]
 > The "gold" package is a collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for example usage.
 
+> [!WARNING]
+> It is assumed `/usr/local/bin` is in your `PATH`
+
 ```shell
 stow --dir "${HOME}/.dotfiles" --target /usr/local/bin --stow gold
 ```
