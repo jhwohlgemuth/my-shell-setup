@@ -48,6 +48,12 @@ stow --dir "${HOME}/.dotfiles" --target /usr/local/bin --stow gold
 > [!NOTE]
 > The "gold" package is a collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for example usage.
 
+
+### Remove packages
+```shell
+stow --delete <package names> --target <target>
+```
+
 🔮 What Next?!
 --------------
 [Add or improve some packages](./CONTRIBUTING.md) and/or [try developing with containers!](https://github.com/jhwohlgemuth/gold)
