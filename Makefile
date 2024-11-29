@@ -12,8 +12,8 @@ GOLD = \
 	./gold/install_aeneas \
 	./gold/install_apptainer \
 	./gold/install_code_server \
-	./gold/install_coq \
 	./gold/install_conda \
+	./gold/install_coq \
 	./gold/install_cosmopolitan \
 	./gold/install_creusot \
 	./gold/install_cuda \
@@ -38,8 +38,8 @@ GOLD = \
 	./gold/install_provers \
 	./gold/install_scala_jupyter_kernel \
 	./gold/install_verus \
-	./gold/install_xr0 \
 	./gold/install_wasm_tools \
+	./gold/install_xr0 \
 	./gold/is_command \
 	./gold/is_installed \
 	./gold/move_lines \
