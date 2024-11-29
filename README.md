@@ -54,6 +54,13 @@ stow --dir "${HOME}/.dotfiles" --target /usr/local/bin --stow gold
 stow --delete <package names> --target <target>
 ```
 
+### Update packages
+```shell
+cd "${HOME}/.dotfiles"
+git pull origin main
+stow --target <target> --restow <package>
+```
+
 🔮 What Next?!
 --------------
 [Add or improve some packages](./CONTRIBUTING.md) and/or [try developing with containers!](https://github.com/jhwohlgemuth/gold)
