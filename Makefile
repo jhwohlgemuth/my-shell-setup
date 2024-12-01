@@ -1,49 +1,50 @@
 .PHONY: format
 format:
 	@for path in $(GOLD) ; do \
-        dos2unix $$path; \
-		shfmt --write --list --indent 4 --case-indent --space-redirects $$path; \
-        shellcheck $$path --enable all; \
+        dos2unix ./gold/$$path; \
+		shfmt --write --list --indent 4 --case-indent --space-redirects ./gold/$$path; \
+        shellcheck ./gold/$$path --enable all; \
     done
 
 GOLD = \
-	./gold/cleanup \
-	./gold/download_notebooks \
-	./gold/install_aeneas \
-	./gold/install_apptainer \
-	./gold/install_code_server \
-	./gold/install_conda \
-	./gold/install_coq \
-	./gold/install_cosmopolitan \
-	./gold/install_creusot \
-	./gold/install_cuda \
-	./gold/install_docker \
-	./gold/install_dotnet \
-	./gold/install_dotnet_jupyter_kernel \
-	./gold/install_elixir \
-	./gold/install_elixir_jupyter_kernel \
-	./gold/install_extensions \
-	./gold/install_frama-c \
-	./gold/install_go_jupyter_kernel \
-	./gold/install_homebrew \
-	./gold/install_klee \
-	./gold/install_latex \
-	./gold/install_lpython \
-	./gold/install_musl \
-	./gold/install_nim \
-	./gold/install_nix \
-	./gold/install_ocaml \
-	./gold/install_ohmyzsh \
-	./gold/install_pinokio \
-	./gold/install_provers \
-	./gold/install_scala_jupyter_kernel \
-	./gold/install_verus \
-	./gold/install_wasm_tools \
-	./gold/install_xr0 \
-	./gold/is_command \
-	./gold/is_installed \
-	./gold/move_lines \
-	./gold/remove_empty_lines \
-	./gold/requires \
-	./gold/start_docker \
-	./gold/start_pinokio
+	cleanup \
+	download_notebooks \
+	install_aeneas \
+	install_apptainer \
+	install_code_server \
+	install_conda \
+	install_coq \
+	install_cosmopolitan \
+	install_creusot \
+	install_cuda \
+	install_docker \
+	install_dotnet \
+	install_dotnet_jupyter_kernel \
+	install_elixir \
+	install_elixir_jupyter_kernel \
+	install_extensions \
+	install_frama-c \
+	install_go_jupyter_kernel \
+	install_homebrew \
+	install_klee \
+	install_latex \
+	install_lean \
+	install_lpython \
+	install_musl \
+	install_nim \
+	install_nix \
+	install_ocaml \
+	install_ohmyzsh \
+	install_pinokio \
+	install_provers \
+	install_scala_jupyter_kernel \
+	install_verus \
+	install_wasm_tools \
+	install_xr0 \
+	is_command \
+	is_installed \
+	move_lines \
+	remove_empty_lines \
+	requires \
+	start_docker \
+	start_pinokio
