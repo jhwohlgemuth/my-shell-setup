@@ -21,11 +21,16 @@ main() {
         ARGS=("$@")
     fi
     for ARG in "${ARGS[@]}"; do
-        echo "Installing extensions for ${ARG} VS Code instance"
-        EXTENSIONS="$(jq -r ".${ARG}[]" "${EXTENSIONS_JSON}")"
-        for EXTENSION in ${EXTENSIONS}; do
-            code-server --config "${CONFIG}" --install-extension "${EXTENSION}" --force
-        done
+        if echo "${ARG}" | grep -iq "[.]"; then
+            echo "Installing ${ARG} VS Code extension"
+            code-server --config "${CONFIG}" --install-extension "${ARG}" --force
+        else
+            EXTENSIONS="$(jq -r ".${ARG}[]" "${EXTENSIONS_JSON}")"
+            for EXTENSION in ${EXTENSIONS}; do
+                echo "Installing ${ARG} VS Code extension"
+                code-server --config "${CONFIG}" --install-extension "${EXTENSION}" --force
+            done
+        fi
     done
 }
 main "$@"
