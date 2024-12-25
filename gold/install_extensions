@@ -22,12 +22,10 @@ main() {
     fi
     for ARG in "${ARGS[@]}"; do
         if echo "${ARG}" | grep -iq "[.]"; then
-            echo "Installing ${ARG} VS Code extension"
             code-server --config "${CONFIG}" --install-extension "${ARG}" --force
         else
             EXTENSIONS="$(jq -r ".${ARG}[]" "${EXTENSIONS_JSON}")"
             for EXTENSION in ${EXTENSIONS}; do
-                echo "Installing ${ARG} VS Code extension"
                 code-server --config "${CONFIG}" --install-extension "${EXTENSION}" --force
             done
         fi

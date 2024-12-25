@@ -1,0 +1,20 @@
+#! /bin/bash
+set -e
+
+requires \
+    git \
+    gum \
+    stow
+main() {
+    local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
+    local DOTFILES="${1:-"${HOME}/.dotfiles"}"
+    local TITLE="Update $(gum style --foreground "${COLOR}" 'Complete')"
+    git -C "${DOTFILES}" pull origin main
+    gum style \
+        --border normal \
+        --border-foreground "${COLOR}" \
+        --margin "1" \
+        --padding "1 2" \
+        "${TITLE}"
+}
+main "$@"
