@@ -43,6 +43,7 @@ GOLD = \
 	install_xr0 \
 	is_command \
 	is_installed \
+	midas \
 	move_lines \
 	remove_empty_lines \
 	requires \
