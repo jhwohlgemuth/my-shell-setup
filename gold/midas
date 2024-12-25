@@ -23,7 +23,7 @@ main() {
         update)
             update
             ;;
-        ?) 
+        *) 
             echo "Usage: $(basename $0) [update]"
             exit 1
             ;;
