@@ -2,6 +2,6 @@
 set -e
 
 main() {
-    echo "UNDER CONSTRUCTION"
+    echo "UNDER CONSTRUCTION!!!"
 }
 main "$@"
