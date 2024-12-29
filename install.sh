@@ -5,7 +5,6 @@ set -e
 main() {
     local DEFAULT="gold git neovim ohmyposh powershell powerlevel10k"
     local DIR="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
-    local TITLE="Installation $(gum style --foreground "${COLOR}" 'Complete')"
     #
     # Create array of packages from arguments
     #
