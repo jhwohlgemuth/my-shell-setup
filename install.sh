@@ -43,11 +43,6 @@ main() {
     #
     # Print completion message
     #
-    gum style \
-        --border normal \
-        --border-foreground "${COLOR}" \
-        --margin "1" \
-        --padding "1 2" \
-        "${TITLE}"
+    printf "\033[93m==>\033[1;39m %s\033[0m\n" "Installation COMPLETE"
 }
 main "$@"
