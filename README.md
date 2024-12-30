@@ -9,7 +9,10 @@ Run this in a Linux (or Mac) terminal
 curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash
 ```
 
-Manual Setup
+> [!TIP]
+> You can also pass package names to the script with `curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash -s -- <packages>` where the list of packages can include any listed in the [install packages](#install-packages) section
+
+🤓 Manual Setup
 ------------
 ### Make sure you have these things
 - [Git](https://git-scm.com/) - easiest way to get the files within this project
@@ -22,7 +25,7 @@ Manual Setup
 ```shell
 git clone https://github.com/jhwohlgemuth/my-shell-setup "${HOME}/.dotfiles"
 ```
-### Install packages (`--target "${HOME}"`)
+### Install packages
 ```shell
 stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh powerlevel10k powershell
 ```
@@ -30,6 +33,8 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
   - [IEx](https://hexdocs.pm/iex/1.12/IEx.html) configuration - [`.iex.exs`](./elixir/.iex.exs)
 - git
   - Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases - [`.gitconfig`](./git/.gitconfig)
+- gold
+  - Collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for motivation and example usage.
 - neovim
   - Themes - [`themes/`](./neovim/.config/nvim/themes/)
   - Editor configuration - [`init.vim`](./neovim/.config/nvim/init.vim) and [`general/`](./neovim/.config/nvim/general/)
@@ -43,18 +48,6 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 - powershell
   - Profile - [`Microsoft.Powershell_profile.ps1`](./powershell/.config/powershell/Microsoft.Powershell_profile.ps1)
   - Settings - [`settings.json`](./public/settings.json)
-
-### Install packages (`--target /usr/local/bin`)
-
-> [!WARNING]
-> It is assumed `/usr/local/bin` is in your `PATH`
-
-```shell
-stow --dir "${HOME}/.dotfiles" --target /usr/local/bin --stow gold
-```
-> [!NOTE]
-> The "gold" package is a collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for example usage.
-
 
 ### Remove packages
 ```shell
