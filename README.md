@@ -2,8 +2,15 @@
 =================
 This project codifies how I configure my development environment across Windows, Linux, and OSX, using Windows Terminal<sup>[1](#1)</sup>, Powerlevel10k<sup>[2](#2)</sup>, Neovim<sup>[3](#3)</sup>, and more.
 
-🚀 Getting Started
-------------------
+🚀 Quick Start
+--------------
+Run this in a Linux (or Mac) terminal
+```bash
+curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash
+```
+
+Manual Setup
+------------
 ### Make sure you have these things
 - [Git](https://git-scm.com/) - easiest way to get the files within this project
 - [Stow](https://www.gnu.org/software/stow/) - primary technology for configuration
