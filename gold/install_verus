@@ -2,23 +2,34 @@
 set -e
 
 requires \
+    cargo \
     git \
-    wget \
-    z3
+    wget
 main() {
+    local VERUS_INSTALLATION_DIRECTORY="/verus"
+    local VERUS_SOURCE="${VERUS_INSTALLATION_DIRECTORY}/source"
+    git clone https://github.com/verus-lang/verus "${VERUS_INSTALLATION_DIRECTORY}"
+    #
+    # Install local z3
+    #
+    cd "${VERUS_SOURCE}/tools"
+    bash ./get-z3.sh
+    export VERUS_Z3_PATH="${VERUS_SOURCE}/tools/z3"
     #
     # Install Verus
     #
-    cd / || exit
-    git clone https://github.com/verus-lang/verus
-    chmod +x /verus/tools/activate
-    /verus/tools/activate
-    cd /verus/source
-    /verus/tools/vargo/target/release/vargo build --release
-    ln -s /verus/source/target-verus/release/verus /usr/local/bin/verus
+    cd "${VERUS_SOURCE}" || exit
+    chmod +x "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
+    "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
+    "${VERUS_INSTALLATION_DIRECTORY}/tools/vargo/target/release/vargo" build --release
+    ln -s "${VERUS_SOURCE}/target-verus/release/verus" /usr/local/bin/verus
     #
     # Test Verus installation
     #
-    verus /verus/source/rust_verify/example/vectors.rs
+    verus "${VERUS_SOURCE}/rust_verify/example/vectors.rs"
+    #
+    # Install verusfmt
+    #
+    cargo install verusfmt --locked
 }
 main "$@"
