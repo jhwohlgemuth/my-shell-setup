@@ -27,6 +27,7 @@ GOLD = \
 	install_go_jupyter_kernel \
 	install_homebrew \
 	install_klee \
+	install_java \
 	install_latex \
 	install_lean \
 	install_lpython \

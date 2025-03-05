@@ -8,7 +8,7 @@ main() {
     curl -s "https://get.sdkman.io" | bash
     # shellcheck source=/dev/null
     source "${HOME}/.sdkman/bin/sdkman-init.sh"
-    yes | sdk install java ${VERSION}
+    yes | sdk install java "${VERSION}"
     rm -rf "${HOME}/.sdkman/archives/*"
     rm -rf "${HOME}/.sdkman/tmp/*"
 }
