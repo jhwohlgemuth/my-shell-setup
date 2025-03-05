@@ -1,0 +1,15 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl
+main() {
+    local VERSION=${1:-"23-open"}
+    curl -s "https://get.sdkman.io" | bash
+    # shellcheck source=/dev/null
+    source "${HOME}/.sdkman/bin/sdkman-init.sh"
+    yes | sdk install java ${VERSION}
+    rm -rf "${HOME}/.sdkman/archives/*"
+    rm -rf "${HOME}/.sdkman/tmp/*"
+}
+main "$@"
