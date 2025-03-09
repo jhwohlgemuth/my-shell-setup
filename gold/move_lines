@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 # Example usage: move_lines -e '/^alias/  -f ~/.zshrc -b'
 # Caution: If -e matches last line, all lines with match will be deleted when -b is used
