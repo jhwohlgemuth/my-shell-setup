@@ -81,7 +81,7 @@ main() {
         fi
     done
     if [[ "${COUNT}" -gt 0 ]]; then
-        echo 'The following are already {{ Color "46" "installed" }}' | gum format -t template
+        echo 'The following are already {{ Color "46" "installed" }}\n' | gum format -t template
         echo -e "${MESSAGE}\n" | gum format -t template
     fi
     CHOICES=$(echo "${DATA}" | cut -d':' -f1)
