@@ -12,6 +12,11 @@ under_construction() {
     local CHOICE="${1:-''}"
     echo "> :construction: Please pardon our dust. Installing ${CHOICE} is still under construction." | gum format -t emoji
 }
+complete() {
+    local CHOICE="${1:-''}"
+    echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 "${CHOICE}")"
+    echo -e '\n> Make new commands available in this shell by running `source ~/.zshrc`\n' | gum format
+}}
 main() {
     local EMPTY="[ ] "
     local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
@@ -65,18 +70,23 @@ main() {
         case "${CHOICE}" in
             Aeneas)
                 install_aeneas
+                complete "${CHOICE}"
                 ;;
             Creusot)
                 install_creusot
+                complete "${CHOICE}"
                 ;;
             Frama-C)
                 install_frama-c
+                complete "${CHOICE}"
                 ;;
             KLEE)
                 install_klee
+                complete "${CHOICE}"
                 ;;
             Lean)
                 install_lean
+                complete "${CHOICE}"
                 ;;
             Prusti)
                 under_construction "${CHOICE}"
@@ -86,20 +96,20 @@ main() {
                 ;;
             Rocq)
                 install_coq
+                complete "${CHOICE}"
                 ;;
             xr0)
                 install_xr0
+                complete "${CHOICE}"
                 ;;
             Verus)
                 install_verus
+                complete "${CHOICE}"
                 ;;
             *)
                 exit 1
                 ;;
         esac
-        echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 "${CHOICE}")"
-        echo ''
-        echo '> Make new commands available in this shell by running `source ~/.zshrc`' | gum format
     done
 }
 main "$@"
