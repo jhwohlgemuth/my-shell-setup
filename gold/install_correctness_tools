@@ -111,5 +111,6 @@ main() {
                 ;;
         esac
     done
+    echo ''
 }
 main "$@"

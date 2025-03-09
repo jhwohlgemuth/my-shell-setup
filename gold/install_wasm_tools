@@ -39,6 +39,11 @@ under_construction() {
     local CHOICE="${1:-''}"
     echo "> :construction: Please pardon our dust. Installing ${CHOICE} is still under construction." | gum format -t emoji
 }
+complete() {
+    local CHOICE="${1:-''}"
+    echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 "${CHOICE}")"
+    echo -e '\n> Make new commands available in this shell by running `source ~/.zshrc`\n' | gum format
+}
 main() {
     local EMPTY="[ ] "
     local BIN_DIRECTORY="${1:-/usr/local/bin}"
@@ -101,17 +106,21 @@ main() {
                 bash -c "$(curl -fsSL https://cosmonic.sh/install.sh)"
                 echo 'export PATH="/root/.cosmo/bin:${PATH}"' >> "${HOME}/.zshrc"
                 export PATH="/root/.cosmo/bin:${PATH}"
+                complete "${CHOICE}"
                 ;;
             Emscripten)
                 install_emscripten
                 # shellcheck disable=SC1091
                 source "/emsdk/emsdk_env.sh"
+                complete "${CHOICE}"
                 ;;
             MoonBit)
                 /bin/bash -c "$(curl -fsSL https://cli.moonbitlang.com/ubuntu_x86_64_moon_setup.sh)"
+                complete "${CHOICE}"
                 ;;
             Scale)
                 curl -fsSL https://dl.scale.sh | sh
+                complete "${CHOICE}"
                 ;;
             Spin)
                 #
@@ -121,6 +130,7 @@ main() {
                 curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash
                 rm -frd crt.pem LICENSE README.md spin.sig
                 cd "${HOME}" || exit
+                complete "${CHOICE}"
                 ;;
             waPC)
                 under_construction "${CHOICE}"
@@ -128,6 +138,7 @@ main() {
             Wasm3)
                 gum spin --title "(1 of 2) Installing Wasm3" -- brew install wasm3
                 gum spin --title '(2 of 2) Performing Brew cleanup' -- brew cleanup --prune=all
+                complete "${CHOICE}"
                 ;;
             WasmCloud)
                 #
@@ -137,17 +148,20 @@ main() {
                 curl -s https://packagecloud.io/install/repositories/wasmcloud/core/script.deb.sh | bash
                 apt-get install --no-install-recommends -y wash
                 cleanup
+                complete "${CHOICE}"
                 ;;
             WasmEdge)
                 curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
                 echo '. "${HOME}/.wasmedge/env"' >> "${HOME}/.zshrc"
                 # shellcheck disable=SC1091
                 . "${HOME}/.wasmedge/env"
+                complete "${CHOICE}"
                 ;;
             Wasmer)
                 gum spin --title "(1 of 3) Installing wapm" -- brew install wapm
                 gum spin --title "(2 of 3) Installing wasmer (this can take a while...)" -- brew install wasmer
                 gum spin --title '(3 of 3) Performing Brew cleanup' -- brew cleanup --prune=all
+                complete "${CHOICE}"
                 ;;
             Wasmtime)
                 curl https://wasmtime.dev/install.sh -sSf | bash
@@ -155,6 +169,7 @@ main() {
                 echo 'export PATH="${WASMTIME_HOME}/bin:${PATH}"' >> "${HOME}/.zshrc"
                 export WASMTIME_HOME="${HOME}/.wasmtime"
                 export PATH="${WASMTIME_HOME}/bin:${PATH}"
+                complete "${CHOICE}"
                 ;;
             WAVM)
                 local VERSION=${1:-"0.0.0-prerelease-linux"}
@@ -164,6 +179,7 @@ main() {
                 apt-get install -y "./${FILENAME}"
                 rm "./${FILENAME}"
                 cd "${HOME}" || exit
+                complete "${CHOICE}"
                 ;;
             Wazero)
                 local INSTALL_DIRECTORY=./bin
@@ -172,6 +188,7 @@ main() {
                 mv "${INSTALL_DIRECTORY}/wazero" "${BIN_DIRECTORY}"
                 rm -frd "${INSTALL_DIRECTORY}"
                 cd "${HOME}" || exit
+                complete "${CHOICE}"
                 ;;
             WANIX)
                 #
@@ -182,6 +199,7 @@ main() {
                 gum spin --title "Installing WANIX" -- bash -c "$(curl -sSL https://raw.githubusercontent.com/tractordev/wanix/main/install.sh)"
                 echo -e '{{ Color "46" "wanix" }} command must be run from within {{ Color "6" "/wanix" }}\n' | gum format -t template
                 cd "${INSTALL_DIRECTORY}" || exit
+                complete "${CHOICE}"
                 ;;
             WEPL)
                 #
@@ -193,6 +211,7 @@ main() {
                 cargo install --path . --locked
                 cd "${HOME}" || exit
                 rm -frd "${INSTALL_DIRECTORY}"
+                complete "${CHOICE}"
                 ;;
             WWS)
                 #
@@ -201,14 +220,13 @@ main() {
                 cd "${BIN_DIRECTORY}" || exit
                 curl -fsSL https://workers.wasmlabs.dev/install | bash -s -- --local
                 cd "${HOME}" || exit
+                complete "${CHOICE}"
                 ;;
             *)
                 exit 1
                 ;;
         esac
-        echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 "${CHOICE}")"
-        echo ''
-        echo '> Make new commands available in this shell by running `source ~/.zshrc`' | gum format
     done
+    echo ''
 }
 main "$@"
