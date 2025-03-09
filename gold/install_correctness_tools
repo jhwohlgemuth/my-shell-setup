@@ -29,6 +29,8 @@ main() {
         Frama-C:frama-c
         KLEE:klee
         Lean:lean
+        Prusti:prusti
+        RefinedRust:refinedrust
         Rocq:coq
         Verus:verus
         xr0:xr0
@@ -75,6 +77,12 @@ main() {
                 ;;
             Lean)
                 install_lean
+                ;;
+            Prusti)
+                under_construction "${CHOICE}"
+                ;;
+            RefinedRust)
+                under_construction "${CHOICE}"
                 ;;
             Rocq)
                 install_coq
