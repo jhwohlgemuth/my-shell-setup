@@ -16,7 +16,7 @@ complete() {
     local CHOICE="${1:-''}"
     echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 "${CHOICE}")"
     echo -e '\n> Make new commands available in this shell by running `source ~/.zshrc`\n' | gum format
-}}
+}
 main() {
     local EMPTY="[ ] "
     local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
