@@ -1,0 +1,97 @@
+#! /bin/bash
+# shellcheck disable=SC2016,SC2155
+set -e
+
+requires \
+    cargo \
+    elan \
+    git \
+    mamba \
+    opam
+under_construction() {
+    local CHOICE="${1:-''}"
+    echo "> :construction: Please pardon our dust. Installing ${CHOICE} is still under construction." | gum format -t emoji
+}
+main() {
+    local EMPTY="[ ] "
+    local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
+    local TITLE="$(gum style --foreground "${COLOR}" 'Install') Software Correctness tools & tech"
+    local CHECKMARK="$(gum style --foreground 46 '🗸')"
+    gum style \
+        --border normal \
+        --border-foreground "${COLOR}" \
+        --margin "1" \
+        --padding "1 2" \
+        "${TITLE}"
+    DATA="""
+        Aeneas:aeneas
+        Creusot:creusot
+        Frama-C:frama-c
+        KLEE:klee
+        Lean:lean
+        Rocq:coq
+        Verus:verus
+        xr0:xr0
+    """
+    COUNT=0
+    MESSAGE=''
+    for LINE in ${DATA}; do
+        TECHNOLOGY=$(echo "${LINE}" | cut -d':' -f1)
+        COMMAND=$(echo "${LINE}" | cut -d':' -f2)
+        if is_command "${COMMAND}"; then
+            COUNT=$((COUNT + 1))
+            MESSAGE+="    ${CHECKMARK} ${TECHNOLOGY} ($(gum style --faint "${COMMAND}"))\n"
+            DATA=$(echo "${DATA}" | sed "/${TECHNOLOGY}:${COMMAND}/d")
+        fi
+    done
+    if [[ "${COUNT}" -gt 0 ]]; then
+        echo 'The following are already {{ Color "46" "installed" }}' | gum format -t template
+        echo -e "${MESSAGE}\n" | gum format -t template
+    fi
+    CHOICES=$(echo "${DATA}" | cut -d':' -f1)
+    gum confirm 'Install provers?' && install_provers
+    # shellcheck disable=SC2046,SC2068,SC2116,SC2154
+    CHOSEN=$(gum choose \
+        --no-limit \
+        --cursor-prefix="${EMPTY}" \
+        --header="Please select items to install" \
+        --selected.foreground="${COLOR}" \
+        --selected-prefix="[X] " \
+        --unselected-prefix="${EMPTY}" \
+        $(echo "${CHOICES}"))
+    for CHOICE in ${CHOSEN}; do
+        case "${CHOICE}" in
+            Aeneas)
+                install_aeneas
+                ;;
+            Creusot)
+                install_creusot
+                ;;
+            Frama-C)
+                install_frama-c
+                ;;
+            KLEE)
+                install_klee
+                ;;
+            Lean)
+                install_lean
+                ;;
+            Rocq)
+                install_coq
+                ;;
+            xr0)
+                install_xr0
+                ;;
+            Verus)
+                install_verus
+                ;;
+            *)
+                exit 1
+                ;;
+        esac
+        echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 "${CHOICE}")"
+        echo ''
+        echo '> Make new commands available in this shell by running `source ~/.zshrc`' | gum format
+    done
+}
+main "$@"
