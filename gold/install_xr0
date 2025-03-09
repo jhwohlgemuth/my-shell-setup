@@ -2,11 +2,14 @@
 set -e
 
 requires \
-    bison \
     git \
-    lex \
     make
 main() {
+    #
+    # Install Bison and Flex (Fast Lexical Analyzer Generator)
+    #
+    apt-get update
+    apt-get install --no-install-recommends --yes bison flex
     #
     # Install Xr0 verifier
     #
@@ -14,7 +17,7 @@ main() {
     local PWD="$(pwd)"
     git clone https://github.com/xr0-org/xr0 /xr0
     cd /xr0 || exit
-    make
+    ./configure && make
     ln -s /xr0/bin/0v /usr/local/bin/0v
     echo 'export XR0_INCLUDES=/xr0/libx' >> "${HOME}/.zshrc"
     export XR0_INCLUDES=/xr0/libx

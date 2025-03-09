@@ -38,7 +38,7 @@ main() {
         RefinedRust:refinedrust
         Rocq:coqc
         Verus:verus
-        xr0:xr0
+        xr0:0v
     """
     COUNT=0
     MESSAGE=''
