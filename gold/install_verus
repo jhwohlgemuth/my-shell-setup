@@ -6,6 +6,8 @@ requires \
     git \
     wget
 main() {
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
     local VERUS_INSTALLATION_DIRECTORY="/verus"
     local VERUS_SOURCE="${VERUS_INSTALLATION_DIRECTORY}/source"
     git clone https://github.com/verus-lang/verus "${VERUS_INSTALLATION_DIRECTORY}"
@@ -31,5 +33,6 @@ main() {
     # Install verusfmt
     #
     cargo install verusfmt --locked
+    cd "${PWD}" || exit
 }
 main "$@"

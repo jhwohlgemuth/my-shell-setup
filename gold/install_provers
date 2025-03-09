@@ -9,6 +9,8 @@ requires \
     python \
     unzip
 main() {
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
     export OPAMYES=1
     #
     # Install Alt-Ergo (free)
@@ -51,5 +53,6 @@ main() {
     opam install why3
     eval "$(opam env)"
     why3 config detect
+    cd "${PWD}" || exit
 }
 main "$@"

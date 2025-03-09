@@ -14,6 +14,7 @@ GOLD = \
 	install_code_server \
 	install_conda \
 	install_coq \
+	install_correctness_tools \
 	install_cosmopolitan \
 	install_creusot \
 	install_cuda \

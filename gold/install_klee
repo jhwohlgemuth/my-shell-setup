@@ -32,6 +32,8 @@ main() {
     #
     # Install KLEE
     #
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
     local KLEE_SRC_DIRECTORY="/klee"
     local KLEE_BUILD_DIRECTORY="/klee/build"
     git clone https://github.com/klee/klee.git "${KLEE_SRC_DIRECTORY}"
@@ -41,6 +43,6 @@ main() {
     make
     cleanup
     ln -s "${KLEE_BUILD_DIRECTORY}/bin/klee" /usr/local/bin/klee
-    cd "${HOME}" || exit
+    cd "${PWD}" || exit
 }
 main "$@"

@@ -6,6 +6,8 @@ requires \
     git \
     opam
 main() {
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
     export OPAMYES=1
     #
     # Install opam dependencies
@@ -45,6 +47,6 @@ main() {
         cd / || exit
         rm -frd /aeneas-toolchain
     fi
-    cd "${HOME}" || exit
+    cd "${PWD}" || exit
 }
 main "$@"
