@@ -39,6 +39,7 @@ GOLD = \
 	install_ohmyzsh \
 	install_pinokio \
 	install_provers \
+	install_prusti \
 	install_scala_jupyter_kernel \
 	install_verus \
 	install_wasm_tools \
