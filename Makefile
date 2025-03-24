@@ -8,6 +8,7 @@ format:
 
 GOLD = \
 	cleanup \
+	download_extensions \
 	download_notebooks \
 	install_aeneas \
 	install_apptainer \

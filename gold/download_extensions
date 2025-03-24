@@ -1,0 +1,24 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    jq
+main() {
+    if [[ -z "$1" ]]; then
+        exit 1
+    else
+        ARGS=("$@")
+        for ARG in "${ARGS[@]}"; do
+            # shellcheck disable=SC2155
+            local NAMESPACE=$(echo "${ARG}" | cut -d. -f1)
+            # shellcheck disable=SC2155
+            local EXTENSION=$(echo "${ARG}" | cut -d. -f2)
+            # shellcheck disable=SC2155
+            local URL=$(curl -X 'GET' "https://open-vsx.org/api/${NAMESPACE}/${EXTENSION}" -H 'accept: application/json' | jq .downloads.universal)
+            local CMD="curl -fsSL ${URL} --output ${NAMESPACE}.${EXTENSION}.vsix"
+            eval "${CMD}"
+        done
+    fi
+}
+main "$@"
