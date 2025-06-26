@@ -70,6 +70,7 @@ call plug#end()
 
 " Airline Settings {{{
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#ale#enabled = 1
 " }}}
 " ChooseWin Settings {{{
 let g:choosewin_overlay_enable = 1
