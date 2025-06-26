@@ -49,7 +49,6 @@ call plug#begin()
     Plug 'mhinz/vim-signify'
     Plug 'psliwka/vim-smoothie'
     Plug 'justinmk/vim-sneak'
-    Plug 'honza/vim-snippets'
     Plug 'mhinz/vim-startify'
     Plug 'tpope/vim-surround' " change (cd)/ delete (ds) / add (ys)/ visual (S)
     Plug 'godlygeek/tabular'
