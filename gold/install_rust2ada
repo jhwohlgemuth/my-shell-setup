@@ -1,0 +1,17 @@
+#! /bin/bash
+set -e
+
+requires \
+    git \
+    make
+main() {
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
+    local SRC_DIRECTORY="/rust2ada"
+    git clone https://github.com/IntuitionAmiga/rust2ada.git "${SRC_DIRECTORY}"
+    cd "${SRC_DIRECTORY}" || exit
+    make
+    ln -s "${SRC_DIRECTORY}/rust2ada" /usr/local/bin/rust2ada
+    cd "${PWD}" || exit
+}
+main "$@"

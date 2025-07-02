@@ -37,6 +37,7 @@ main() {
         Prusti:prusti
         RefinedRust:refinedrust
         Rocq:coqc
+        rust2ada:rust2ada
         Verus:verus
         xr0:0v
     """
@@ -96,6 +97,10 @@ main() {
                 ;;
             Rocq)
                 install_coq
+                complete "${CHOICE}"
+                ;;
+            rust2ada)
+                install_rust2ada
                 complete "${CHOICE}"
                 ;;
             xr0)
