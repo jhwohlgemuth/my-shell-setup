@@ -6,6 +6,7 @@ install_docker() {
     #
     # Install Docker
     #
+    # This line requires container run with --privileged
     ulimit -n 65536
     apt-get install --no-install-recommends --yes \
         docker-ce \

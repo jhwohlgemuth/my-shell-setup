@@ -3,11 +3,7 @@
 set -e
 
 requires \
-    cargo \
-    elan \
-    git \
-    mamba \
-    opam
+    gum
 under_construction() {
     local CHOICE="${1:-''}"
     echo "> :construction: Please pardon our dust. Installing ${CHOICE} is still under construction." | gum format -t emoji
