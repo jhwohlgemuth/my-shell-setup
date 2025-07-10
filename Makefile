@@ -41,6 +41,7 @@ GOLD = \
 	install_pinokio \
 	install_provers \
 	install_prusti \
+	install_refinedrust \
 	install_rust2ada \
 	install_scala_jupyter_kernel \
 	install_verus \

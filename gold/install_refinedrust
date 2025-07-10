@@ -1,0 +1,24 @@
+#! /bin/bash
+set -e
+
+requires \
+    opam \
+    rustup
+main() {
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
+    local SRC_DIRECTORY="/refinedrust"
+    opam switch create refinedrust --packages=ocaml-variants.4.14.0+options,ocaml-option-flambda
+    opam switch link refinedrust .
+    opam switch refinedrust
+    opam repo add coq-released https://rocq-prover.org/opam/released
+    opam repo add iris-dev https://gitlab.mpi-sws.org/iris/opam.git
+    opam pin add rocq-prover 9.0.0
+    make builddep setup-dune typesystem
+    git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
+    cd "${SRC_DIRECTORY}/rr_frontend" || exit
+    ./refinedrust install
+    rm -frd "${SRC_DIRECTORY}"
+    cd "${PWD}" || exit
+}
+main "$@"
