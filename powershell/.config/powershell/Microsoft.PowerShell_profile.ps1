@@ -73,6 +73,17 @@ if (Test-Command -Name docker) {
     Set-Alias -Scope Global -Option AllScope -Name dra -Value Invoke-DockerRemoveAll
     Set-Alias -Scope Global -Option AllScope -Name dri -Value Invoke-DockerRemoveAllImage
 }
+# glab completion setup
+# https://gitlab.com/gitlab-org/cli
+if (Test-Command -Name glab) {
+    glab completion -s powershell | Out-String | Invoke-Expression
+}
+# McFly setup
+# https://github.com/cantino/mcfly
+if (Test-Command -Name mcfly) {
+    Invoke-Expression -Command $(mcfly init powershell | Out-String)
+    mcfly init powershell | Out-String | Invoke-Expression
+}
 #
 # Zoxide setup
 #
