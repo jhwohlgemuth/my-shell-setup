@@ -4,10 +4,9 @@ set -e
 requires \
     git \
     install_extensions \
+    java \
     jq
 main() {
-    install_java
-    source "${HOME}/.zshrc"
     #
     # Install Prusti crate
     #
