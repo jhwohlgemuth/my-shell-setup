@@ -30,7 +30,7 @@ main() {
         Frama-C:frama-c
         KLEE:klee
         Lean:lean
-        Prusti:prusti
+        Prusti:prusti-rustc
         RefinedRust:refinedrust
         Rocq:coqc
         rust2ada:rust2ada

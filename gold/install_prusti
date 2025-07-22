@@ -5,7 +5,8 @@ requires \
     git \
     install_extensions \
     java \
-    jq
+    jq \
+    sponge
 main() {
     #
     # Install Prusti crate
@@ -15,9 +16,15 @@ main() {
     git clone git@github.com:viperproject/prusti-dev.git /prusti
     cd /prusti || exit
     ./x.py setup && ./x.py build --release
+    mv /prusti/target/release/prusti-rustc /usr/local/bin/
+    chmod +x /usr/local/bin/prusti-rustc
+    mv /prusti/target/release/cargo-prusti /usr/local/bin/
+    chmod +x /usr/local/bin/cargo-prusti
     # shellcheck disable=SC2016
     echo 'export PATH="/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
     export PATH="/prusti/bin:${PATH}"
+    rm /prusti
+    cd "${PWD}" || exit
     #
     # Install Prusti VSCode extension
     #
@@ -25,6 +32,8 @@ main() {
     #
     # Configure JAVA_HOME in Prusti extension settings
     #
-
+    local SETTINGS="/app/code-server/config/data/User/settings.json"
+    # shellcheck disable=SC2154
+    jq ". += { \"prusti-assistant.javaHome\": \"${JAVA_HOME}\" }" "${SETTINGS}" | sponge "${SETTINGS}"
 }
 main "$@"
