@@ -23,7 +23,7 @@ main() {
     # shellcheck disable=SC2016
     echo 'export PATH="/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
     export PATH="/prusti/bin:${PATH}"
-    rm /prusti
+    rm -frd /prusti
     cd "${PWD}" || exit
     #
     # Install Prusti VSCode extension
