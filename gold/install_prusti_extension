@@ -1,0 +1,20 @@
+#! /bin/bash
+set -e
+
+requires \
+    install_extensions \
+    jq \
+    sponge
+main() {
+    #
+    # Install Prusti VSCode extension
+    #
+    install_extensions viper-admin.prusti-assistant
+    #
+    # Configure JAVA_HOME in Prusti extension settings
+    #
+    local SETTINGS="/app/code-server/config/data/User/settings.json"
+    # shellcheck disable=SC2154
+    jq ". += { \"prusti-assistant.javaHome\": \"${JAVA_HOME}\" }" "${SETTINGS}" | sponge "${SETTINGS}"
+}
+main "$@"

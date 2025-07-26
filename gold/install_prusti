@@ -2,38 +2,27 @@
 set -e
 
 requires \
+    cargo \
     git \
-    install_extensions \
-    java \
-    jq \
-    sponge
+    java
 main() {
     #
     # Install Prusti crate
     #
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
-    git clone git@github.com:viperproject/prusti-dev.git /prusti
-    cd /prusti || exit
+    local PRUSTI_SRC_DIRECTORY="/prusti"
+    git clone git@github.com:viperproject/prusti-dev.git "${PRUSTI_SRC_DIRECTORY}"
+    cd "${PRUSTI_SRC_DIRECTORY}" || exit
     ./x.py setup && ./x.py build --release
-    mv /prusti/target/release/prusti-rustc /usr/local/bin/
+    mv "${PRUSTI_SRC_DIRECTORY}/target/release/prusti-rustc" /usr/local/bin/
     chmod +x /usr/local/bin/prusti-rustc
-    mv /prusti/target/release/cargo-prusti /usr/local/bin/
+    mv "${PRUSTI_SRC_DIRECTORY}/target/release/cargo-prusti" /usr/local/bin/
     chmod +x /usr/local/bin/cargo-prusti
     # shellcheck disable=SC2016
     echo 'export PATH="/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
-    export PATH="/prusti/bin:${PATH}"
-    rm -frd /prusti
-    #
-    # Install Prusti VSCode extension
-    #
-    install_extensions viper-admin.prusti-assistant
-    #
-    # Configure JAVA_HOME in Prusti extension settings
-    #
-    local SETTINGS="/app/code-server/config/data/User/settings.json"
-    # shellcheck disable=SC2154
-    jq ". += { \"prusti-assistant.javaHome\": \"${JAVA_HOME}\" }" "${SETTINGS}" | sponge "${SETTINGS}"
+    export PATH="${PRUSTI_SRC_DIRECTORY}/bin:${PATH}"
+    rm -frd ${PRUSTI_SRC_DIRECTORY}
     cd "${PWD}" || exit
 }
 main "$@"
