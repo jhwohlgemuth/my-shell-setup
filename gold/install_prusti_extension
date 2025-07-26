@@ -9,7 +9,7 @@ main() {
     #
     # Install Prusti VSCode extension
     #
-    install_extensions viper-admin.prusti-assistant
+    install_extensions viper-admin.prusti-assistant viper-admin.viper
     #
     # Configure JAVA_HOME in Prusti extension settings
     #
