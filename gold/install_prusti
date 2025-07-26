@@ -24,7 +24,6 @@ main() {
     echo 'export PATH="/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
     export PATH="/prusti/bin:${PATH}"
     rm -frd /prusti
-    cd "${PWD}" || exit
     #
     # Install Prusti VSCode extension
     #
@@ -35,5 +34,6 @@ main() {
     local SETTINGS="/app/code-server/config/data/User/settings.json"
     # shellcheck disable=SC2154
     jq ". += { \"prusti-assistant.javaHome\": \"${JAVA_HOME}\" }" "${SETTINGS}" | sponge "${SETTINGS}"
+    cd "${PWD}" || exit
 }
 main "$@"
