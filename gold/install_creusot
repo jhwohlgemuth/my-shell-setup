@@ -3,7 +3,7 @@ set -e
 
 requires \
     cargo \
-    clean \
+    cleanup \
     git \
     why3 \
     z3
