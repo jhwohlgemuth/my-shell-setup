@@ -11,18 +11,18 @@ main() {
     #
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
-    local PRUSTI_SRC_DIRECTORY="/prusti"
-    git clone git@github.com:viperproject/prusti-dev.git "${PRUSTI_SRC_DIRECTORY}"
-    cd "${PRUSTI_SRC_DIRECTORY}" || exit
+    local SRC_DIRECTORY="/prusti"
+    git clone git@github.com:viperproject/prusti-dev.git "${SRC_DIRECTORY}"
+    cd "${SRC_DIRECTORY}" || exit
     ./x.py setup && ./x.py build --release
-    mv "${PRUSTI_SRC_DIRECTORY}/target/release/prusti-rustc" /usr/local/bin/
+    mv "${SRC_DIRECTORY}/target/release/prusti-rustc" /usr/local/bin/
     chmod +x /usr/local/bin/prusti-rustc
-    mv "${PRUSTI_SRC_DIRECTORY}/target/release/cargo-prusti" /usr/local/bin/
+    mv "${SRC_DIRECTORY}/target/release/cargo-prusti" /usr/local/bin/
     chmod +x /usr/local/bin/cargo-prusti
     # shellcheck disable=SC2016
     echo 'export PATH="/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
-    export PATH="${PRUSTI_SRC_DIRECTORY}/bin:${PATH}"
-    rm -frd "${PRUSTI_SRC_DIRECTORY}"
+    export PATH="${SRC_DIRECTORY}/bin:${PATH}"
+    rm -frd "${SRC_DIRECTORY}"
     cd "${PWD}" || exit
 }
 main "$@"

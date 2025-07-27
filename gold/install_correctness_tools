@@ -26,7 +26,7 @@ main() {
         "${TITLE}"
     DATA="""
         Aeneas:aeneas
-        Creusot:creusot
+        Creusot:creusot-rustc
         Frama-C:frama-c
         KLEE:klee
         Lean:lean

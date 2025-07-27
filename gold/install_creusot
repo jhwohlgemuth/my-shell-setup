@@ -12,11 +12,11 @@ main() {
     #
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
-    cd / || exit
-    git clone https://github.com/xldenis/creusot
-    cd /creusot
-    cargo install --path cargo-creusot
-    cargo install --path creusot-rustc
+    local SRC_DIRECTORY="/creusot"
+    git clone https://github.com/creusot-rs/creusot "${SRC_DIRECTORY}"
+    cd "${SRC_DIRECTORY}" || exit
+    ./INSTALL
+    cargo creusot --help
     cd "${PWD}" || exit
 }
 main "$@"
