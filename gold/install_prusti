@@ -22,7 +22,7 @@ main() {
     # shellcheck disable=SC2016
     echo 'export PATH="/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
     export PATH="${PRUSTI_SRC_DIRECTORY}/bin:${PATH}"
-    rm -frd ${PRUSTI_SRC_DIRECTORY}
+    rm -frd "${PRUSTI_SRC_DIRECTORY}"
     cd "${PWD}" || exit
 }
 main "$@"

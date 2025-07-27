@@ -86,10 +86,12 @@ main() {
                 complete "${CHOICE}"
                 ;;
             Prusti)
-                under_construction "${CHOICE}"
+                install_prusti
+                complete "${CHOICE}"
                 ;;
             RefinedRust)
-                under_construction "${CHOICE}"
+                install_refinedrust
+                complete "${CHOICE}"
                 ;;
             Rocq)
                 install_coq

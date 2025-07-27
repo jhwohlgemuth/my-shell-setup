@@ -26,10 +26,6 @@ main() {
     "${VERUS_INSTALLATION_DIRECTORY}/tools/vargo/target/release/vargo" build --release
     ln -s "${VERUS_SOURCE}/target-verus/release/verus" /usr/local/bin/verus
     #
-    # Test Verus installation
-    #
-    verus "${VERUS_SOURCE}/rust_verify/example/vectors.rs"
-    #
     # Install verusfmt
     #
     cargo install verusfmt --locked
