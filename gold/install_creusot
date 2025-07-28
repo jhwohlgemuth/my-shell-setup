@@ -5,6 +5,7 @@ requires \
     cargo \
     cleanup \
     git \
+    rsync \
     why3 \
     z3
 main() {
