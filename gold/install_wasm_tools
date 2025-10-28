@@ -27,7 +27,7 @@ install_rust_targets_and_tools() {
     # Install Rust WASM/WASI targets and tools
     #
     gum spin --title 'Adding WASM Unknown target' -- rustup target add wasm32-unknown-unknown
-    gum spin --title 'Adding WASI target' -- rustup target add wasm32-wasi
+    gum spin --title 'Adding WASI target' -- rustup target add wasm32-wasip1
     gum spin --title 'Installing WASM/WASI related crates' -- cargo install \
         cargo-wasi \
         cargo-wasix \
