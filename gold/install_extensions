@@ -3,8 +3,16 @@ set -e
 
 requires \
     code-server \
+    download_extensions \
     curl \
     jq
+try_download() {
+    local EXTENSION="${ARG}.vsix"
+    echo "Failed to install ${ARG}, attempting to download and install from local copy..."
+    download_extensions "${ARG}"
+    install_extensions "${EXTENSION}"
+    rm "${EXTENSION}"
+}
 main() {
     #
     # Download Extensions listing
@@ -22,11 +30,13 @@ main() {
     fi
     for ARG in "${ARGS[@]}"; do
         if echo "${ARG}" | grep -iq "[.]"; then
+            trap try_download ERR
+            echo "Identified ${ARG}..."
             code-server --config "${CONFIG}" --install-extension "${ARG}" --force
         else
             EXTENSIONS="$(jq -r ".${ARG}[]" "${EXTENSIONS_JSON}")"
             for EXTENSION in ${EXTENSIONS}; do
-                code-server --config "${CONFIG}" --install-extension "${EXTENSION}" --force
+                install_extensions "${EXTENSION}" || true
             done
         fi
     done
