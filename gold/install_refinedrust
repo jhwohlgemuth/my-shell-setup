@@ -3,25 +3,24 @@ set -e
 
 requires \
     opam \
+    rsync \
     rustup
 main() {
     export OPAMYES=1
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
     local SRC_DIRECTORY="/refinedrust"
-    opam switch create refinedrust --packages=ocaml-variants.4.14.0+options,ocaml-option-flambda
-    opam switch link refinedrust .
-    opam switch refinedrust
-    # TODO: Check if coq-released already exists
-    # opam repo add --best-effort coq-released https://rocq-prover.org/opam/released
-    opam repo add --best-effort iris-dev https://gitlab.mpi-sws.org/iris/opam.git
-    # opam pin add rocq-prover 9.0.0
-    eval $(opam env)
     opam update
     opam upgrade
     eval $(opam env)
+    opam switch create refinedrust --packages=ocaml-variants.4.14.1+options,ocaml-option-flambda
+    opam switch link refinedrust .
+    opam switch refinedrust
+    opam repo add --best-effort rocq-released https://rocq-prover.org/opam/released
+    opam repo add --best-effort iris-dev https://gitlab.mpi-sws.org/iris/opam.git
     git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
     cd "${SRC_DIRECTORY}" || exit
+    export OPAMFLAGS="$OPAMFLAGS -y"
     make builddep setup-dune typesystem
     cd "${SRC_DIRECTORY}/rr_frontend" || exit
     ./refinedrust build
