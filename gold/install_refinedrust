@@ -17,6 +17,9 @@ main() {
     opam repo add --best-effort iris-dev https://gitlab.mpi-sws.org/iris/opam.git
     # opam pin add rocq-prover 9.0.0
     eval $(opam env)
+    opam update
+    opam upgrade
+    eval $(opam env)
     git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
     cd "${SRC_DIRECTORY}" || exit
     make builddep setup-dune typesystem
