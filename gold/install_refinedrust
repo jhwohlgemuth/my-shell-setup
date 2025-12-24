@@ -12,14 +12,18 @@ main() {
     opam switch create refinedrust --packages=ocaml-variants.4.14.0+options,ocaml-option-flambda
     opam switch link refinedrust .
     opam switch refinedrust
-    opam repo add --best-effort coq-released https://rocq-prover.org/opam/released
+    # TODO: Check if coq-released already exists
+    # opam repo add --best-effort coq-released https://rocq-prover.org/opam/released
     opam repo add --best-effort iris-dev https://gitlab.mpi-sws.org/iris/opam.git
     opam pin add rocq-prover 9.0.0
-    make builddep setup-dune typesystem
+    eval $(opam env)
     git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
+    cd "${SRC_DIRECTORY}" || exit
+    make builddep setup-dune typesystem
     cd "${SRC_DIRECTORY}/rr_frontend" || exit
+    ./refinedrust build
     ./refinedrust install
-    rm -frd "${SRC_DIRECTORY}"
     cd "${PWD}" || exit
+    rm -frd "${SRC_DIRECTORY}"
 }
 main "$@"
