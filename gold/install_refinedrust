@@ -15,7 +15,7 @@ main() {
     # TODO: Check if coq-released already exists
     # opam repo add --best-effort coq-released https://rocq-prover.org/opam/released
     opam repo add --best-effort iris-dev https://gitlab.mpi-sws.org/iris/opam.git
-    opam pin add rocq-prover 9.0.0
+    opam pin add rocq-prover 9.1.0
     eval $(opam env)
     git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
     cd "${SRC_DIRECTORY}" || exit
