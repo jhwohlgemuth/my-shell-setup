@@ -16,7 +16,7 @@ main() {
     eval $(opam env)
     git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
     cd "${SRC_DIRECTORY}" || exit
-    opam switch create refinedrust --packages=ocaml-variants.4.14.0+options,ocaml-option-flambda
+    opam switch create refinedrust --packages=ocaml-variants.4.14.1+options,ocaml-option-flambda
     opam switch link refinedrust .
     opam switch refinedrust
     opam repo add --best-effort rocq-released https://rocq-prover.org/opam/released
