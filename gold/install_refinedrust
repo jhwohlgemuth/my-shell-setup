@@ -21,6 +21,9 @@ main() {
     opam switch refinedrust
     opam repo add --best-effort rocq-released https://rocq-prover.org/opam/released
     opam repo add --best-effort iris-dev https://gitlab.mpi-sws.org/iris/opam.git
+    opam update
+    opam upgrade
+    eval $(opam env)
     # opam pin add rocq-prover 9.1.0
     make builddep setup-dune typesystem
     cd "${SRC_DIRECTORY}/rr_frontend" || exit
