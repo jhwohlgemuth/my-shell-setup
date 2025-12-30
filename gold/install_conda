@@ -2,28 +2,27 @@
 set -e
 
 requires \
+    bash \
     curl \
     zsh
 main() {
     #
     # Install miniconda (conda)
     #
-    curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    mkdir /root/.conda
-    bash Miniconda3-latest-Linux-x86_64.sh -b
-    rm -f Miniconda3-latest-Linux-x86_64.sh
-    /root/miniconda3/bin/conda update --name base conda
-    zsh -c "${HOME}/miniconda3/bin/conda init zsh"
-    zsh -c "${HOME}/miniconda3/bin/conda init powershell"
-    #
-    # Install mamba
-    #
-    local CONDA_DIR=${CONDA_DIR:-/opt/conda}
-    local VERSION="${MAMBA_VERSION:-"23.3.1-1"}"
-    local NAME=Miniforge3
-    local SCRIPT_PATH=/tmp/miniforge.sh
-    curl -o "${SCRIPT_PATH}" -LJ "https://github.com/conda-forge/miniforge/releases/download/${VERSION}/${NAME}-${VERSION}-Linux-$(uname -m).sh"
-    /bin/bash "${SCRIPT_PATH}" -bu -p "${CONDA_DIR}"
-    /root/miniconda3/bin/conda config --append envs_dirs "${CONDA_DIR}/envs/"
+    local HOME="${1:-/home/nonroot}"
+    local CONDA_PREFIX="${HOME}/.conda"
+    local CONDA_ENVS_PATH="${CONDA_PREFIX}/envs"
+    local CONDA_PKGS_DIRS="${CONDA_PREFIX}/pkgs"
+    local CONDA_BIN="${HOME}/miniconda3/bin/conda"
+    mkdir -p "${CONDA_PREFIX}"
+    mkdir -p "${CONDA_ENVS_PATH}" "${CONDA_PKGS_DIRS}"
+    curl -fsSL -o /tmp/install_miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    bash /tmp/install_miniconda3.sh -b -u -p "${HOME}/miniconda3"
+    "${CONDA_BIN}" tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+    "${CONDA_BIN}" tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+    "${CONDA_BIN}" update --name base conda
+    "${CONDA_BIN}" config --append envs_dirs "${CONDA_ENVS_PATH}"
+    zsh -c "${CONDA_BIN} init powershell"
+    zsh -c "${CONDA_BIN} init zsh"
 }
 main "$@"
