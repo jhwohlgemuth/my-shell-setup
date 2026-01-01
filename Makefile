@@ -14,7 +14,6 @@ GOLD = \
 	install_apptainer \
 	install_code_server \
 	install_conda \
-	install_coq \
 	install_correctness_tools \
 	install_cosmopolitan \
 	install_creusot \
@@ -36,13 +35,13 @@ GOLD = \
 	install_musl \
 	install_nim \
 	install_nix \
-	install_ocaml \
 	install_ohmyzsh \
 	install_pinokio \
 	install_provers \
 	install_prusti \
 	install_prusti_extension \
 	install_refinedrust \
+	install_rocq \
 	install_rust2ada \
 	install_scala_jupyter_kernel \
 	install_verus \

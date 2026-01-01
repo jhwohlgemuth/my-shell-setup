@@ -1,0 +1,39 @@
+#! /bin/bash
+set -e
+
+requires \
+    bwrap \
+    install_extensions \
+    libgmp-dev \
+    opam \
+    zsh
+install_ocaml_tools() {
+    #
+    # Install OCaml tools
+    #
+    eval "$(opam env)"
+    # shellcheck disable=SC2016
+    echo 'eval "$(opam env)"' >> "${HOME}/.zshrc"
+    opam install \
+        dune \
+        jupyter \
+        ocaml-lsp-server \
+        ocamlfind \
+        ocamlformat \
+        utop
+}
+main() {
+    export OPAMYES=1
+    #
+    # Install Rocq (formerly Coq) language and packages
+    #
+    local OCAML_VERSION="${OCAML_VERSION:-5.4.0}"
+    local ROCQ_VERSION="${ROCQ_VERSION:-9.0.0}"
+    opam init --compiler="${OCAML_VERSION}" --yes
+    opam pin add rocq-prover "${ROCQ_VERSION}"
+    opam pin add rocq-core 9.1.0
+    opam install vsrocq-language-server
+    install_ocaml_tools
+    install_extensions correctness
+}
+main "$@"
