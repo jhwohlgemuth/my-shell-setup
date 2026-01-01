@@ -2,9 +2,10 @@
 set -e
 
 requires \
-    elan
+    curl
 main() {
     local VERSION="${1:-"stable"}"
+    curl -sSf https://elan.lean-lang.org/elan-init.sh | sh
     elan default "leanprover/lean4:${VERSION}"
 }
 main "$@"

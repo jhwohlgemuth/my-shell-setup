@@ -7,6 +7,7 @@ main() {
     # Install code-server
     #
     local CODE_SERVER_CONFIG_DIR=${1:-/app/code-server/config}
+    # shellcheck disable=SC2155
     local CODE_RELEASE=$(curl -sX GET https://api.github.com/repos/coder/code-server/releases/latest | awk '/tag_name/{print $4;exit}' FS='[""]' | sed 's|^v||')
     # shellcheck disable=SC2154
     mkdir -p "${CODE_SERVER_CONFIG_DIR}"/{data,extensions,workspace}
