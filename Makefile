@@ -12,6 +12,7 @@ GOLD = \
 	download_notebooks \
 	install_aeneas \
 	install_apptainer \
+	install_bflat \
 	install_code_server \
 	install_conda \
 	install_correctness_tools \
@@ -30,7 +31,6 @@ GOLD = \
 	install_klee \
 	install_java \
 	install_latex \
-	install_lean \
 	install_lpython \
 	install_musl \
 	install_nim \

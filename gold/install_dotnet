@@ -1,7 +1,9 @@
 #! /bin/bash
 set -e
 
-requires curl
+requires \
+    curl \
+    sudo
 main() {
     #
     # Add Microsoft PPA
@@ -18,14 +20,5 @@ main() {
         "dotnet-sdk-${VERSION}" \
         "dotnet-runtime-${VERSION}" \
         powershell
-    #
-    # Install bflat
-    #
-    mkdir -p /bflat && cd /bflat || exit
-    curl -o bflat.tar.gz -LJ https://github.com/bflattened/bflat/releases/download/v8.0.0/bflat-8.0.0-linux-glibc-x64.tar.gz
-    tar -xvf bflat.tar.gz
-    chmod +x /bflat/bflat
-    mv /bflat/bflat /usr/local/bin
-    cd /root && rm -frd /bflat
 }
 main "$@"
