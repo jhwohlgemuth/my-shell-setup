@@ -8,10 +8,10 @@ main() {
     curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
     sh init.sh -y
     rm init.sh
-    export PATH="${PATH}:/root/.nimble/bin"
+    export PATH="${PATH}:${HOME}/.nimble/bin"
     choosenim stable
     nimble install jupyternim -y
     # shellcheck disable=SC2016
-    echo 'export PATH="${PATH}:/root/.nimble/bin"' >> "${HOME}/.zshrc"
+    echo 'export PATH="${PATH}:${HOME}/.nimble/bin"' >> "${HOME}/.zshrc"
 }
 main "$@"

@@ -3,14 +3,9 @@ set -e
 
 requires \
     curl \
+    libasound2 \
     Xvfb
 main() {
-    #
-    # Install dependencies
-    #
-    apt-get update
-    apt-get install --no-install-recommends --yes \
-        libasound2
     #
     # Install Pinokio browser
     # (Note: Need to forwaard ports 7860, 8188, 42000, & 42421)
