@@ -8,7 +8,7 @@ requires \
 main() {
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
-    local VERUS_INSTALLATION_DIRECTORY="/verus"
+    local VERUS_INSTALLATION_DIRECTORY="${HOME}/verus"
     local VERUS_SOURCE="${VERUS_INSTALLATION_DIRECTORY}/source"
     git clone https://github.com/verus-lang/verus "${VERUS_INSTALLATION_DIRECTORY}"
     #
@@ -21,14 +21,22 @@ main() {
     # Install Verus
     #
     cd "${VERUS_SOURCE}" || exit
-    chmod +x "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
-    "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
-    "${VERUS_INSTALLATION_DIRECTORY}/tools/vargo/target/release/vargo" build --release
-    ln -s "${VERUS_SOURCE}/target-verus/release/verus" /usr/local/bin/verus
+    chmod +x "${VERUS_SOURCE}/tools/activate"
+    "${VERUS_SOURCE}/tools/activate"
+    "${VERUS_SOURCE}/tools/vargo/target/release/vargo" build --release
+    mkdir -p "${HOME}/.local/bin"
+    ln -sf "${VERUS_SOURCE}/target-verus/release/verus" "${HOME}/.local/bin/verus"
     #
     # Install verusfmt
     #
     cargo install verusfmt --locked
     cd "${PWD}" || exit
+    #
+    # Inform user about PATH
+    #
+    echo "Verus installed successfully!"
+    echo "Make sure ${HOME}/.local/bin is in your PATH."
+    echo "You can add it by adding this line to your shell rc file:"
+    echo 'export PATH="${HOME}/.local/bin:${PATH}"'
 }
 main "$@"
