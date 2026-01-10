@@ -16,6 +16,7 @@ main() {
     git clone https://github.com/xr0-org/xr0 "${XR0_ROOT}"
     cd "${XR0_ROOT}" || exit
     ./configure && make
+    mkdir -p "${HOME}/.local/bin"
     ln -s "${XR0_ROOT}/bin/0v" "${HOME}/.local/bin/0v"
     echo 'export XR0_INCLUDES="${HOME}/xr0/libx"' >> "${HOME}/.zshrc"
     export XR0_INCLUDES="${HOME}/libx"
