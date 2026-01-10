@@ -76,26 +76,9 @@ main() {
     local INSTALL_DIRECTORY="${HOME}/.local/bin"
     mkdir -p "${INSTALL_DIRECTORY}"
     #
-    # Install Alt-Ergo (free)
-    #
-    export OPAMYES=1
-    opam install alt-ergo-free
-    eval "$(opam env)"
-    #
-    # Install Why3 and add provers
-    #
-    export OPAMYES=1
-    opam install why3
-    eval "$(opam env)"
-    why3 config detect
-    cd "${PWD}" || exit
-    #
     # Install CVC5
     #
-    cd "${INSTALL_DIRECTORY}" || exit
-    curl -o cvc5 -LJ https://github.com/cvc5/cvc5/releases/download/cvc5-1.0.8/cvc5-Linux
-    chmod +x cvc5
-    cd "${PWD}" || exit
+    install_cvc5 "${INSTALL_DIRECTORY}"
     #
     # Install Vampire
     #
@@ -125,5 +108,19 @@ main() {
     make -j8 && make install
     cd "${PWD}" || exit
     rm -frd "${HOME}/z3"
+    #
+    # Install Alt-Ergo (free)
+    #
+    export OPAMYES=1
+    opam install alt-ergo-free
+    eval "$(opam env)"
+    #
+    # Install Why3 and add provers
+    #
+    export OPAMYES=1
+    opam install why3
+    eval "$(opam env)"
+    why3 config detect
+    cd "${PWD}" || exit
 }
 main "$@"
