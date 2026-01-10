@@ -20,10 +20,10 @@ main() {
     #
     # Install Verus
     #
-    cd "${VERUS_SOURCE}" || exit
-    chmod +x "${VERUS_SOURCE}/tools/activate"
-    "${VERUS_SOURCE}/tools/activate"
-    "${VERUS_SOURCE}/tools/vargo/target/release/vargo" build --release
+    cd "${VERUS_INSTALLATION_DIRECTORY}" || exit
+    chmod +x "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
+    "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
+    "${VERUS_INSTALLATION_DIRECTORY}/tools/vargo/target/release/vargo" build --release
     mkdir -p "${HOME}/.local/bin"
     ln -sf "${VERUS_SOURCE}/target-verus/release/verus" "${HOME}/.local/bin/verus"
     #
