@@ -16,9 +16,16 @@ main() {
     git clone https://github.com/xr0-org/xr0 "${XR0_ROOT}"
     cd "${XR0_ROOT}" || exit
     ./configure && make
-    ln -s "${XR0_ROOT}/bin/0v" /usr/local/bin/0v
+    ln -s "${XR0_ROOT}/bin/0v" "${HOME}/.local/bin/0v"
     echo 'export XR0_INCLUDES="${HOME}/xr0/libx"' >> "${HOME}/.zshrc"
-    export XR0_INCLUDES="${${HOME}/libx"
+    export XR0_INCLUDES="${HOME}/libx"
     cd "${PWD}" || exit
+    #
+    # Inform user about PATH
+    #
+    echo "xr0 installed successfully!"
+    echo "Make sure ${HOME}/.local/bin is in your PATH."
+    echo "You can add it by adding this line to your shell rc file:"
+    echo 'export PATH="${HOME}/.local/bin:${PATH}"'
 }
 main "$@"
