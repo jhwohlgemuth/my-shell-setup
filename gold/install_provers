@@ -8,6 +8,17 @@ requires \
     opam \
     python \
     unzip
+isntall_eprover() {
+    # shellcheck disable=SC2155
+    local PWD="$(pwd)"
+    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
+    git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
+    cd "${HOME}/eprover" || exit
+    ./configure && make -j8 && make install
+    mv PROVER/* "${INSTALL_DIRECTORY}"
+    cd "${PWD}" || exit
+    rm -frd "${HOME}/eprover"
+}
 install_alt_ergo() {
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
@@ -24,7 +35,12 @@ install_cvc5() {
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
-
+    #
+    # Install CVC5
+    #
+    cd "${INSTALL_DIRECTORY}" || exit
+    curl -o cvc5 -LJ https://github.com/cvc5/cvc5/releases/download/cvc5-1.0.8/cvc5-Linux
+    chmod +x cvc5
     cd "${PWD}" || exit
 }
 install_vampire() {
@@ -82,32 +98,15 @@ main() {
     #
     # Install Vampire
     #
-    mkdir -p "${HOME}/vampire"
-    cd "${HOME}/vampire" || exit
-    curl -o source.zip -LJ https://github.com/vprover/vampire/releases/download/snakeForV4.7%2B/vampire-snake-static4starexec.zip
-    unzip source.zip
-    mv bin/* "${INSTALL_DIRECTORY}"
-    cd "${PWD}" || exit
-    rm -frd "${HOME}/vampire"
+    install_vampire "${INSTALL_DIRECTORY}"
     #
     # Install eprover
     #
-    git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
-    cd "${HOME}/eprover" || exit
-    ./configure && make -j8 && make install
-    mv PROVER/* "${INSTALL_DIRECTORY}"
-    cd "${PWD}" || exit
-    rm -frd "${HOME}/eprover"
+    isntall_eprover "${INSTALL_DIRECTORY}"
     #
     # Install Z3
     #
-    git clone https://github.com/Z3Prover/z3.git "${HOME}/z3"
-    cd "${HOME}/z3" || exit
-    python scripts/mk_make.py
-    cd build || exit
-    make -j8 && make install
-    cd "${PWD}" || exit
-    rm -frd "${HOME}/z3"
+    install_z3 "${INSTALL_DIRECTORY}"
     #
     # Install Alt-Ergo (free)
     #
