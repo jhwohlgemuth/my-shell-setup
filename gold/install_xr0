@@ -18,6 +18,7 @@ main() {
     ./configure && make
     mkdir -p "${HOME}/.local/bin"
     ln -s "${XR0_ROOT}/bin/0v" "${HOME}/.local/bin/0v"
+    # shellcheck disable=SC2016
     echo 'export XR0_INCLUDES="${HOME}/xr0/libx"' >> "${HOME}/.zshrc"
     export XR0_INCLUDES="${HOME}/libx"
     cd "${PWD}" || exit
@@ -27,6 +28,7 @@ main() {
     echo "xr0 installed successfully!"
     echo "Make sure ${HOME}/.local/bin is in your PATH."
     echo "You can add it by adding this line to your shell rc file:"
+    # shellcheck disable=SC2016
     echo 'export PATH="${HOME}/.local/bin:${PATH}"'
 }
 main "$@"

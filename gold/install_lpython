@@ -3,8 +3,7 @@ set -e
 
 requires \
     conda \
-    git \
-    mamba
+    git
 main() {
     #
     # Install LPython compiler
@@ -12,12 +11,14 @@ main() {
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
     local CONDA_ENV='lp'
-    git clone https://github.com/lcompilers/lpython.git /lpython
-    cd /lpython || exit
-    mamba env create -f environment_unix.yml
+    local SRC_DIRECTORY="${HOME}/lpython"
+    git clone https://github.com/lcompilers/lpython.git "${SRC_DIRECTORY}"
+    cd "${SRC_DIRECTORY}" || exit
+    conda env create -f environment_unix.yml
     conda run -n "${CONDA_ENV}" ./build0.sh
     conda run -n "${CONDA_ENV}" ./build1.sh
-    ln -s /lpython/src/bin/lpython /usr/local/bin/lpython
+    mkdir -p "${HOME}/.local/bin"
+    ln -sf "${SRC_DIRECTORY}/src/bin/lpython" "${HOME}/.local/bin/lpython"
     conda env remove -n "${CONDA_ENV}"
     cd "${PWD}" || exit
 }

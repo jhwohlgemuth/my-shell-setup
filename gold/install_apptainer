@@ -1,7 +1,9 @@
 #! /bin/bash
 set -e
 
-requires curl fuse-overlayfs
+requires \
+    curl \
+    fuse-overlayfs
 main() {
     #
     # Install Apptainer

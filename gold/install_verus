@@ -37,6 +37,7 @@ main() {
     echo "Verus installed successfully!"
     echo "Make sure ${HOME}/.local/bin is in your PATH."
     echo "You can add it by adding this line to your shell rc file:"
+    # shellcheck disable=SC2016
     echo 'export PATH="${HOME}/.local/bin:${PATH}"'
 }
 main "$@"
