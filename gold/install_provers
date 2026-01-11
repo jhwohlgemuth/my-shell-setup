@@ -96,16 +96,10 @@ install_vampire() {
 }
 install_eprover() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
-    # Derive install prefix (strip trailing /bin if provided)
-    local PREFIX_DIR="${INSTALL_DIRECTORY}"
-    case "${INSTALL_DIRECTORY}" in
-        */bin) PREFIX_DIR="${INSTALL_DIRECTORY%/bin}" ;;
-        *) PREFIX_DIR="${INSTALL_DIRECTORY}" ;;
-    esac
     mkdir -p "${INSTALL_DIRECTORY}"
     git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
     pushd "${HOME}/eprover" > /dev/null || exit
-    ./configure --prefix="${PREFIX_DIR}" && make -j8 && make install
+    ./configure --prefix="${INSTALL_DIRECTORY}" && make -j8 && make install
     mv PROVER/* "${INSTALL_DIRECTORY}"
     popd > /dev/null || exit
     rm -frd "${HOME}/eprover"
