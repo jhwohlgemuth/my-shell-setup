@@ -9,12 +9,11 @@ requires \
     python \
     unzip
 check_installed() {
-    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
     local MISSING=()
     local FOUND=()
     local TOOLS=(cvc5 vampire eprover z3 alt-ergo why3)
     for tool in "${TOOLS[@]}"; do
-        if [[ -x "${INSTALL_DIRECTORY}/${tool}" ]]; then
+        if command -v "${tool}" > /dev/null 2>&1; then
             FOUND+=("${tool}")
         else
             MISSING+=("${tool}")
@@ -45,7 +44,7 @@ install_alt_ergo() {
     # Create a compatible OCaml switch for Alt-Ergo (requires OCaml < 5)
     #
     if ! opam switch list --short | grep -q '^alt-ergo-4.14$'; then
-        opam switch create alt-ergo-4.14 ocaml-base-compiler.4.14.3
+        opam switch create alt-ergo-4.14 'ocaml-base-compiler.4.14'
     fi
     eval "$(opam env --switch=alt-ergo-4.14)"
     #
@@ -53,12 +52,15 @@ install_alt_ergo() {
     #
     opam install alt-ergo-free
     # Symlink the installed binary into user bin
+    mkdir -p "${INSTALL_DIRECTORY}"
     local ALT_BIN_DIR
     ALT_BIN_DIR="$(opam var bin)"
     if [[ -x "${ALT_BIN_DIR}/alt-ergo" ]]; then
         ln -sf "${ALT_BIN_DIR}/alt-ergo" "${INSTALL_DIRECTORY}/alt-ergo"
     elif [[ -x "${ALT_BIN_DIR}/alt-ergo-free" ]]; then
         ln -sf "${ALT_BIN_DIR}/alt-ergo-free" "${INSTALL_DIRECTORY}/alt-ergo"
+    else
+        echo "=> [WARNING] Alt-Ergo binary not found after install."
     fi
     # Restore the original opam switch
     eval "$(opam env --switch="${CURRENT_SWITCH}")"
@@ -71,6 +73,7 @@ install_why3() {
 }
 install_cvc5() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
+    mkdir -p "${INSTALL_DIRECTORY}"
     pushd "${INSTALL_DIRECTORY}" > /dev/null || exit
     curl -o cvc5 -LJ https://github.com/cvc5/cvc5/releases/download/cvc5-1.0.8/cvc5-Linux
     chmod +x cvc5
@@ -78,6 +81,7 @@ install_cvc5() {
 }
 install_vampire() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
+    mkdir -p "${INSTALL_DIRECTORY}"
     mkdir -p "${HOME}/vampire"
     pushd "${HOME}/vampire" > /dev/null || exit
     curl -o source.zip -LJ https://github.com/vprover/vampire/releases/download/snakeForV4.7%2B/vampire-snake-static4starexec.zip
@@ -94,6 +98,7 @@ install_eprover() {
         */bin) PREFIX_DIR="${INSTALL_DIRECTORY%/bin}" ;;
         *) PREFIX_DIR="${INSTALL_DIRECTORY}" ;;
     esac
+    mkdir -p "${INSTALL_DIRECTORY}"
     git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
     pushd "${HOME}/eprover" > /dev/null || exit
     ./configure --prefix="${PREFIX_DIR}" && make -j8 && make install
@@ -108,6 +113,7 @@ install_z3() {
         */bin) PREFIX_DIR="${INSTALL_DIRECTORY%/bin}" ;;
         *) PREFIX_DIR="${INSTALL_DIRECTORY}" ;;
     esac
+    mkdir -p "${INSTALL_DIRECTORY}"
     git clone https://github.com/Z3Prover/z3.git "${HOME}/z3"
     pushd "${HOME}/z3" > /dev/null || exit
     python scripts/mk_make.py --prefix="${PREFIX_DIR}"
@@ -119,13 +125,12 @@ install_z3() {
 }
 main() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
-    mkdir -p "${INSTALL_DIRECTORY}"
     install_cvc5 "${INSTALL_DIRECTORY}"
     install_eprover "${INSTALL_DIRECTORY}"
     install_vampire "${INSTALL_DIRECTORY}"
     install_z3 "${INSTALL_DIRECTORY}"
     install_alt_ergo "${INSTALL_DIRECTORY}"
     install_why3
-    check_installed "${INSTALL_DIRECTORY}"
+    check_installed
 }
 main "$@"
