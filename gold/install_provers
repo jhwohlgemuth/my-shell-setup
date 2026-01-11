@@ -33,14 +33,14 @@ install_cvc5() {
     cd "${PWD}" || exit
 }
 install_eprover() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
+    #
+    # Install eprover
+    #
     git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
-    cd "${HOME}/eprover" || exit
-    ./configure && make -j8 && make install
-    mv PROVER/* "${INSTALL_DIRECTORY}"
-    cd "${PWD}" || exit
+    pushd "${HOME}/eprover" > /dev/null || exit
+    ./configure --prefix="${1:-${HOME}/.local}" && make -j8 && make install
+    popd > /dev/null || exit
     rm -frd "${HOME}/eprover"
 }
 install_vampire() {
