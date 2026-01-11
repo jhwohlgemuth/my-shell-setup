@@ -11,8 +11,12 @@ requires \
 check_installed() {
     local MISSING=()
     local FOUND=()
-    local TOOLS=(cvc5 vampire eprover z3 alt-ergo why3)
-    for tool in "${TOOLS[@]}"; do
+    # Tools to check come from arguments; default to common set if none provided
+    local tools=("$@")
+    if [[ ${#tools[@]} -eq 0 ]]; then
+        tools=(cvc5 vampire eprover z3 why3 alt-ergo)
+    fi
+    for tool in "${tools[@]}"; do
         if command -v "${tool}" > /dev/null 2>&1; then
             FOUND+=("${tool}")
         else
@@ -102,6 +106,7 @@ install_eprover() {
     git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
     pushd "${HOME}/eprover" > /dev/null || exit
     ./configure --prefix="${PREFIX_DIR}" && make -j8 && make install
+    mv PROVER/* "${INSTALL_DIRECTORY}"
     popd > /dev/null || exit
     rm -frd "${HOME}/eprover"
 }
@@ -129,8 +134,7 @@ main() {
     install_eprover "${INSTALL_DIRECTORY}"
     install_vampire "${INSTALL_DIRECTORY}"
     install_z3 "${INSTALL_DIRECTORY}"
-    # install_alt_ergo "${INSTALL_DIRECTORY}"
     install_why3
-    check_installed
+    check_installed cvc5 eprover vampire z3 why3
 }
 main "$@"
