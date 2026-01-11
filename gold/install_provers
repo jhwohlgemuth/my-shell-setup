@@ -9,28 +9,44 @@ requires \
     python \
     unzip
 install_alt_ergo() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
-    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
     export OPAMYES=1
     #
     # Install Alt-Ergo (free)
     #
     opam install alt-ergo-free
     eval "$(opam env)"
-    cd "${PWD}" || exit
+}
+install_why3() {
+    export OPAMYES=1
+    #
+    # Install Why3 and add provers
+    #
+    opam install why3
+    eval "$(opam env)"
+    why3 config detect
 }
 install_cvc5() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
     #
     # Install CVC5
     #
-    cd "${INSTALL_DIRECTORY}" || exit
+    pushd "${INSTALL_DIRECTORY}" > /dev/null || exit
     curl -o cvc5 -LJ https://github.com/cvc5/cvc5/releases/download/cvc5-1.0.8/cvc5-Linux
     chmod +x cvc5
-    cd "${PWD}" || exit
+    popd > /dev/null || exit
+}
+install_vampire() {
+    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
+    #
+    # Install Vampire
+    #
+    mkdir -p "${HOME}/vampire"
+    pushd "${HOME}/vampire" > /dev/null || exit
+    curl -o source.zip -LJ https://github.com/vprover/vampire/releases/download/snakeForV4.7%2B/vampire-snake-static4starexec.zip
+    unzip source.zip
+    mv bin/* "${INSTALL_DIRECTORY}"
+    popd > /dev/null || exit
+    rm -frd "${HOME}/vampire"
 }
 install_eprover() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
@@ -39,57 +55,26 @@ install_eprover() {
     #
     git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
     pushd "${HOME}/eprover" > /dev/null || exit
-    ./configure --prefix="${1:-${HOME}/.local}" && make -j8 && make install
+    ./configure --prefix="${INSTALL_DIRECTORY}" && make -j8 && make install
     popd > /dev/null || exit
     rm -frd "${HOME}/eprover"
 }
-install_vampire() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
-    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
-    #
-    # Install Vampire
-    #
-    mkdir -p "${HOME}/vampire"
-    cd "${HOME}/vampire" || exit
-    curl -o source.zip -LJ https://github.com/vprover/vampire/releases/download/snakeForV4.7%2B/vampire-snake-static4starexec.zip
-    unzip source.zip
-    mv bin/* "${INSTALL_DIRECTORY}"
-    cd "${PWD}" || exit
-    rm -frd "${HOME}/vampire"
-}
-install_why3() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
-    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
-    #
-    # Install Why3 and add provers
-    #
-    export OPAMYES=1
-    opam install why3
-    eval "$(opam env)"
-    why3 config detect
-    cd "${PWD}" || exit
-}
 install_z3() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
     #
     # Install Z3
     #
     git clone https://github.com/Z3Prover/z3.git "${HOME}/z3"
-    cd "${HOME}/z3" || exit
-    python scripts/mk_make.py
-    cd build || exit
+    pushd "${HOME}/z3" > /dev/null || exit
+    python scripts/mk_make.py --prefix="${INSTALL_DIRECTORY}"
+    pushd build > /dev/null || exit
     make -j8 && make install
-    cd "${PWD}" || exit
+    popd > /dev/null || exit
+    popd > /dev/null || exit
     rm -frd "${HOME}/z3"
 }
 main() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
-    local INSTALL_DIRECTORY="${HOME}/.local/bin"
+    local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
     mkdir -p "${INSTALL_DIRECTORY}"
     #
     # Install CVC5
@@ -110,16 +95,10 @@ main() {
     #
     # Install Alt-Ergo (free)
     #
-    export OPAMYES=1
-    opam install alt-ergo-free
-    eval "$(opam env)"
+    install_alt_ergo "${INSTALL_DIRECTORY}"
     #
     # Install Why3 and add provers
     #
-    export OPAMYES=1
-    opam install why3
-    eval "$(opam env)"
-    why3 config detect
-    cd "${PWD}" || exit
+    install_why3 "${INSTALL_DIRECTORY}"
 }
 main "$@"
