@@ -6,18 +6,16 @@ main() {
     #
     # Install bflat
     #
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local HOME="${1:-/home/nonroot}"
     local VERSION="${2:-"8.0.0"}"
     local SRC_DIRECTORY="${HOME}/bflat"
     mkdir -p "${SRC_DIRECTORY}"
-    cd "${SRC_DIRECTORY}" || exit
+    pushd "${SRC_DIRECTORY}" > /dev/null
     curl -o bflat.tar.gz -LJ "https://github.com/bflattened/bflat/releases/download/v${VERSION}/bflat-${VERSION}-linux-glibc-x64.tar.gz"
     tar -xvf bflat.tar.gz
     chmod +x bflat
     mv bflat /usr/local/bin
-    cd "${PWD}" || exit
+    popd > /dev/null
     rm -frd "${SRC_DIRECTORY}/bflat"
 }
 main "$@"

@@ -6,21 +6,20 @@ requires \
     git \
     wget
 main() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local VERUS_INSTALLATION_DIRECTORY="${HOME}/verus"
     local VERUS_SOURCE="${VERUS_INSTALLATION_DIRECTORY}/source"
     git clone https://github.com/verus-lang/verus "${VERUS_INSTALLATION_DIRECTORY}"
     #
     # Install local z3
     #
-    cd "${VERUS_SOURCE}/tools"
+    pushd "${VERUS_SOURCE}/tools" > /dev/null
     bash ./get-z3.sh
     export VERUS_Z3_PATH="${VERUS_SOURCE}/tools/z3"
+    popd > /dev/null
     #
     # Install Verus
     #
-    cd "${VERUS_SOURCE}" || exit
+    pushd "${VERUS_SOURCE}" > /dev/null
     chmod +x "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
     "${VERUS_INSTALLATION_DIRECTORY}/tools/activate"
     "${VERUS_INSTALLATION_DIRECTORY}/tools/vargo/target/release/vargo" build --release
@@ -30,7 +29,7 @@ main() {
     # Install verusfmt
     #
     cargo install verusfmt --locked
-    cd "${PWD}" || exit
+    popd > /dev/null
     #
     # Inform user about PATH
     #

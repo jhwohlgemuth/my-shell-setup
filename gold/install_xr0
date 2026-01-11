@@ -10,18 +10,16 @@ main() {
     #
     # Install Xr0 verifier
     #
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local XR0_ROOT="${HOME}/xr0"
     git clone https://github.com/xr0-org/xr0 "${XR0_ROOT}"
-    cd "${XR0_ROOT}" || exit
+    pushd "${XR0_ROOT}" > /dev/null
     ./configure && make
     mkdir -p "${HOME}/.local/bin"
     ln -s "${XR0_ROOT}/bin/0v" "${HOME}/.local/bin/0v"
     # shellcheck disable=SC2016
     echo 'export XR0_INCLUDES="${HOME}/xr0/libx"' >> "${HOME}/.zshrc"
     export XR0_INCLUDES="${HOME}/libx"
-    cd "${PWD}" || exit
+    popd > /dev/null
     #
     # Inform user about PATH
     #

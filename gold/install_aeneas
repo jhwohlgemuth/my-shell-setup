@@ -5,9 +5,14 @@ requires \
     cargo \
     git \
     opam
+install_coq_of_rust() {
+    git clone https://github.com/formal-land/coq-of-rust "${HOME}/coq-of-rust"
+    pushd "${HOME}/coq-of-rust" > /dev/null || return
+    cargo install --path lib/
+    popd > /dev/null || return
+    rm -frd "${HOME}/coq-of-rust"
+}
 main() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     export OPAMYES=1
     #
     # Install opam dependencies
@@ -26,27 +31,25 @@ main() {
     #
     # Install Charon and Aeneas
     #
-    mkdir -p /aeneas-toolchain && cd /aeneas-toolchain || exit
-    git clone https://github.com/AeneasVerif/charon
-    git clone https://github.com/AeneasVerif/aeneas
-    cd /aeneas-toolchain/charon && make build-charon-rust build-charon-ml
-    mv /aeneas-toolchain/charon/bin/* /usr/local/bin/
+    mkdir -p "${HOME}/aeneas-toolchain"
+    git clone https://github.com/AeneasVerif/charon "${HOME}/aeneas-toolchain/charon"
+    git clone https://github.com/AeneasVerif/aeneas "${HOME}/aeneas-toolchain/aeneas"
+    pushd "${HOME}/aeneas-toolchain" > /dev/null || exit
+    pushd "${HOME}/aeneas-toolchain/charon" > /dev/null || exit
+    make build-charon-rust build-charon-ml
+    mv bin/* "${HOME}/.local/bin"
+    popd > /dev/null || exit
     if is_command charon; then
-        cd /aeneas-toolchain/aeneas && make
+        pushd "${HOME}/aeneas-toolchain/aeneas" > /dev/null || exit
+        make
         chmod +x ./bin/aeneas
-        mv ./bin/aeneas /usr/local/bin
-        #
-        # Install coq-of-rust
-        #
-        cd / || exit
-        git clone https://github.com/formal-land/coq-of-rust
-        cd /coq-of-rust && cargo install --path lib/
-        cd "${HOME}" && rm -frd /coq-of-rust
+        mv ./bin/aeneas "${HOME}/.local/bin"
+        install_coq_of_rust
+        popd > /dev/null || exit
     else
-        echo "==> [ERROR] Invalid charon link"
-        cd / || exit
-        rm -frd /aeneas-toolchain
+        echo "=> [ERROR] Invalid charon link"
     fi
-    cd "${PWD}" || exit
+    popd > /dev/null || exit
+    rm -frd "${HOME}/aeneas-toolchain"
 }
 main "$@"

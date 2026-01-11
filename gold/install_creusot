@@ -14,13 +14,11 @@ main() {
     #
     # Install Creusot
     #
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
     local SRC_DIRECTORY="${HOME}/creusot"
     git clone https://github.com/creusot-rs/creusot "${SRC_DIRECTORY}"
-    cd "${SRC_DIRECTORY}" || exit
+    pushd "${SRC_DIRECTORY}" > /dev/null
     ./INSTALL
     cargo creusot --help
-    cd "${PWD}" || exit
+    popd > /dev/null
 }
 main "$@"
