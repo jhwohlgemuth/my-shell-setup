@@ -99,8 +99,8 @@ install_eprover() {
     mkdir -p "${INSTALL_DIRECTORY}"
     git clone https://github.com/eprover/eprover.git "${HOME}/eprover"
     pushd "${HOME}/eprover" > /dev/null || exit
-    ./configure --prefix="${INSTALL_DIRECTORY}" && make -j8 && make install
-    mv PROVER/* "${INSTALL_DIRECTORY}"
+    ./configure && make -j8 && make install
+    mv PROVER/eprover "${INSTALL_DIRECTORY}"
     popd > /dev/null || exit
     rm -frd "${HOME}/eprover"
 }
