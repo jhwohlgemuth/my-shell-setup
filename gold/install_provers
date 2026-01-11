@@ -129,7 +129,7 @@ main() {
     install_eprover "${INSTALL_DIRECTORY}"
     install_vampire "${INSTALL_DIRECTORY}"
     install_z3 "${INSTALL_DIRECTORY}"
-    install_alt_ergo "${INSTALL_DIRECTORY}"
+    # install_alt_ergo "${INSTALL_DIRECTORY}"
     install_why3
     check_installed
 }
