@@ -61,12 +61,17 @@ install_eprover() {
 }
 install_z3() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
+    # Derive install prefix (strip trailing /bin if provided)
+    local PREFIX_DIR="${INSTALL_DIRECTORY}"
+    case "${INSTALL_DIRECTORY}" in
+        */bin) PREFIX_DIR="${INSTALL_DIRECTORY%/bin}";;
+    esac
     #
     # Install Z3
     #
     git clone https://github.com/Z3Prover/z3.git "${HOME}/z3"
     pushd "${HOME}/z3" > /dev/null || exit
-    python scripts/mk_make.py --prefix="${INSTALL_DIRECTORY}"
+    python scripts/mk_make.py --prefix="${PREFIX_DIR}"
     pushd build > /dev/null || exit
     make -j8 && make install
     popd > /dev/null || exit
@@ -95,10 +100,10 @@ main() {
     #
     # Install Alt-Ergo (free)
     #
-    install_alt_ergo "${INSTALL_DIRECTORY}"
+    # install_alt_ergo "${INSTALL_DIRECTORY}"
     #
     # Install Why3 and add provers
     #
-    install_why3 "${INSTALL_DIRECTORY}"
+    # install_why3 "${INSTALL_DIRECTORY}"
 }
 main "$@"
