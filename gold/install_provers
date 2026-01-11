@@ -25,7 +25,7 @@ check_installed() {
     done
     echo "=== Installation Verification ==="
     if [[ ${#FOUND[@]} -gt 0 ]]; then
-        echo "=> [INFO] Found: ${FOUND[*]}"
+        echo "=> [FOUND] ${FOUND[*]}"
     fi
     if [[ ${#MISSING[@]} -gt 0 ]]; then
         echo "=> [ERROR] Missing: ${MISSING[*]}"
