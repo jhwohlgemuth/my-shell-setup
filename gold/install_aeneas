@@ -19,6 +19,7 @@ main() {
     #
     opam install \
         core_unix \
+        domainslib \
         easy_logging \
         ocamlgraph \
         odoc \

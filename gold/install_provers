@@ -4,6 +4,7 @@ set -e
 requires \
     curl \
     git \
+    is_command \
     make \
     opam \
     python \
@@ -17,13 +18,13 @@ check_installed() {
         tools=(cvc5 vampire eprover z3 why3 alt-ergo)
     fi
     for tool in "${tools[@]}"; do
-        if command -v "${tool}" > /dev/null 2>&1; then
+        if is_command "${tool}" > /dev/null 2>&1; then
             FOUND+=("${tool}")
         else
             MISSING+=("${tool}")
         fi
     done
-    echo "=== Installation Verification ==="
+    echo -e "\n=== Installation Verification ==="
     if [[ ${#FOUND[@]} -gt 0 ]]; then
         echo "=> [FOUND] ${FOUND[*]}"
     fi
