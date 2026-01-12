@@ -18,7 +18,7 @@ main() {
     local SRC_DIRECTORY="${HOME}/creusot"
     git clone https://github.com/creusot-rs/creusot "${SRC_DIRECTORY}"
     pushd "${SRC_DIRECTORY}" > /dev/null
-    ./INSTALL
+    ./INSTALL --external z3
     cargo creusot --help
     popd > /dev/null
 }
