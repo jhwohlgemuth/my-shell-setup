@@ -9,36 +9,6 @@ requires \
     opam \
     python \
     unzip
-check_installed() {
-    local MISSING=()
-    local FOUND=()
-    # Tools to check come from arguments; default to common set if none provided
-    local tools=("$@")
-    if [[ ${#tools[@]} -eq 0 ]]; then
-        tools=(cvc5 vampire eprover z3 why3 alt-ergo)
-    fi
-    for tool in "${tools[@]}"; do
-        if is_command "${tool}" > /dev/null 2>&1; then
-            FOUND+=("${tool}")
-        else
-            MISSING+=("${tool}")
-        fi
-    done
-    echo -e "\n=== Installation Verification ==="
-    if [[ ${#FOUND[@]} -gt 0 ]]; then
-        echo "=> [FOUND] ${FOUND[*]}"
-    fi
-    if [[ ${#MISSING[@]} -gt 0 ]]; then
-        echo "=> [ERROR] Missing: ${MISSING[*]}"
-    fi
-    if [[ ${#MISSING[@]} -eq 0 ]]; then
-        echo "=> [INFO] All tools installed successfully!"
-        return 0
-    else
-        echo "=> [ERROR] Some tools are missing."
-        return 1
-    fi
-}
 install_alt_ergo() {
     local INSTALL_DIRECTORY="${1:-${HOME}/.local/bin}"
     export OPAMYES=1
@@ -130,6 +100,11 @@ main() {
     install_vampire "${INSTALL_DIRECTORY}"
     install_z3 "${INSTALL_DIRECTORY}"
     install_why3
-    check_installed cvc5 eprover vampire z3 why3
+    requires \
+        cvc5 \
+        eprover \
+        vampire \
+        why3 \
+        z3
 }
 main "$@"

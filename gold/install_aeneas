@@ -53,5 +53,9 @@ main() {
     fi
     popd > /dev/null || exit
     rm -frd "${HOME}/aeneas-toolchain"
+    requires \
+        aeneas \
+        charon \
+        cargo-rocq-of-rust
 }
 main "$@"
