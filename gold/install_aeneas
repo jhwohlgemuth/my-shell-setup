@@ -24,6 +24,7 @@ main() {
         ocamlgraph \
         odoc \
         ppx_deriving \
+        progress \
         unionFind \
         visitors \
         yojson \
