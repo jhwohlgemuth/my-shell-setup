@@ -12,12 +12,13 @@ main() {
     local SRC_DIRECTORY="${HOME}/lpython"
     git clone https://github.com/lcompilers/lpython.git "${SRC_DIRECTORY}"
     pushd "${SRC_DIRECTORY}" > /dev/null || exit
-    conda env create -f environment_unix.yml
+    conda env create -f environment_unix.yml --force
     conda run -n "${CONDA_ENV}" ./build0.sh
     conda run -n "${CONDA_ENV}" ./build1.sh
     mkdir -p "${HOME}/.local/bin"
     ln -sf "${SRC_DIRECTORY}/src/bin/lpython" "${HOME}/.local/bin/lpython"
-    conda env remove -n "${CONDA_ENV}"
     popd > /dev/null || exit
+    conda env remove -n "${CONDA_ENV}"
+    rm -rf "${SRC_DIRECTORY}"
 }
 main "$@"
