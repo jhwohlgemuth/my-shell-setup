@@ -19,7 +19,6 @@ main() {
     mkdir -p "${HOME}/.local/bin"
     ln -sf "${SRC_DIRECTORY}/src/bin/lpython" "${HOME}/.local/bin/lpython"
     popd > /dev/null || exit
-    conda env remove -n "${CONDA_ENV}"
     requires lpython
 }
 main "$@"
