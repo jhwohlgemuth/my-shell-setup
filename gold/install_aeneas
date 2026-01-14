@@ -14,14 +14,22 @@ install_coq_of_rust() {
 }
 main() {
     export OPAMYES=1
+    local OCAML_VERSION="${1:-5.4.0}"
+    local CURRENT_SWITCH
+    CURRENT_SWITCH="$(opam switch show --short 2> /dev/null || true)"
+    local AENEAS_SWITCH="aeneas"
     #
     # Install opam dependencies
     #
+    opam switch create "${AENEAS_SWITCH}" "${OCAML_VERSION}" --reuse
+    eval "$(opam env --switch="${AENEAS_SWITCH}")"
     opam install \
         core_unix \
         domainslib \
         easy_logging \
+        menhir \
         ocamlgraph \
+        ocamlformat \
         odoc \
         ppx_deriving \
         progress \
@@ -29,10 +37,11 @@ main() {
         visitors \
         yojson \
         zarith
-    eval "$(opam env)"
+    eval "$(opam env --switch="${AENEAS_SWITCH}")"
     #
     # Install Charon and Aeneas
     #
+    mkdir -p "${HOME}/.local/bin"
     mkdir -p "${HOME}/aeneas-toolchain"
     git clone https://github.com/AeneasVerif/aeneas "${HOME}/aeneas-toolchain/aeneas"
     git clone https://github.com/AeneasVerif/charon "${HOME}/aeneas-toolchain/charon"
@@ -52,7 +61,9 @@ main() {
         echo "=> [ERROR] Invalid charon link"
     fi
     popd > /dev/null || exit
-    rm -frd "${HOME}/aeneas-toolchain"
+    rm -rf "${HOME}/aeneas-toolchain"
+    opam switch set "${CURRENT_SWITCH}"
+    eval "$(opam env --switch="${CURRENT_SWITCH}")"
     requires \
         aeneas \
         charon \
