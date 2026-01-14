@@ -4,15 +4,17 @@ set -e
 requires \
     cargo \
     git \
-    java
+    java \
+    python3
 main() {
     #
     # Install Prusti crate
     #
     local SRC_DIRECTORY="${HOME}/prusti"
-    git clone git@github.com/viperproject/prusti-dev.git "${SRC_DIRECTORY}"
+    git clone https://github.com/viperproject/prusti-dev.git "${SRC_DIRECTORY}"
     pushd "${SRC_DIRECTORY}" > /dev/null || exit
     ./x.py setup && ./x.py build --release
+    mkdir -p "${HOME}/.local/bin"
     mv "${SRC_DIRECTORY}/target/release/prusti-rustc" "${HOME}/.local/bin/"
     mv "${SRC_DIRECTORY}/target/release/cargo-prusti" "${HOME}/.local/bin/"
     chmod +x "${HOME}/.local/bin/prusti-rustc"
@@ -20,7 +22,7 @@ main() {
     # shellcheck disable=SC2016
     echo 'export PATH="${HOME}/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
     export PATH="${SRC_DIRECTORY}/bin:${PATH}"
-    rm -frd "${SRC_DIRECTORY}"
     popd > /dev/null || exit
+    rm -rf "${SRC_DIRECTORY}"
 }
 main "$@"

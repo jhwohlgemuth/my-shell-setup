@@ -11,5 +11,7 @@ main() {
     yes | sdk install java "${VERSION}"
     rm -rf "${HOME}/.sdkman/archives/*"
     rm -rf "${HOME}/.sdkman/tmp/*"
+    # shellcheck source=/dev/null
+    source "${HOME}/.sdkman/bin/sdkman-init.sh"
 }
 main "$@"
