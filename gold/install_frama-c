@@ -13,5 +13,6 @@ main() {
     eval "$(opam env)"
     opam upgrade
     why3 config detect
+    requires frama-c
 }
 main "$@"
