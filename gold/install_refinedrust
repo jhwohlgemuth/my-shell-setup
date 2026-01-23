@@ -8,14 +8,14 @@ requires \
 main() {
     # shellcheck disable=SC2155
     local PWD="$(pwd)"
-    local SRC_DIRECTORY="/refinedrust"
+    local SRC_DIRECTORY="${HOME}/refinedrust"
     export OPAMYES=1
     export OPAMFLAGS="${OPAMFLAGS} -y"
     opam update
     opam upgrade
     eval "$(opam env)"
     git clone https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev.git "${SRC_DIRECTORY}"
-    cd "${SRC_DIRECTORY}" || exit
+    pushd "${SRC_DIRECTORY}" > /dev/null || exit
     opam switch create refinedrust --packages=ocaml-variants.4.14.1+options,ocaml-option-flambda
     opam switch link refinedrust .
     opam switch refinedrust
@@ -26,10 +26,11 @@ main() {
     eval "$(opam env)"
     # opam pin add rocq-prover 9.1.0
     make builddep setup-dune typesystem
-    cd "${SRC_DIRECTORY}/rr_frontend" || exit
+    pushd "${SRC_DIRECTORY}/rr_frontend" > /dev/null || exit
     ./refinedrust build
     ./refinedrust install
-    cd "${PWD}" || exit
+    popd > /dev/null || exit
+    popd > /dev/null || exit
     rm -frd "${SRC_DIRECTORY}"
 }
 main "$@"
