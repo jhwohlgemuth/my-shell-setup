@@ -8,6 +8,8 @@ requires \
     make \
     z3
 main() {
+    # This is a hack to provide an old version of LLVM for Klee installation
+    local PREFIX_PATH="${1:-/home/linuxbrew/.linuxbrew/opt/llvm@16}"
     #
     # Install KLEE
     #
@@ -16,6 +18,7 @@ main() {
     git clone https://github.com/klee/klee.git "${SRC_DIRECTORY}"
     mkdir -p "${BUILD_DIRECTORY}"
     pushd "${BUILD_DIRECTORY}" > /dev/null || exit
+    export CMAKE_PREFIX_PATH="${PREFIX_PATH}"
     cmake -DENABLE_SOLVER_Z3=ON -DENABLE_POSIX_RUNTIME=ON -DENABLE_UNIT_TESTS=OFF -DENABLE_SYSTEM_TESTS=OFF "${SRC_DIRECTORY}"
     make
     mkdir -p "${HOME}/.local/bin"
