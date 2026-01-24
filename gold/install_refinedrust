@@ -32,5 +32,8 @@ main() {
     popd > /dev/null || exit
     popd > /dev/null || exit
     rm -frd "${SRC_DIRECTORY}"
+    requires \
+        cargo-refinedrust \
+        refinedrust-rustc
 }
 main "$@"
