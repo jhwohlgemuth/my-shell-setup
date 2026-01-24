@@ -9,9 +9,9 @@ main() {
     curl "https://musl.libc.org/releases/musl-${VERSION}.tar.gz" -o /tmp/musl.tar.gz
     tar -xvf /tmp/musl.tar.gz --directory /tmp
     pushd "/tmp/musl-${VERSION}" > /dev/null || exit
-    mkdir -p "${HOME}/.local/bin"
-    ./configure --exec-prefix="${HOME}/.local/bin"
+    ./configure --exec-prefix="/usr/local"
     make && make install
     popd > /dev/null || exit
+    requires musl-gcc
 }
 main "$@"
