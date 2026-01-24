@@ -3,15 +3,16 @@ set -e
 
 requires \
     git \
-    make
+    make \
+    rustc
 main() {
-    # shellcheck disable=SC2155
-    local PWD="$(pwd)"
-    local SRC_DIRECTORY="/rust2ada"
+    local SRC_DIRECTORY="${HOME}/rust2ada"
     git clone https://github.com/IntuitionAmiga/rust2ada.git "${SRC_DIRECTORY}"
-    cd "${SRC_DIRECTORY}" || exit
+    pushd "${SRC_DIRECTORY}" > /dev/null || exit
     make
-    ln -s "${SRC_DIRECTORY}/rust2ada" /usr/local/bin/rust2ada
-    cd "${PWD}" || exit
+    mkdir -p "${HOME}/.local/bin"
+    ln -sf "${SRC_DIRECTORY}/rust2ada" "${HOME}/.local/bin/"
+    popd > /dev/null || exit
+    requires rust2ada
 }
 main "$@"
