@@ -11,6 +11,6 @@ main() {
     yes | sdk install java "${VERSION}"
     rm -rf "${HOME}/.sdkman/archives/*"
     rm -rf "${HOME}/.sdkman/tmp/*"
-    echo "=> If you're using zsh, run: source ~/.zshrc"
+    printf "\n=> [WARNING] Run 'source \${HOME}/.zshrc' or restart your shell to apply PATH changes\n"
 }
 main "$@"

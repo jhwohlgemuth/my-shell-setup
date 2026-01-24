@@ -13,5 +13,6 @@ main() {
     nimble install jupyternim -y
     # shellcheck disable=SC2016
     echo 'export PATH="${PATH}:${HOME}/.nimble/bin"' >> "${HOME}/.zshrc"
+    printf "\n=> [WARNING] Run 'source \${HOME}/.zshrc' or restart your shell to apply PATH changes\n"
 }
 main "$@"
