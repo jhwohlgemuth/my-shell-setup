@@ -7,10 +7,11 @@ requires \
     unzip
 main() {
     local VERSION="${1:-"3.3"}"
-    local APE_BIN_PATH="/usr/bin/ape"
+    local APE_BIN_PATH="${HOME}/.local/bin/ape"
     #
     # Install APE loader
     #
+    mkdir -p "${HOME}/.local/bin"
     curl -o "${APE_BIN_PATH}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
     chmod +x "${APE_BIN_PATH}"
     update-binfmts --enable
@@ -18,10 +19,11 @@ main() {
     # Install Cosmopolitan
     #
     curl "https://cosmo.zip/pub/cosmocc/cosmocc-${VERSION}.zip" --output /tmp/cosmocc.zip
-    unzip /tmp/cosmocc.zip -d /cosmopolitan
+    unzip /tmp/cosmocc.zip -d "${HOME}/cosmopolitan"
     # shellcheck disable=SC2016
-    echo 'export PATH="${PATH}:/cosmopolitan/bin"' >> "${HOME}/.zshrc"
-    export PATH="${PATH}:/cosmopolitan/bin"
-    sh -c "echo ':APE:M::MZqFpD::/usr/bin/ape:' >/proc/sys/fs/binfmt_misc/register"
+    echo 'export PATH="${PATH}:${HOME}/cosmopolitan/bin"' >> "${HOME}/.zshrc"
+    export PATH="${PATH}:${HOME}/cosmopolitan/bin"
+    sh -c "echo ':APE:M::MZqFpD::${APE_BIN_PATH}:' >/proc/sys/fs/binfmt_misc/register"
+    requires cosmocc
 }
 main "$@"
