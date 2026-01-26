@@ -23,8 +23,8 @@ main() {
     fi
     # Register APE handlers
     if [[ -w /proc/sys/fs/binfmt_misc/register ]]; then
-        echo ':APE:M::MZqFpD::'"${APE_BIN_PATH}"':' | tee /proc/sys/fs/binfmt_misc/register > /dev/null
-        echo ':APE-jart:M::jartsr::/usr/bin/ape:' | tee /proc/sys/fs/binfmt_misc/register > /dev/null
+        echo ':APE:M::MZqFpD::'"${APE_BIN_PATH}"':' | tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
+        echo ':APE-jart:M::jartsr::/usr/bin/ape:' | tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
     fi
     update-binfmts --enable
 }
