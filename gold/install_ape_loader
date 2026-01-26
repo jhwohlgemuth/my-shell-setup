@@ -8,10 +8,12 @@ requires \
     unzip
 main() {
     local APE_BIN_PATH="/usr/bin/ape"
+    local APE_TEMP="/tmp/ape-$(uname -m).elf"
     #
     # Install APE loader
     #
-    curl -o "${APE_BIN_PATH}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
+    curl -o "${APE_TEMP}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
+    sudo mv "${APE_TEMP}" "${APE_BIN_PATH}"
     sudo chmod +x "${APE_BIN_PATH}"
     # Mount binfmt_misc if not already mounted
     if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
