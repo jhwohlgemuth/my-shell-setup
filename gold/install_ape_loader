@@ -11,9 +11,9 @@ main() {
     #
     # Install APE loader
     #
-    mkdir -p "${HOME}/.local/bin"
     curl -o "${APE_BIN_PATH}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
     chmod +x "${APE_BIN_PATH}"
+    mkdir -p /proc/sys/fs/binfmt_misc
     # Mount binfmt_misc if not already mounted
     if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
         mount -t binfmt_misc none /proc/sys/fs/binfmt_misc || {
@@ -24,7 +24,7 @@ main() {
     # Register APE handlers
     if [[ -w /proc/sys/fs/binfmt_misc/register ]]; then
         echo ':APE:M::MZqFpD::'"${APE_BIN_PATH}"':' | tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
-        echo ':APE-jart:M::jartsr::/usr/bin/ape:' | tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
+        echo ':APE-jart:M::jartsr::'"${APE_BIN_PATH}"':' | tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
     fi
     update-binfmts --enable
 }

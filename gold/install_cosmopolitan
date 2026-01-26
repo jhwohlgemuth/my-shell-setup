@@ -9,6 +9,7 @@ main() {
     #
     # Install Cosmopolitan
     #
+    mkdir -p "${HOME}/.local/bin"
     curl "https://cosmo.zip/pub/cosmocc/cosmocc-${VERSION}.zip" --output /tmp/cosmocc.zip
     unzip /tmp/cosmocc.zip -d "${HOME}/cosmopolitan"
     # shellcheck disable=SC2016
