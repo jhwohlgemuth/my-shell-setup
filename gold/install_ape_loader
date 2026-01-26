@@ -1,0 +1,24 @@
+#! /bin/bash
+set -e
+
+requires \
+    binfmt-support \
+    curl \
+    sudo \
+    unzip
+install_ape_loader() {
+    local APE_BIN_PATH="${HOME}/.local/bin/ape"
+    #
+    # Install APE loader
+    #
+    mkdir -p "${HOME}/.local/bin"
+    curl -o "${APE_BIN_PATH}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
+    chmod +x "${APE_BIN_PATH}"
+    mkdir -p /proc/sys/fs/binfmt_misc
+    mount -t binfmt_misc none /proc/sys/fs/binfmt_misc
+    if [[ -f /proc/sys/fs/binfmt_misc/register ]]; then
+        sh -c "echo ':APE:M::MZqFpD::${APE_BIN_PATH}:' >/proc/sys/fs/binfmt_misc/register"
+        sh -c "echo ':APE-jart:M::jartsr::/usr/bin/ape:' >/proc/sys/fs/binfmt_misc/register"
+    fi
+    update-binfmts --enable
+}

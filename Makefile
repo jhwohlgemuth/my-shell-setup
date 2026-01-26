@@ -11,6 +11,7 @@ GOLD = \
 	download_extensions \
 	download_notebooks \
 	install_aeneas \
+	install_ape_loader \
 	install_apptainer \
 	install_bflat \
 	install_code_server \
