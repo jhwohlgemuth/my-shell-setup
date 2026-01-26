@@ -7,13 +7,12 @@ requires \
     sudo \
     unzip
 main() {
-    local APE_BIN_PATH="${HOME}/.local/bin/ape"
+    local APE_BIN_PATH="/usr/bin/ape"
     #
     # Install APE loader
     #
-    mkdir -p "${HOME}/.local/bin"
     curl -o "${APE_BIN_PATH}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
-    chmod +x "${APE_BIN_PATH}"
+    sudo chmod +x "${APE_BIN_PATH}"
     # Mount binfmt_misc if not already mounted
     if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
         sudo mount -t binfmt_misc none /proc/sys/fs/binfmt_misc || {
@@ -23,8 +22,16 @@ main() {
     fi
     # Register APE handlers
     if [[ -w /proc/sys/fs/binfmt_misc/register ]]; then
-        echo ':APE:M::MZqFpD::'"${APE_BIN_PATH}"':' | sudo tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
-        echo ':APE-jart:M::jartsr::'"${APE_BIN_PATH}"':' | sudo tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || true
+        echo ':APE:M::MZqFpD::'"${APE_BIN_PATH}"':' | sudo tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || {
+            printf "==> [WARNING] Failed to register APE handler\\n"
+        }
+        echo ':APE-jart:M::jartsr::'"${APE_BIN_PATH}"':' | sudo tee /proc/sys/fs/binfmt_misc/register > /dev/null 2>&1 || {
+            printf "==> [WARNING] Failed to register APE-jart handler\\n"
+        }
+        # Verify registration
+        if [[ -f /proc/sys/fs/binfmt_misc/APE ]]; then
+            printf "==> [SUCCESS] APE handler registered\\n"
+        fi
     fi
     sudo update-binfmts --enable
 }
