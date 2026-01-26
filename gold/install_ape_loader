@@ -6,7 +6,7 @@ requires \
     curl \
     sudo \
     unzip
-install_ape_loader() {
+main() {
     local APE_BIN_PATH="${HOME}/.local/bin/ape"
     #
     # Install APE loader
@@ -22,3 +22,4 @@ install_ape_loader() {
     fi
     update-binfmts --enable
 }
+main "$@"
