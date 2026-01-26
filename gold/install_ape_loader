@@ -14,11 +14,17 @@ main() {
     mkdir -p "${HOME}/.local/bin"
     curl -o "${APE_BIN_PATH}" "https://cosmo.zip/pub/cosmos/bin/ape-$(uname -m).elf"
     chmod +x "${APE_BIN_PATH}"
-    mkdir -p /proc/sys/fs/binfmt_misc
-    mount -t binfmt_misc none /proc/sys/fs/binfmt_misc
-    if [[ -f /proc/sys/fs/binfmt_misc/register ]]; then
-        sh -c "echo ':APE:M::MZqFpD::${APE_BIN_PATH}:' >/proc/sys/fs/binfmt_misc/register"
-        sh -c "echo ':APE-jart:M::jartsr::/usr/bin/ape:' >/proc/sys/fs/binfmt_misc/register"
+    # Mount binfmt_misc if not already mounted
+    if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
+        mount -t binfmt_misc none /proc/sys/fs/binfmt_misc || {
+            printf "==> [WARNING] Could not mount binfmt_misc\\n"
+            return 1
+        }
+    fi
+    # Register APE handlers
+    if [[ -w /proc/sys/fs/binfmt_misc/register ]]; then
+        echo ':APE:M::MZqFpD::'"${APE_BIN_PATH}"':' | tee /proc/sys/fs/binfmt_misc/register > /dev/null
+        echo ':APE-jart:M::jartsr::/usr/bin/ape:' | tee /proc/sys/fs/binfmt_misc/register > /dev/null
     fi
     update-binfmts --enable
 }

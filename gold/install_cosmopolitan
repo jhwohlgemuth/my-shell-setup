@@ -15,5 +15,6 @@ main() {
     echo 'export PATH="${PATH}:${HOME}/cosmopolitan/bin"' >> "${HOME}/.zshrc"
     export PATH="${PATH}:${HOME}/cosmopolitan/bin"
     requires cosmocc
+    printf "\n=> [WARNING] Run 'source \${HOME}/.zshrc' or restart your shell to apply PATH changes\n"
 }
 main "$@"
