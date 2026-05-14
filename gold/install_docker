@@ -13,8 +13,6 @@ requires \
     su \
     tee
 
-require_root_or_sudo "$@"
-
 configure_nvidia_container_toolkit_rootless() {
     # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
     local TARGET_USER="${1}"
@@ -85,6 +83,7 @@ install_nvidia_container_toolkit() {
     fi
 }
 main() {
+    require_root_or_sudo "$@"
     # https://docs.docker.com/engine/install/debian/
     #
     # Add Docker GPG key
