@@ -1,6 +1,20 @@
 #! /bin/bash
 set -e
 
+requires \
+    awk \
+    curl \
+    grep \
+    gpg \
+    id \
+    is_command \
+    require_root_or_sudo \
+    sed \
+    su \
+    tee
+
+require_root_or_sudo "$@"
+
 configure_nvidia_container_toolkit_rootless() {
     # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
     local TARGET_USER="${1}"
@@ -111,16 +125,4 @@ main() {
         fi
     fi
 }
-requires \
-    awk \
-    curl \
-    grep \
-    gpg \
-    id \
-    is_command \
-    require_root_or_sudo \
-    sed \
-    su \
-    tee
-require_root_or_sudo "$@"
 main "$@"
