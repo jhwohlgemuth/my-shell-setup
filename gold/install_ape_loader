@@ -8,6 +8,7 @@ requires \
     unzip
 main() {
     local APE_BIN_PATH="/usr/bin/ape"
+    # shellcheck disable=SC2155
     local APE_TEMP="/tmp/ape-$(uname -m).elf"
     #
     # Install APE loader

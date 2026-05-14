@@ -53,6 +53,7 @@ GOLD = \
 	midas \
 	move_lines \
 	remove_empty_lines \
+	require_root_or_sudo \
 	requires \
 	start_docker \
 	start_pinokio

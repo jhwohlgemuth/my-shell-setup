@@ -54,6 +54,26 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 stow --delete <package names> --target <target>
 ```
 
+### Docker rootless install
+The `gold/install_docker` script now supports configuring Docker rootless mode for a non-root user.
+
+- `ROOTLESS_USER`: Target Linux user for rootless Docker setup. Defaults to `nonroot` when omitted.
+- `ROOTLESS_ONLY`: Defaults to `1` (rootless/client components only). Set to `0` to also install and start rootful Docker (`docker.service`).
+
+Examples:
+```shell
+# Install rootless/client components only (default behavior)
+ROOTLESS_USER=jason ./gold/install_docker
+
+# Install rootful Docker and also configure rootless mode for user jason
+ROOTLESS_USER=jason ROOTLESS_ONLY=0 ./gold/install_docker
+```
+
+After setup, use the rootless socket for that user session:
+```shell
+export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
+```
+
 ### Update packages
 ```shell
 cd "${HOME}/.dotfiles"

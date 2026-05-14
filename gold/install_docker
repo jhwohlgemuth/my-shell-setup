@@ -1,7 +1,25 @@
 #! /bin/bash
 set -e
 
-requires curl
+configure_nvidia_container_toolkit_rootless() {
+    # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+    local TARGET_USER="${1}"
+    # shellcheck disable=SC2016
+    su -l "${TARGET_USER}" -c 'nvidia-ctk runtime configure --runtime=docker --config="${HOME}/.config/docker/daemon.json"'
+    su -l "${TARGET_USER}" -c 'systemctl --user restart docker'
+    nvidia-ctk config --set nvidia-container-cli.no-cgroups --in-place
+}
+ensure_subid_range() {
+    local USER_NAME="${1}"
+    local SUBID_FILE="${2}"
+    local START_ID
+    touch "${SUBID_FILE}"
+    if grep -q "^${USER_NAME}:" "${SUBID_FILE}"; then
+        return
+    fi
+    START_ID="$(awk -F: 'BEGIN { max = 100000 } { end = $2 + $3; if (end > max) max = end } END { print max }' "${SUBID_FILE}")"
+    printf '%s:%s:65536\n' "${USER_NAME}" "${START_ID}" >> "${SUBID_FILE}"
+}
 install_docker() {
     #
     # Install Docker
@@ -18,19 +36,39 @@ install_docker() {
     systemctl enable containerd.service
     service docker start
 }
+install_docker_rootless() {
+    # https://docs.docker.com/engine/security/rootless/
+    local TARGET_USER="${1}"
+    local TARGET_UID
+    apt-get install --no-install-recommends --yes \
+        uidmap \
+        dbus-user-session \
+        docker-ce-rootless-extras
+    ensure_subid_range "${TARGET_USER}" /etc/subuid
+    ensure_subid_range "${TARGET_USER}" /etc/subgid
+    su -l "${TARGET_USER}" -c 'dockerd-rootless-setuptool.sh install --force'
+    if is_command loginctl; then
+        loginctl enable-linger "${TARGET_USER}"
+    fi
+    TARGET_UID="$(id -u "${TARGET_USER}")"
+    printf '==> Rootless Docker enabled for %s\n' "${TARGET_USER}"
+    printf '==> Export DOCKER_HOST=unix:///run/user/%s/docker.sock for this user\n' "${TARGET_UID}"
+}
 install_nvidia_container_toolkit() {
     #
     # Install NVIDIA Container Toolkit
     # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
     #
     local NVIDIA_URL='https://nvidia.github.io/libnvidia-container'
-    curl -fsSL "${NVIDIA_URL}/gpgkey" | \gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+    curl -fsSL "${NVIDIA_URL}/gpgkey" | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
     curl -s -L "${NVIDIA_URL}/stable/deb/nvidia-container-toolkit.list" |
         sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' |
         tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
     apt-get update
     apt-get install --no-install-recommends --yes nvidia-container-toolkit
-    service docker restart
+    if is_command systemctl && systemctl list-unit-files docker.service > /dev/null 2>&1; then
+        systemctl restart docker.service
+    fi
 }
 main() {
     # https://docs.docker.com/engine/install/debian/
@@ -43,6 +81,8 @@ main() {
     local CODENAME="${VERSION_CODENAME:-"bullseye"}"
     local KEY_ROOT="/etc/apt/keyrings"
     local KEY="${KEY_ROOT}/docker.gpg"
+    local ROOTLESS_USER="${ROOTLESS_USER:-nonroot}"
+    local ROOTLESS_ONLY="${ROOTLESS_ONLY:-1}"
     apt-get update
     apt-get install --no-install-recommends --yes \
         ca-certificates \
@@ -52,9 +92,35 @@ main() {
     chmod a+r "${KEY}"
     echo "deb [arch=$(dpkg --print-architecture) signed-by=${KEY}] https://download.docker.com/linux/${ID} ${CODENAME} stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
     apt-get update
-    install_docker
+    if [[ "${ROOTLESS_ONLY}" = "1" ]]; then
+        apt-get install --no-install-recommends --yes \
+            docker-ce-cli \
+            docker-buildx-plugin \
+            docker-compose-plugin
+    else
+        install_docker
+    fi
     if is_command nvidia-smi; then
         install_nvidia_container_toolkit
     fi
+
+    if [[ -n "${ROOTLESS_USER}" ]] && [[ "${ROOTLESS_USER}" != "root" ]] && id -u "${ROOTLESS_USER}" > /dev/null 2>&1; then
+        install_docker_rootless "${ROOTLESS_USER}"
+        if is_command nvidia-smi && is_command nvidia-ctk; then
+            configure_nvidia_container_toolkit_rootless "${ROOTLESS_USER}"
+        fi
+    fi
 }
+requires \
+    awk \
+    curl \
+    grep \
+    gpg \
+    id \
+    is_command \
+    require_root_or_sudo \
+    sed \
+    su \
+    tee
+require_root_or_sudo "$@"
 main "$@"
