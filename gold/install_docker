@@ -12,7 +12,6 @@ requires \
     sed \
     su \
     tee
-
 configure_nvidia_container_toolkit_rootless() {
     # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
     local TARGET_USER="${1}"
@@ -117,12 +116,12 @@ main() {
     if is_command nvidia-smi; then
         install_nvidia_container_toolkit
     fi
-
     if [[ -n "${ROOTLESS_USER}" ]] && [[ "${ROOTLESS_USER}" != "root" ]] && id -u "${ROOTLESS_USER}" > /dev/null 2>&1; then
         install_docker_rootless "${ROOTLESS_USER}"
         if is_command nvidia-smi && is_command nvidia-ctk; then
             configure_nvidia_container_toolkit_rootless "${ROOTLESS_USER}"
         fi
     fi
+    usermod -aG docker "${ROOTLESS_USER}"
 }
 main "$@"
