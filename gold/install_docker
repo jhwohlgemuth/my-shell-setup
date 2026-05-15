@@ -53,6 +53,8 @@ install_docker_rootless() {
     local TARGET_USER="${1}"
     local TARGET_UID
     apt-get install --no-install-recommends --yes \
+        kmod \
+        iptables \
         uidmap \
         dbus-user-session \
         docker-ce-rootless-extras
@@ -83,7 +85,6 @@ install_nvidia_container_toolkit() {
     fi
 }
 main() {
-    require_root_or_sudo "$@"
     # https://docs.docker.com/engine/install/debian/
     #
     # Add Docker GPG key
