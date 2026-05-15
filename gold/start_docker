@@ -6,6 +6,10 @@ requires \
 main() {
     local COUNT="${1:-65536}"
     ulimit -n "${COUNT}"
-    service docker start
+    if [[ "$(id -u)" -eq 0 ]]; then
+        service docker start
+    else
+        systemctl --user start docker.service
+    fi
 }
 main "$@"
