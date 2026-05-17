@@ -6,34 +6,9 @@ requires \
     git \
     gum \
     stow
-
-resolve_dotfiles() {
-    local DOTFILES_PATH="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
-    # Normalize tilde and relative paths before canonicalization.
-    case "${DOTFILES_PATH}" in
-        /*)
-            ;;
-        ~)
-            DOTFILES_PATH="${HOME}"
-            ;;
-        ~/*)
-            DOTFILES_PATH="${HOME}/${DOTFILES_PATH#~/}"
-            ;;
-        *)
-            DOTFILES_PATH="${HOME}/${DOTFILES_PATH#./}"
-            ;;
-    esac
-    if [[ ! -d "${DOTFILES_PATH}" ]]; then
-        printf 'Error: dotfiles directory not found: %s\n' "${DOTFILES_PATH}" >&2
-        return 1
-    fi
-    # Stow expects compatible absolute paths for --dir and --target.
-    REPLY="$(cd "${DOTFILES_PATH}" && pwd -P)"
-}
 update_gold() {
     local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
-    resolve_dotfiles
-    local DOTFILES="${REPLY}"
+    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
     local TITLE="Update $(gum style --foreground "${COLOR}" 'Complete')"
     git -C "${DOTFILES}" checkout -- .
     git -C "${DOTFILES}" pull origin main
@@ -46,10 +21,8 @@ update_gold() {
         "${TITLE}"
 }
 update_package() {
-    resolve_dotfiles
-    local DOTFILES="${REPLY}"
-    local HOME_DIR="$(cd "${HOME}" && pwd -P)"
-    stow --dir "${DOTFILES}" --target "${HOME_DIR}" --restow "${1}"
+    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+    stow --dir "${DOTFILES}" --target "${HOME}" --restow "${1}"
 }
 main() {
     case "${1}" in
@@ -63,7 +36,7 @@ main() {
             update_package "opencode"
             ;;
         *)
-            echo "Usage: $(basename "${0}") [update|gold|opencode]"
+            echo "Usage: $(basename "${0}") [gold|opencode]"
             exit 1
             ;;
     esac
