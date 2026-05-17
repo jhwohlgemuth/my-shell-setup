@@ -27,6 +27,9 @@ update_package() {
 main() {
     local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
     case "${1}" in
+        update)
+            update_gold
+            ;;
         gold)
             update_gold
             ;;
@@ -34,7 +37,7 @@ main() {
             update_package "opencode"
             ;;
         *)
-            echo "Usage: $(basename "${0}") [gold|opencode]"
+            echo "Usage: $(basename "${0}") [update|gold|opencode]"
             exit 1
             ;;
     esac
