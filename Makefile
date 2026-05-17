@@ -1,10 +1,15 @@
-.PHONY: format
+.PHONY: format neovim
+
 format:
 	@for path in $(GOLD) ; do \
         dos2unix ./gold/$$path; \
 		shfmt --write --list --indent 4 --case-indent --space-redirects ./gold/$$path; \
         shellcheck ./gold/$$path --enable all; \
     done
+
+neovim:
+	docker build -t my-shell-setup/neovim:latest neovim
+	docker run --rm -it my-shell-setup/neovim:latest
 
 GOLD = \
 	cleanup \
