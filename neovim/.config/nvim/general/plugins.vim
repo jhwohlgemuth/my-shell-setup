@@ -60,7 +60,8 @@ Plug 'mhinz/vim-signify'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'LnL7/vim-nix'
 Plug 'sheerun/vim-polyglot'
-Plug 'davidhalter/jedi-vim'
+Plug 'rust-lang/rust.vim'
+Plug 'saecki/crates.nvim'
 
 " === Tools ===
 Plug 'dense-analysis/ale'
@@ -78,4 +79,6 @@ source $VIMCONFIG/plug-config/floaterm.vim
 source $VIMCONFIG/plug-config/indent-guides.vim
 source $VIMCONFIG/plug-config/rainbow.vim
 source $VIMCONFIG/plug-config/sneak.vim
+source $VIMCONFIG/plug-config/coc.vim
 source $VIMCONFIG/plug-config/startify.vim
+source $VIMCONFIG/plug-config/crates.vim

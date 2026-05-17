@@ -8,6 +8,7 @@
         "markdown",
         "powershell",
         "python",
+        "rust",
         "vim",
         "yaml"
     ],
@@ -22,8 +23,17 @@
     "explorer.icon.enableVimDevicons": false,
     "explorer.file.showHiddenFiles": true,
     "explorer.keyMappings.global": {
-      "<cr>": ["expandable?", "expand", "open"],
-      "v": "open:vsplit"
+        "<cr>": [
+            "expandable?",
+            "expand",
+            "open"
+        ],
+        "v": "open:vsplit"
     },
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.useLibraryCodeForTypes": true,
+    "python.analysis.indexing": true,
+    "ruff.formatEnabled": true,
     "snippets.userSnippetsDirectory": ""
 }
