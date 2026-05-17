@@ -34,13 +34,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'joshdick/onedark.vim'
 Plug 'cj/vim-webdevicons'
-Plug 'mhinz/vim-startify'
-Plug 'nathanaelkane/vim-indent-guides'
 Plug 'luochen1990/rainbow'
 Plug 'liuchengxu/vim-which-key'
-Plug 'junegunn/goyo.vim'
 Plug 'norcalli/nvim-colorizer.lua'
-Plug 'psliwka/vim-smoothie'
 Plug 'chrisbra/csv.vim'
 
 " === Editing ===
@@ -65,7 +61,7 @@ Plug 'saecki/crates.nvim'
 
 " === Tools ===
 Plug 'dense-analysis/ale'
-Plug 'voldikss/vim-floaterm'
+Plug 'folke/snacks.nvim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'MattesGroeger/vim-bookmarks'
 
@@ -75,11 +71,9 @@ call plug#end()
 source $VIMCONFIG/plug-config/airline.vim
 source $VIMCONFIG/plug-config/choosewin.vim
 source $VIMCONFIG/plug-config/colorizer.vim
-source $VIMCONFIG/plug-config/floaterm.vim
-source $VIMCONFIG/plug-config/indent-guides.vim
 source $VIMCONFIG/plug-config/rainbow.vim
 source $VIMCONFIG/plug-config/sneak.vim
 source $VIMCONFIG/plug-config/coc.vim
-source $VIMCONFIG/plug-config/startify.vim
 source $VIMCONFIG/plug-config/crates.vim
 source $VIMCONFIG/plug-config/ale.vim
+source $VIMCONFIG/plug-config/snacks.vim

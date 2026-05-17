@@ -12,7 +12,7 @@ let g:coc_global_extensions = [
   \ 'coc-json',
   \ 'coc-powershell',
   \ 'coc-pyright',
-  \ 'coc-ruff',
+  \ '@yaegassy/coc-ruff',
   \ 'coc-rust-analyzer',
   \ 'coc-reason',
   \ 'coc-snippets',
@@ -24,7 +24,7 @@ let g:coc_global_extensions = [
 " diagnostics appear/become resolved.
 if has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
+  set signcolumn=yes
 else
   set signcolumn=yes
 endif
@@ -186,3 +186,5 @@ let g:coc_snippet_prev = '<c-k>'
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 " }}}
+" Disable UltiSnips (requires Python provider, we use native coc snippets)
+call coc#config('snippets.ultisnips.enable', v:false)
