@@ -6,7 +6,7 @@ requires \
     git \
     gum \
     stow
-update() {
+update_gold() {
     local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
     local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
     local TITLE="Update $(gum style --foreground "${COLOR}" 'Complete')"
@@ -20,13 +20,21 @@ update() {
         --padding "1 2" \
         "${TITLE}"
 }
+update_package() {
+    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+    stow --dir "${DOTFILES}" --target "${HOME}" --restow "${1}"
+}
 main() {
+    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
     case "${1}" in
-        update)
-            update
+        gold)
+            update_gold
+            ;;
+        opencode)
+            update_package "opencode"
             ;;
         *)
-            echo "Usage: $(basename "${0}") [update]"
+            echo "Usage: $(basename "${0}") [gold|opencode]"
             exit 1
             ;;
     esac
