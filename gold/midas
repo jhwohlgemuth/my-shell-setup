@@ -9,22 +9,31 @@ requires \
 
 resolve_dotfiles() {
     local DOTFILES_PATH="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
-    # Stow expects compatible absolute paths for --dir and --target.
+    # Normalize tilde and relative paths before canonicalization.
     case "${DOTFILES_PATH}" in
         /*)
-            printf '%s\n' "${DOTFILES_PATH}"
+            ;;
+        ~)
+            DOTFILES_PATH="${HOME}"
             ;;
         ~/*)
-            printf '%s\n' "${HOME}/${DOTFILES_PATH#~/}"
+            DOTFILES_PATH="${HOME}/${DOTFILES_PATH#~/}"
             ;;
         *)
-            printf '%s\n' "${PWD}/${DOTFILES_PATH}"
+            DOTFILES_PATH="${HOME}/${DOTFILES_PATH#./}"
             ;;
     esac
+    if [[ ! -d "${DOTFILES_PATH}" ]]; then
+        printf 'Error: dotfiles directory not found: %s\n' "${DOTFILES_PATH}" >&2
+        return 1
+    fi
+    # Stow expects compatible absolute paths for --dir and --target.
+    REPLY="$(cd "${DOTFILES_PATH}" && pwd -P)"
 }
 update_gold() {
     local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
-    local DOTFILES="$(resolve_dotfiles)"
+    resolve_dotfiles
+    local DOTFILES="${REPLY}"
     local TITLE="Update $(gum style --foreground "${COLOR}" 'Complete')"
     git -C "${DOTFILES}" checkout -- .
     git -C "${DOTFILES}" pull origin main
@@ -37,8 +46,10 @@ update_gold() {
         "${TITLE}"
 }
 update_package() {
-    local DOTFILES="$(resolve_dotfiles)"
-    stow --dir "${DOTFILES}" --target "${HOME}" --restow "${1}"
+    resolve_dotfiles
+    local DOTFILES="${REPLY}"
+    local HOME_DIR="$(cd "${HOME}" && pwd -P)"
+    stow --dir "${DOTFILES}" --target "${HOME_DIR}" --restow "${1}"
 }
 main() {
     case "${1}" in
