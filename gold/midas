@@ -6,9 +6,25 @@ requires \
     git \
     gum \
     stow
+
+resolve_dotfiles() {
+    local DOTFILES_PATH="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+    # Stow expects compatible absolute paths for --dir and --target.
+    case "${DOTFILES_PATH}" in
+        /*)
+            printf '%s\n' "${DOTFILES_PATH}"
+            ;;
+        ~/*)
+            printf '%s\n' "${HOME}/${DOTFILES_PATH#~/}"
+            ;;
+        *)
+            printf '%s\n' "${PWD}/${DOTFILES_PATH}"
+            ;;
+    esac
+}
 update_gold() {
     local COLOR="${GOLD_FOREGROUND_COLOR:-220}"
-    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+    local DOTFILES="$(resolve_dotfiles)"
     local TITLE="Update $(gum style --foreground "${COLOR}" 'Complete')"
     git -C "${DOTFILES}" checkout -- .
     git -C "${DOTFILES}" pull origin main
@@ -21,11 +37,10 @@ update_gold() {
         "${TITLE}"
 }
 update_package() {
-    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+    local DOTFILES="$(resolve_dotfiles)"
     stow --dir "${DOTFILES}" --target "${HOME}" --restow "${1}"
 }
 main() {
-    local DOTFILES="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
     case "${1}" in
         update)
             update_gold
