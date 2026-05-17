@@ -9,6 +9,7 @@ else
         execute 'silent !curl -fLo' shellescape("%HOMEDRIVE%%HOMEPATH%/AppData/Local/nvim/autoload/plug.vim", 1) '--create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     endif
 endif
+
 " Automatically install missing plugins on startup
 autocmd VimEnter *
   \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
@@ -16,105 +17,65 @@ autocmd VimEnter *
   \| endif
 
 call plug#begin()
-    " Plugins {{{
-    Plug 'dense-analysis/ale'
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'jiangmiao/auto-pairs'
-    Plug 'MattesGroeger/vim-bookmarks' " bookmark (mm) / annotate (mi)
-    Plug 't9md/vim-choosewin'
-    Plug 'alvan/vim-closetag'
-    Plug 'hrsh7th/nvim-cmp' " For LSP completion
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'hrsh7th/cmp-buffer'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    Plug 'Exafunction/codeium.vim'
-    Plug 'norcalli/nvim-colorizer.lua'
-    Plug 'chrisbra/csv.vim'
-    Plug 'tpope/vim-commentary' " line (gcc) / motion (gc)
-    Plug 'voldikss/vim-floaterm'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'yuki-ycino/fzf-preview.vim'
-    Plug 'junegunn/fzf.vim'
-    Plug 'tpope/vim-fugitive'
-    Plug 'junegunn/goyo.vim'
-    Plug 'nathanaelkane/vim-indent-guides'
-    Plug 'davidhalter/jedi-vim'
-    Plug 'maxmellon/vim-jsx-pretty'
-    Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-    Plug 'LnL7/vim-nix'
-    Plug 'joshdick/onedark.vim'
-    Plug 'sheerun/vim-polyglot'
-    Plug 'luochen1990/rainbow'
-    Plug 'mhinz/vim-signify'
-    Plug 'psliwka/vim-smoothie'
-    Plug 'justinmk/vim-sneak'
-    Plug 'mhinz/vim-startify'
-    Plug 'tpope/vim-surround' " change (cd)/ delete (ds) / add (ys)/ visual (S)
-    Plug 'godlygeek/tabular'
-    Plug 'mbbill/undotree'
-    Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-    Plug 'cj/vim-webdevicons'
-    Plug 'liuchengxu/vim-which-key'
-    Plug 'neovim/nvim-lspconfig'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.2' }
-    " Plug 'whonore/Coqtail'
-    " Plug 'Julian/lean.nvim'
-    " Plug 'elixir-lang/vim-elixir'
-    " Plug 'rust-lang/rust.vim'
-    " Plug 'simrat39/rust-tools.nvim'
-    " Plug 'saecki/crates.nvim', { 'tag': 'v0.3.0' }
-    " }}}
+
+" === LSP / Completion ===
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Exafunction/codeium.vim'
+
+" === Navigation ===
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'yuki-ycino/fzf-preview.vim'
+Plug 'justinmk/vim-sneak'
+Plug 't9md/vim-choosewin'
+
+" === UI / Appearance ===
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'joshdick/onedark.vim'
+Plug 'cj/vim-webdevicons'
+Plug 'mhinz/vim-startify'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'luochen1990/rainbow'
+Plug 'liuchengxu/vim-which-key'
+Plug 'junegunn/goyo.vim'
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'psliwka/vim-smoothie'
+Plug 'chrisbra/csv.vim'
+
+" === Editing ===
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'jiangmiao/auto-pairs'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'alvan/vim-closetag'
+Plug 'godlygeek/tabular'
+Plug 'mbbill/undotree'
+
+" === Git ===
+Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
+
+" === Language-Specific ===
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'LnL7/vim-nix'
+Plug 'sheerun/vim-polyglot'
+Plug 'davidhalter/jedi-vim'
+
+" === Tools ===
+Plug 'dense-analysis/ale'
+Plug 'voldikss/vim-floaterm'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'MattesGroeger/vim-bookmarks'
+
 call plug#end()
 
-" Airline Settings {{{
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#ale#enabled = 1
-" }}}
-" ChooseWin Settings {{{
-let g:choosewin_overlay_enable = 1
-" }}}
-" Colorizer Settings {{{
-if exists("loaded_colorizer")
-    lua require'colorizer'.setup()
-endif
-" }}}
-" Floaterm Settings {{{
-let g:floaterm_title = ''
-let g:floaterm_gitcommit = 'floaterm'
-let g:floaterm_autoinsert = 1
-let g:floaterm_width = 0.8
-let g:floaterm_height = 0.8
-let g:floaterm_wintitle = 0
-let g:floaterm_autoclose = 1
-" }}}
-" Indent-guides Settings {{{
-let g:indent_guides_guide_size = 1
-" }}}
-" Rainbow Settings {{{
-let g:rainbow_active = 1
-" }}}
-" Sneak Settings {{{
-let g:sneak#label = 1
-let g:sneak#use_ic_scs = 1 " case insensitive sneak
-let g:sneak#s_next = 1
-highlight Sneak guifg=black guibg=#00C7DF ctermfg=black ctermbg=cyan
-highlight SneakScope guifg=red guibg=yellow ctermfg=red ctermbg=yellow
-let g:sneak#prompt = '🔎 '
-" }}}
-" Startify Settings {{{
-let s:startify_ascii_header = [
-\ '███╗░░██╗███████╗░█████╗░██╗░░░██╗██╗███╗░░░███╗',
-\ '████╗░██║██╔════╝██╔══██╗██║░░░██║██║████╗░████║',
-\ '██╔██╗██║█████╗░░██║░░██║╚██╗░██╔╝██║██╔████╔██║',
-\ '██║╚████║██╔══╝░░██║░░██║░╚████╔╝░██║██║╚██╔╝██║',
-\ '██║░╚███║███████╗╚█████╔╝░░╚██╔╝░░██║██║░╚═╝░██║',
-\ '',
-\]
-let g:startify_custom_header = map(s:startify_ascii_header + startify#fortune#quote(), '"   ".v:val')
-let g:webdevicons_enable_startify = 1
-function! StartifyEntryFormat()
-    return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
-endfunction
-" }}}
+" Source plugin-specific configs
+source $VIMCONFIG/plug-config/airline.vim
+source $VIMCONFIG/plug-config/choosewin.vim
+source $VIMCONFIG/plug-config/colorizer.vim
+source $VIMCONFIG/plug-config/floaterm.vim
+source $VIMCONFIG/plug-config/indent-guides.vim
+source $VIMCONFIG/plug-config/rainbow.vim
+source $VIMCONFIG/plug-config/sneak.vim
+source $VIMCONFIG/plug-config/startify.vim
