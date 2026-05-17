@@ -82,3 +82,4 @@ source $VIMCONFIG/plug-config/sneak.vim
 source $VIMCONFIG/plug-config/coc.vim
 source $VIMCONFIG/plug-config/startify.vim
 source $VIMCONFIG/plug-config/crates.vim
+source $VIMCONFIG/plug-config/ale.vim
