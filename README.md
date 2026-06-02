@@ -36,6 +36,7 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 - gold
   - Collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for motivation and example usage.
 - neovim
+  - Usage and plugin guide - [README.md](./neovim/README.md)
   - Themes - [`themes/`](./neovim/.config/nvim/themes/)
   - Editor configuration - [`init.vim`](./neovim/.config/nvim/init.vim) and [`general/`](./neovim/.config/nvim/general/)
   - Plugin configuration - [`plug-config/`](./neovim/.config/nvim/plug-config/)

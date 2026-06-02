@@ -21,6 +21,8 @@ call plug#begin()
 " === LSP / Completion ===
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Exafunction/codeium.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'olimorris/codecompanion.nvim'
 
 " === Navigation ===
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -77,3 +79,4 @@ source $VIMCONFIG/plug-config/coc.vim
 source $VIMCONFIG/plug-config/crates.vim
 source $VIMCONFIG/plug-config/ale.vim
 source $VIMCONFIG/plug-config/snacks.vim
+source $VIMCONFIG/plug-config/codecompanion.vim

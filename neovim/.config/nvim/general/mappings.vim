@@ -22,3 +22,11 @@ nnoremap <leader>ff <cmd>lua Snacks.picker.files()<CR>
 nnoremap <leader>fg <cmd>lua Snacks.picker.grep()<CR>
 nnoremap <leader>fb <cmd>lua Snacks.picker.buffers()<CR>
 nnoremap <leader>fh <cmd>lua Snacks.picker.help()<CR>
+
+" CodeCompanion
+nnoremap <silent> <C-S-a> :CodeCompanionChat Toggle<CR>
+vnoremap <silent> <C-S-a> :CodeCompanionChat Add<CR>
+nnoremap <silent> <leader>cc :CodeCompanionChat Toggle<CR>
+vnoremap <silent> <leader>cc :CodeCompanionChat Add<CR>
+nnoremap <silent> <C-S-p> :CodeCompanionActions<CR>
+nnoremap <silent> <C-i> :CodeCompanion<CR>
