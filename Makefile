@@ -25,6 +25,7 @@ GOLD = \
 	install_cosmopolitan \
 	install_creusot \
 	install_cuda \
+	install_cuda_toolkit \
 	install_docker \
 	install_dotnet \
 	install_dotnet_jupyter_kernel \
@@ -36,6 +37,7 @@ GOLD = \
 	install_homebrew \
 	install_klee \
 	install_java \
+	install_llama_cpp \
 	install_latex \
 	install_lpython \
 	install_musl \
