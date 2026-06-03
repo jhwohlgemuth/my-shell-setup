@@ -4,15 +4,12 @@ set -e
 requires \
     cmake \
     git \
-    nvcc \
-    zsh
+    nvcc
 main() {
     local -a CMAKE_ARGS_ARRAY=()
-    local CUDA_HOME_DIR
     local NVCC_BIN
     local SRC_DIRECTORY="${HOME}/llamacpp"
     NVCC_BIN="$(command -v nvcc)"
-    CUDA_HOME_DIR="$(dirname "$(dirname "${NVCC_BIN}")")"
     if [[ -n "${CMAKE_ARGS:-}" ]]; then
         # Split optional CMAKE_ARGS into an array so arguments are passed safely.
         read -r -a CMAKE_ARGS_ARRAY <<< "${CMAKE_ARGS}"
@@ -31,10 +28,5 @@ main() {
         .
     cmake --build build --config Release
     popd > /dev/null || exit
-    {
-        echo "export CUDA_HOME=${CUDA_HOME_DIR}"
-        echo "export PATH=\${CUDA_HOME}/bin:\${PATH}"
-        echo "export LD_LIBRARY_PATH=\${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}"
-    } >> "${HOME}/.zshrc"
 }
 main "$@"
