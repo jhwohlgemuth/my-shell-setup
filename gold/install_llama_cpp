@@ -26,7 +26,7 @@ main() {
         "${CMAKE_ARGS_ARRAY[@]}" \
         -DCMAKE_EXE_LINKER_FLAGS=-Wl,--allow-shlib-undefined \
         .
-    cmake --build build --config Release
+    cmake --build build --config Release -j$(nproc)
     popd > /dev/null || exit
 }
 main "$@"
