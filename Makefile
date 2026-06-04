@@ -37,7 +37,6 @@ GOLD = \
 	install_homebrew \
 	install_klee \
 	install_java \
-	install_llama_cpp \
 	install_latex \
 	install_lpython \
 	install_musl \
