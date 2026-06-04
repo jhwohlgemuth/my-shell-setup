@@ -1,5 +1,10 @@
 lua << EOF
-require("codecompanion").setup({
+local ok, codecompanion = pcall(require, "codecompanion")
+if not ok then
+    vim.notify("CodeCompanion failed to load; skipping setup", vim.log.levels.WARN)
+    return
+end
+local setup_ok, setup_err = pcall(codecompanion.setup, {
     adapters = {
         http = {
             ollama = function()
@@ -48,4 +53,7 @@ require("codecompanion").setup({
         },
     },
 })
+if not setup_ok then
+    vim.notify("CodeCompanion setup failed: " .. tostring(setup_err), vim.log.levels.WARN)
+end
 EOF
