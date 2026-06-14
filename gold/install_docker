@@ -58,7 +58,7 @@ install_docker_rootless() {
         docker-ce-rootless-extras
     ensure_subid_range "${TARGET_USER}" /etc/subuid
     ensure_subid_range "${TARGET_USER}" /etc/subgid
-    su -l "${TARGET_USER}" -c 'dockerd-rootless-setuptool.sh install --force'
+    su -l "${TARGET_USER}" -c 'dockerd-rootless-setuptool.sh install --force --skip-iptables'
     if is_command loginctl; then
         loginctl enable-linger "${TARGET_USER}"
     fi
