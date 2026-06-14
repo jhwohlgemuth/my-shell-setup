@@ -11,6 +11,16 @@ requires \
     sed \
     su \
     tee
+add_user_to_docker_group() {
+    local TARGET_USER="${1}"
+    if [[ -z "${TARGET_USER}" ]] || ! id -u "${TARGET_USER}" > /dev/null 2>&1; then
+        return
+    fi
+    if ! grep -q '^docker:' /etc/group; then
+        return
+    fi
+    usermod -aG docker "${TARGET_USER}"
+}
 configure_nvidia_container_toolkit_rootless() {
     # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
     local TARGET_USER="${1}"
@@ -121,6 +131,8 @@ main() {
             configure_nvidia_container_toolkit_rootless "${ROOTLESS_USER}"
         fi
     fi
-    usermod -aG docker "${ROOTLESS_USER}"
+    if [[ "${ROOTLESS_ONLY}" != "1" ]]; then
+        add_user_to_docker_group "${ROOTLESS_USER}"
+    fi
 }
 main "$@"
