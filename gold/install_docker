@@ -8,7 +8,6 @@ requires \
     gpg \
     id \
     is_command \
-    require_root_or_sudo \
     sed \
     su \
     tee
