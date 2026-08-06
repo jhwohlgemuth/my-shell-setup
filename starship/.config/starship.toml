@@ -1,0 +1,228 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = false
+palette = "jason"
+
+format = """
+$os\
+$username\
+$directory\
+$git_branch\
+$git_status\
+${custom.git_to_status}\
+${custom.directory_to_status}\
+$status """
+
+right_format = """
+$dotnet\
+$nodejs\
+$golang\
+$julia\
+$python\
+$rust\
+$shell\
+$time"""
+
+continuation_prompt = "[](yellow)[ > ](fg:black bg:yellow)[](yellow) "
+
+[palettes.jason]
+black = "#262B44"
+blue = "#4B95E9"
+green = "#59C9A5"
+orange = "#F07623"
+red = "#D81E5B"
+white = "#E0DEF4"
+yellow = "#F3AE35"
+cyan = "#00FFFF"
+purple = "#8800DD"
+
+# ─────────────────────────────────────────────────────────────
+# Operating system
+# ─────────────────────────────────────────────────────────────
+
+[os]
+disabled = false
+style = "fg:cyan"
+format = "[$symbol ]($style)"
+
+[os.symbols]
+Windows = ""
+Macos = ""
+Linux = ""
+Ubuntu = ""
+Debian = ""
+Fedora = ""
+Arch = ""
+
+# ─────────────────────────────────────────────────────────────
+# User
+# ─────────────────────────────────────────────────────────────
+
+[username]
+show_always = true
+style_user = "fg:black bg:yellow"
+style_root = "fg:white bg:red"
+format = "[](fg:yellow)[ $user ]($style)[](fg:yellow bg:orange)"
+
+# ─────────────────────────────────────────────────────────────
+# Directory
+# ─────────────────────────────────────────────────────────────
+
+[directory]
+style = "fg:white bg:orange"
+format = "[  $path ]($style)"
+truncation_length = 3
+truncate_to_repo = false
+read_only = " "
+home_symbol = "~"
+
+# ─────────────────────────────────────────────────────────────
+# Git
+# ─────────────────────────────────────────────────────────────
+
+[git_branch]
+symbol = ""
+style = "fg:black bg:green"
+format = "[](fg:orange bg:green)[ $symbol$branch ]($style)"
+truncation_length = 25
+truncation_symbol = "…"
+
+[git_status]
+style = "fg:black bg:green"
+format = "[$all_status$ahead_behind ]($style)"
+
+conflicted = "=${count} "
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+untracked = "?${count} "
+stashed = "${count} "
+modified = "${count} "
+staged = "${count} "
+renamed = "»${count} "
+deleted = "✘${count} "
+
+# ─────────────────────────────────────────────────────────────
+# Context-sensitive transitions
+# ─────────────────────────────────────────────────────────────
+
+# Inside a Git repository, transition from the green Git segment
+# into the blue status segment.
+[custom.git_to_status]
+description = "Green-to-blue transition inside Git repositories"
+shell = ["nu", "-c"]
+when = """
+let result = (do {
+    git rev-parse --is-inside-work-tree
+} | complete)
+
+if $result.exit_code == 0 {
+    exit 0
+} else {
+    exit 1
+}
+"""
+command = "''"
+style = "fg:green bg:blue"
+format = "[]($style)"
+
+# Outside a Git repository, transition directly from the orange
+# directory segment into the blue status segment.
+[custom.directory_to_status]
+description = "Orange-to-blue transition outside Git repositories"
+shell = ["nu", "-c"]
+when = """
+let result = (do {
+    git rev-parse --is-inside-work-tree
+} | complete)
+
+if $result.exit_code == 0 {
+    exit 1
+} else {
+    exit 0
+}
+"""
+command = "''"
+style = "fg:orange bg:blue"
+format = "[]($style)"
+
+
+
+# ─────────────────────────────────────────────────────────────
+# Command status
+# ─────────────────────────────────────────────────────────────
+
+[status]
+disabled = false
+
+# Failure uses a red icon on the same blue background so that the
+# transition remains seamless.
+style = "fg:red bg:blue"
+success_style = "fg:white bg:blue"
+
+symbol = ""
+success_symbol = ""
+not_executable_symbol = ""
+not_found_symbol = ""
+sigint_symbol = ""
+signal_symbol = "⚡"
+
+format = "[ $symbol ]($style)[](fg:blue)"
+
+# ─────────────────────────────────────────────────────────────
+# Input prompt
+# ─────────────────────────────────────────────────────────────
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
+vimcmd_replace_one_symbol = "[❮](bold purple)"
+vimcmd_replace_symbol = "[❮](bold purple)"
+vimcmd_visual_symbol = "[❮](bold yellow)"
+
+# ─────────────────────────────────────────────────────────────
+# Right prompt
+# ─────────────────────────────────────────────────────────────
+
+[dotnet]
+symbol = " "
+style = "cyan"
+format = "[ $symbol$version ]($style)"
+
+[nodejs]
+symbol = " "
+style = "green"
+format = "[ $symbol$version ]($style)"
+
+[golang]
+symbol = " "
+style = "blue"
+format = "[ $symbol$version ]($style)"
+
+[julia]
+symbol = " "
+style = "#9558B2"
+format = "[ $symbol$version ]($style)"
+
+[python]
+symbol = " "
+style = "yellow"
+format = "[ $symbol$version( \\($virtualenv\\)) ]($style)"
+
+[rust]
+symbol = "🦀 "
+style = "#CE422B"
+format = "[ $symbol$version ]($style)"
+
+[shell]
+disabled = false
+nu_indicator = "nu"
+style = "blue bold"
+format = "[in $indicator]($style) "
+
+[time]
+disabled = false
+time_format = "%H:%M:%S"
+style = "blue bold"
+format = "[at $time]($style)"
