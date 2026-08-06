@@ -1,6 +1,30 @@
 # =============================================================================
+# Nushell search paths
+# =============================================================================
+
+# Find plugins installed beside nu.exe/nu and plugins placed in this dotfiles
+# configuration's local plugins directory.
+const NU_PLUGIN_DIRS = [
+    ($nu.current-exe | path dirname)
+    ($nu.default-config-dir | path join "plugins")
+    ...$NU_PLUGIN_DIRS
+]
+
+# Find modules stored beside config.nu.
+const NU_LIB_DIRS = [
+    ($nu.default-config-dir | path join "modules")
+    ($nu.default-config-dir | path join "scripts")
+    ...$NU_LIB_DIRS
+]
+
+# =============================================================================
 # General configuration
 # =============================================================================
+# Include the directory containing nu.exe and the bundled core plugins.
+const NU_PLUGIN_DIRS = [
+    ($nu.current-exe | path dirname)
+    ...$NU_PLUGIN_DIRS
+]
 
 $env.config.show_banner = false
 $env.config.edit_mode = "emacs"
@@ -114,7 +138,9 @@ $env.config.abbreviations = {
 # Custom command modules
 # =============================================================================
 
-use commands.nu *
+use modules/git.nu *
+use modules/docker.nu *
+use modules/system.nu *
 
 # =============================================================================
 # Keybindings
@@ -143,6 +169,16 @@ $env.config.keybindings ++= [
         mode: emacs
         event: {
             send: searchhistory
+        }
+    }
+    {
+        name: reload_nushell_config
+        modifier: none
+        keycode: f5
+        mode: emacs
+        event: {
+            send: executehostcommand
+            cmd: $"source '($nu.config-path)'"
         }
     }
 ]
