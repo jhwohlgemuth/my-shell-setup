@@ -9,8 +9,8 @@ $os\
 $username\
 $directory\
 ${custom.directory_end}\
-$git_branch\
-$git_status\
+${custom.git_clean}\
+${custom.git_dirty}\
 $status\
 $fill\
 $dotnet\
@@ -44,6 +44,8 @@ root_text = "#E0DEF4"
 directory_bg = "#4B95E9"
 directory_text = "#262B44"
 git_text = "#262B44"
+git_dirty_bg = "#F3AE35"
+git_dirty_text = "#262B44"
 status_text = "#E0DEF4"
 status_error_text = "#FFFFFF"
 
@@ -64,6 +66,8 @@ root_text = "#282C34"
 directory_bg = "#61AFEF"
 directory_text = "#282C34"
 git_text = "#282C34"
+git_dirty_bg = "#E5C07B"
+git_dirty_text = "#282C34"
 status_text = "#282C34"
 status_error_text = "#FFFFFF"
 
@@ -99,6 +103,8 @@ root_text = "#FFFFFF"
 directory_bg = "#005776"
 directory_text = "#8BFEBF"
 git_text = "#FFFFFF"
+git_dirty_bg = "#8BFEBF"
+git_dirty_text = "#373A36"
 status_text = "#FFFFFF"
 status_error_text = "#FFFFFF"
 
@@ -139,7 +145,7 @@ format = "[](fg:black bg:yellow)[ $user ]($style)[](fg:yellow)"
 # ─────────────────────────────────────────────────────────────
 
 [directory]
-style = "fg:directory_text bg:directory_bg"
+style = "bold fg:directory_text bg:directory_bg"
 format = "[](fg:black bg:directory_bg)[  $path ]($style)"
 truncation_length = 3
 truncate_to_repo = false
@@ -164,20 +170,144 @@ command = "''"
 style = "fg:directory_bg"
 format = "[]($style)"
 
+[custom.git_clean]
+description = "Render a green Git segment for clean repositories"
+shell = ["nu", "-c"]
+when = """
+let result = (do {
+    git status --porcelain
+} | complete)
+
+if $result.exit_code == 0 and ($result.stdout | str trim | str length) == 0 {
+    exit 0
+} else {
+    exit 1
+}
+"""
+command = """
+let lines = (git status --porcelain=v1 --branch | lines)
+let header = ($lines | first)
+let branch = (
+    $header
+    | str replace --regex '^## (No commits yet on |Initial commit on )?' ''
+    | split row '...'
+    | first
+    | split row ' '
+    | first
+)
+let changes = ($lines | skip 1)
+let conflict_pattern = '^(DD|AU|UD|UA|DU|AA|UU)'
+let conflicted = ($changes | where { |line| $line =~ $conflict_pattern } | length)
+let staged = ($changes | where { |line|
+    ($line =~ '^[MAC]') and not ($line =~ $conflict_pattern)
+} | length)
+let modified = ($changes | where { |line|
+    ($line =~ '^.M') and not ($line =~ $conflict_pattern)
+} | length)
+let renamed = ($changes | where { |line| $line =~ '^(R.|.R)' } | length)
+let deleted = ($changes | where { |line| $line =~ '^(D.|.D)' } | length)
+let untracked = ($changes | where { |line| $line =~ '^\\?\\?' } | length)
+let stashed = (git stash list | lines | length)
+let ahead_rows = ($header | parse -r 'ahead (?<count>\\d+)')
+let behind_rows = ($header | parse -r 'behind (?<count>\\d+)')
+let ahead = if ($ahead_rows | is-empty) { 0 } else {
+    $ahead_rows.0.count | into int
+}
+let behind = if ($behind_rows | is-empty) { 0 } else {
+    $behind_rows.0.count | into int
+}
+
+mut parts = [$" ($branch)"]
+if $conflicted > 0 { $parts = ($parts | append $"= ($conflicted)") }
+if $staged > 0 { $parts = ($parts | append $" ($staged)") }
+if $modified > 0 { $parts = ($parts | append $" ($modified)") }
+if $renamed > 0 { $parts = ($parts | append $"» ($renamed)") }
+if $deleted > 0 { $parts = ($parts | append $"✘ ($deleted)") }
+if $untracked > 0 { $parts = ($parts | append $"? ($untracked)") }
+if $stashed > 0 { $parts = ($parts | append $" ($stashed)") }
+if $ahead > 0 { $parts = ($parts | append $"⇡ ($ahead)") }
+if $behind > 0 { $parts = ($parts | append $"⇣ ($behind)") }
+$parts | str join ' '
+"""
+style = "fg:git_text bg:green"
+format = "[](fg:directory_bg bg:green)[ $output ]($style)[](fg:green)"
+
+[custom.git_dirty]
+description = "Render a contrasting Git segment for dirty repositories"
+shell = ["nu", "-c"]
+when = """
+let result = (do {
+    git status --porcelain
+} | complete)
+
+if $result.exit_code == 0 and ($result.stdout | str trim | str length) > 0 {
+    exit 0
+} else {
+    exit 1
+}
+"""
+command = """
+let lines = (git status --porcelain=v1 --branch | lines)
+let header = ($lines | first)
+let branch = (
+    $header
+    | str replace --regex '^## (No commits yet on |Initial commit on )?' ''
+    | split row '...'
+    | first
+    | split row ' '
+    | first
+)
+let changes = ($lines | skip 1)
+let conflict_pattern = '^(DD|AU|UD|UA|DU|AA|UU)'
+let conflicted = ($changes | where { |line| $line =~ $conflict_pattern } | length)
+let staged = ($changes | where { |line|
+    ($line =~ '^[MAC]') and not ($line =~ $conflict_pattern)
+} | length)
+let modified = ($changes | where { |line|
+    ($line =~ '^.M') and not ($line =~ $conflict_pattern)
+} | length)
+let renamed = ($changes | where { |line| $line =~ '^(R.|.R)' } | length)
+let deleted = ($changes | where { |line| $line =~ '^(D.|.D)' } | length)
+let untracked = ($changes | where { |line| $line =~ '^\\?\\?' } | length)
+let stashed = (git stash list | lines | length)
+let ahead_rows = ($header | parse -r 'ahead (?<count>\\d+)')
+let behind_rows = ($header | parse -r 'behind (?<count>\\d+)')
+let ahead = if ($ahead_rows | is-empty) { 0 } else {
+    $ahead_rows.0.count | into int
+}
+let behind = if ($behind_rows | is-empty) { 0 } else {
+    $behind_rows.0.count | into int
+}
+
+mut parts = [$" ($branch)"]
+if $conflicted > 0 { $parts = ($parts | append $"= ($conflicted)") }
+if $staged > 0 { $parts = ($parts | append $" ($staged)") }
+if $modified > 0 { $parts = ($parts | append $" ($modified)") }
+if $renamed > 0 { $parts = ($parts | append $"» ($renamed)") }
+if $deleted > 0 { $parts = ($parts | append $"✘ ($deleted)") }
+if $untracked > 0 { $parts = ($parts | append $"? ($untracked)") }
+if $stashed > 0 { $parts = ($parts | append $" ($stashed)") }
+if $ahead > 0 { $parts = ($parts | append $"⇡ ($ahead)") }
+if $behind > 0 { $parts = ($parts | append $"⇣ ($behind)") }
+$parts | str join ' '
+"""
+style = "fg:git_dirty_text bg:git_dirty_bg"
+format = "[](fg:directory_bg bg:git_dirty_bg)[ $output ]($style)[](fg:git_dirty_bg)"
+
 # ─────────────────────────────────────────────────────────────
 # Git
 # ─────────────────────────────────────────────────────────────
 
 [git_branch]
 symbol = ""
-style = "fg:git_text bg:green"
-format = "[](fg:directory_bg bg:green)[ $symbol $branch ]($style)"
+style = "fg:git_text"
+format = "[$symbol $branch]($style)"
 truncation_length = 25
 truncation_symbol = "…"
 
 [git_status]
-style = "fg:git_text bg:green"
-format = "[$all_status$ahead_behind ]($style)[](fg:green)"
+style = "fg:git_text"
+format = "[$all_status$ahead_behind]($style)"
 
 conflicted = "= ${count} "
 ahead = "⇡ ${count} "
