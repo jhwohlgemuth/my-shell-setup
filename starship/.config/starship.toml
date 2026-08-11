@@ -4,14 +4,15 @@ add_newline = false
 palette = "jason"
 
 format = """
-$os \
+[╭─](fg:gray)\
+$os\
 $username\
 $directory\
+${custom.directory_end}\
 $git_branch\
 $git_status\
-$status """
-
-right_format = """
+$status\
+$fill\
 $dotnet\
 $nodejs\
 $golang\
@@ -19,20 +20,91 @@ $julia\
 $python\
 $rust\
 $shell\
-$time"""
+$time
+[╰─](fg:gray) """
 
-continuation_prompt = "[](yellow)[ > ](fg:black bg:yellow)[](yellow) "
+right_format = ""
+
+continuation_prompt = "[](yellow)[>](fg:black bg:yellow)[](yellow) "
 
 [palettes.jason]
 black = "#262B44"
 blue = "#4B95E9"
 green = "#59C9A5"
+gray = "#939594"
 orange = "#F07623"
 red = "#D81E5B"
 white = "#E0DEF4"
 yellow = "#F3AE35"
 cyan = "#00FFFF"
 purple = "#8800DD"
+os_text = "#262B44"
+username_text = "#262B44"
+root_text = "#E0DEF4"
+directory_bg = "#4B95E9"
+directory_text = "#262B44"
+git_text = "#262B44"
+status_text = "#E0DEF4"
+status_error_text = "#FFFFFF"
+
+[palettes.one_dark]
+black = "#282C34"
+blue = "#61AFEF"
+green = "#98C379"
+gray = "#5C6370"
+orange = "#D19A66"
+red = "#E06C75"
+white = "#ABB2BF"
+yellow = "#E5C07B"
+cyan = "#56B6C2"
+purple = "#C678DD"
+os_text = "#282C34"
+username_text = "#282C34"
+root_text = "#282C34"
+directory_bg = "#61AFEF"
+directory_text = "#282C34"
+git_text = "#282C34"
+status_text = "#282C34"
+status_error_text = "#FFFFFF"
+
+[palettes.ornl]
+black = "#373A36"
+blue = "#006BA6"
+green = "#00662C"
+gray = "#DBDCDB"
+orange = "#FF9E1B"
+red = "#FE5000"
+white = "#FFFFFF"
+yellow = "#7DBA00"
+cyan = "#00BDB5"
+purple = "#4E008E"
+ornl_green = "#00662C"
+hale_navy = "#00454D"
+dark_matter = "#373A36"
+graphite = "#DBDCDB"
+polar = "#FFFFFF"
+energy = "#7DBA00"
+mist = "#8BFEBF"
+biome = "#00B38F"
+aqua = "#00BDB5"
+infinity = "#006BA6"
+hydro = "#005776"
+forge = "#FF9E1B"
+spark = "#FE5000"
+plasma = "#B50094"
+pulsar = "#4E008E"
+os_text = "#373A36"
+username_text = "#373A36"
+root_text = "#FFFFFF"
+directory_bg = "#005776"
+directory_text = "#8BFEBF"
+git_text = "#FFFFFF"
+status_text = "#FFFFFF"
+status_error_text = "#FFFFFF"
+
+[fill]
+symbol = "·"
+style = "fg:gray"
 
 # ─────────────────────────────────────────────────────────────
 # Operating system
@@ -40,11 +112,11 @@ purple = "#8800DD"
 
 [os]
 disabled = false
-style = "fg:cyan"
-format = "[$symbol ]($style)"
+style = "fg:os_text bg:white"
+format = "[](fg:white)[$symbol ]($style)[](fg:white)"
 
 [os.symbols]
-Windows = ""
+Windows = ""
 Macos = ""
 Linux = ""
 Ubuntu = ""
@@ -58,21 +130,39 @@ Arch = ""
 
 [username]
 show_always = true
-style_user = "fg:black bg:yellow"
-style_root = "fg:white bg:red"
-format = "[](fg:yellow)[ $user ]($style)[](fg:yellow)"
+style_user = "fg:username_text bg:yellow"
+style_root = "fg:root_text bg:red"
+format = "[](fg:black bg:yellow)[ $user ]($style)[](fg:yellow)"
 
 # ─────────────────────────────────────────────────────────────
 # Directory
 # ─────────────────────────────────────────────────────────────
 
 [directory]
-style = "fg:white bg:orange"
-format = "[](fg:black bg:orange)[  $path ]($style)[](fg:orange)"
+style = "fg:directory_text bg:directory_bg"
+format = "[](fg:black bg:directory_bg)[  $path ]($style)"
 truncation_length = 3
 truncate_to_repo = false
 read_only = " "
 home_symbol = "~"
+
+[custom.directory_end]
+description = "Close the directory segment outside Git repositories"
+shell = ["nu", "-c"]
+when = """
+let result = (do {
+    git rev-parse --is-inside-work-tree
+} | complete)
+
+if $result.exit_code == 0 {
+    exit 1
+} else {
+    exit 0
+}
+"""
+command = "''"
+style = "fg:directory_bg"
+format = "[]($style)"
 
 # ─────────────────────────────────────────────────────────────
 # Git
@@ -80,25 +170,25 @@ home_symbol = "~"
 
 [git_branch]
 symbol = ""
-style = "fg:black bg:green"
-format = "[](fg:black bg:green)[ $symbol$branch ]($style)"
+style = "fg:git_text bg:green"
+format = "[](fg:directory_bg bg:green)[ $symbol $branch ]($style)"
 truncation_length = 25
 truncation_symbol = "…"
 
 [git_status]
-style = "fg:black bg:green"
+style = "fg:git_text bg:green"
 format = "[$all_status$ahead_behind ]($style)[](fg:green)"
 
-conflicted = "=${count} "
-ahead = "⇡${count} "
-behind = "⇣${count} "
-diverged = "⇕⇡${ahead_count}⇣${behind_count} "
-untracked = "?${count} "
-stashed = "${count} "
-modified = "${count} "
-staged = "${count} "
-renamed = "»${count} "
-deleted = "✘${count} "
+conflicted = "= ${count} "
+ahead = "⇡ ${count} "
+behind = "⇣ ${count} "
+diverged = "⇕ ⇡ ${ahead_count} ⇣ ${behind_count} "
+untracked = "? ${count} "
+stashed = " ${count} "
+modified = " ${count} "
+staged = " ${count} "
+renamed = "» ${count} "
+deleted = "✘ ${count} "
 
 # ─────────────────────────────────────────────────────────────
 # Command status
@@ -109,17 +199,18 @@ disabled = false
 
 # Failure uses a red icon on the same blue background so that the
 # transition remains seamless.
-style = "fg:red bg:blue"
-success_style = "fg:white bg:blue"
+style = "fg:status_error_text bg:red"
+success_style = "fg:status_text bg:blue"
+failure_style = "fg:status_error_text bg:red"
 
-symbol = ""
-success_symbol = ""
-not_executable_symbol = ""
-not_found_symbol = ""
-sigint_symbol = ""
-signal_symbol = "⚡"
+symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
+success_symbol = "[](fg:black bg:blue)[  ](fg:status_text bg:blue)[](fg:blue)"
+not_executable_symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
+not_found_symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
+sigint_symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
+signal_symbol = "[](fg:black bg:red)[ ⚡ ](fg:status_error_text bg:red)[](fg:red)"
 
-format = "[](fg:black bg:blue)[ $symbol ]($style)[](fg:blue)"
+format = "$symbol"
 
 # ─────────────────────────────────────────────────────────────
 # Input prompt
