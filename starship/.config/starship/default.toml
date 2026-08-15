@@ -2,6 +2,8 @@
 
 add_newline = false
 palette = "jason"
+scan_timeout = 1000
+command_timeout = 5000
 
 format = """
 [╭─](fg:gray)\
