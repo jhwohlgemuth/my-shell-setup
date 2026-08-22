@@ -232,7 +232,7 @@ if $behind > 0 { $parts = ($parts | append $"⇣ ($behind)") }
 $parts | str join ' '
 """
 style = "fg:git_text bg:green"
-format = "[](fg:directory_bg bg:green)[ $output ]($style)[](fg:green)"
+format = "[](fg:directory_bg bg:green)[   $output ]($style)[](fg:green)"
 
 [custom.git_dirty]
 description = "Render a contrasting Git segment for dirty repositories"
@@ -294,7 +294,7 @@ if $behind > 0 { $parts = ($parts | append $"⇣ ($behind)") }
 $parts | str join ' '
 """
 style = "fg:git_dirty_text bg:git_dirty_bg"
-format = "[](fg:directory_bg bg:git_dirty_bg)[ $output ]($style)[](fg:git_dirty_bg)"
+format = "[](fg:directory_bg bg:git_dirty_bg)[   $output ]($style)[](fg:git_dirty_bg)"
 
 # ─────────────────────────────────────────────────────────────
 # Git
