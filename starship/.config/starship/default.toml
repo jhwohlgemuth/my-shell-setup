@@ -148,7 +148,7 @@ format = "[](fg:black bg:yellow)[ $user ]($style)[](fg:yellow)"
 
 [directory]
 style = "bold fg:directory_text bg:directory_bg"
-format = "[](fg:black bg:directory_bg)[  $path ]($style)"
+format = "[](fg:black bg:directory_bg)[   $path ]($style)"
 truncation_length = 3
 truncate_to_repo = false
 read_only = " "
