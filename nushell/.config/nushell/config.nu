@@ -141,6 +141,7 @@ $env.config.abbreviations = {
 use modules/git.nu *
 use modules/docker.nu *
 use modules/system.nu *
+use modules/theme.nu *
 
 # =============================================================================
 # Keybindings

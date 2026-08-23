@@ -73,6 +73,28 @@ git_dirty_text = "#282C34"
 status_text = "#282C34"
 status_error_text = "#FFFFFF"
 
+[palettes.nord]
+black = "#2E3440"
+blue = "#81A1C1"
+green = "#A3BE8C"
+gray = "#4C566A"
+orange = "#D08770"
+red = "#BF616A"
+white = "#D8DEE9"
+yellow = "#EBCB8B"
+cyan = "#88C0D0"
+purple = "#B48EAD"
+os_text = "#2E3440"
+username_text = "#2E3440"
+root_text = "#ECEFF4"
+directory_bg = "#81A1C1"
+directory_text = "#2E3440"
+git_text = "#2E3440"
+git_dirty_bg = "#EBCB8B"
+git_dirty_text = "#2E3440"
+status_text = "#2E3440"
+status_error_text = "#ECEFF4"
+
 [palettes.ornl]
 black = "#373A36"
 blue = "#006BA6"
@@ -102,11 +124,11 @@ pulsar = "#4E008E"
 os_text = "#373A36"
 username_text = "#373A36"
 root_text = "#FFFFFF"
-directory_bg = "#005776"
-directory_text = "#8BFEBF"
+directory_bg = "#00662C"
+directory_text = "#FFFFFF"
 git_text = "#FFFFFF"
-git_dirty_bg = "#8BFEBF"
-git_dirty_text = "#373A36"
+git_dirty_bg = "#B50094"
+git_dirty_text = "#FFFFFF"
 status_text = "#FFFFFF"
 status_error_text = "#FFFFFF"
 
@@ -147,7 +169,7 @@ format = "[](fg:black bg:yellow)[ $user ]($style)[](fg:yellow)"
 # ─────────────────────────────────────────────────────────────
 
 [directory]
-style = "bold fg:directory_text bg:directory_bg"
+style = "fg:directory_text bg:directory_bg"
 format = "[](fg:black bg:directory_bg)[   $path ]($style)"
 truncation_length = 3
 truncate_to_repo = false
