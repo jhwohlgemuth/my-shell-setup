@@ -18,6 +18,8 @@ This package contains the Neovim setup used by this repository.
 stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow neovim
 ```
 
+This installs the configuration at `~/.config/nvim` on Linux and macOS.
+
 2. Start Neovim. If plugins are missing, vim-plug will auto-install them on startup.
 
 3. Optional health checks:
@@ -26,6 +28,10 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow neovim
 :checkhealth
 :checkhealth codecompanion
 ```
+
+On Windows, run `Invoke-WindowsSetup.ps1` from the repository root. It copies
+this package to `%LOCALAPPDATA%\nvim`, the location returned by
+`stdpath('config')` in a standard Windows Neovim installation.
 
 ## Daily Usage
 

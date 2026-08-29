@@ -1,3 +1,6 @@
-if exists("loaded_colorizer")
-    lua require'colorizer'.setup()
-endif
+lua << EOF
+local ok, colorizer = pcall(require, "colorizer")
+if ok then
+    colorizer.setup()
+end
+EOF

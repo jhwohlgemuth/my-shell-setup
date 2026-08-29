@@ -1,4 +1,8 @@
 " Coc Settings {{{
+if empty(globpath(&runtimepath, 'autoload/coc.vim'))
+  finish
+endif
+
 let g:coc_disable_startup_warning = 1
 let g:coc_global_extensions = [
   \ 'coc-css',
@@ -141,7 +145,7 @@ let g:coc_user_snippets_directory = stdpath('config') . '/snippets'
 " Explorer {{{
 let g:coc_explorer_global_presets = {
 \   '.vim': {
-\     'root-uri': '~/AppData/Local/nvim',
+\     'root-uri': stdpath('config'),
 \   },
 \   'tab': {
 \     'position': 'tab',

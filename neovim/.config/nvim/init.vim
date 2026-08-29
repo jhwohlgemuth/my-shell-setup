@@ -1,6 +1,6 @@
 let $VIMCONFIG = stdpath('config')
 
-source $VIMCONFIG/general/settings.vim
-source $VIMCONFIG/general/mappings.vim
-source $VIMCONFIG/general/plugins.vim
-source $VIMCONFIG/themes/onedark.vim
+execute 'source' fnameescape($VIMCONFIG . '/general/settings.vim')
+execute 'source' fnameescape($VIMCONFIG . '/general/mappings.vim')
+execute 'source' fnameescape($VIMCONFIG . '/general/plugins.vim')
+execute 'source' fnameescape($VIMCONFIG . '/themes/onedark.vim')

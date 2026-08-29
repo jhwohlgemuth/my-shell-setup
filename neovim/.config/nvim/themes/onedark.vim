@@ -1,4 +1,8 @@
 " onedark.vim override: Don't set a background color when running in a terminal
+if empty(globpath(&runtimepath, 'colors/onedark.vim'))
+    finish
+endif
+
 if (has("autocmd") && !has("gui_running"))
   augroup colorset
     autocmd!

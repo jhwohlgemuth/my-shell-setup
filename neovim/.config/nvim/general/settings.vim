@@ -18,7 +18,11 @@ set smartindent
 set smarttab
 set termguicolors
 set timeoutlen=100
-set undodir=$VIMCONFIG/undo
+let s:undo_dir = stdpath('state') . '/undo'
+if !isdirectory(s:undo_dir)
+    call mkdir(s:undo_dir, 'p')
+endif
+let &undodir = s:undo_dir
 set undofile
 set updatetime=100
 syntax enable

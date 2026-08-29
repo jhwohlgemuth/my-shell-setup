@@ -1,20 +1,27 @@
 " Install vim-plug if not found
-let uname = substitute(system('uname'),'\n','','')
-if uname == 'Linux'
-    if empty(glob('~/.config/nvim/autoload/plug.vim'))
-        silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    endif
-else
-    if empty(glob('~/AppData/Local/nvim/autoload/plug.vim'))
-        execute 'silent !curl -fLo' shellescape("%HOMEDRIVE%%HOMEPATH%/AppData/Local/nvim/autoload/plug.vim", 1) '--create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    endif
+let s:plug_vim = stdpath('data') . '/site/autoload/plug.vim'
+if empty(glob(s:plug_vim)) && executable('curl')
+    silent execute '!curl -fLo ' . shellescape(s:plug_vim)
+        \ . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+if empty(glob(s:plug_vim))
+    echoerr 'vim-plug is missing and could not be installed; ensure curl is available'
+    finish
+endif
+
+if !exists('*plug#begin')
+    execute 'source' fnameescape(s:plug_vim)
 endif
 
 " Automatically install missing plugins on startup
-autocmd VimEnter *
-  \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \|   PlugInstall --sync | q
-  \| endif
+augroup vim_plug_install
+    autocmd!
+    autocmd VimEnter *
+      \  if exists('g:plugs') && len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+      \|   PlugInstall --sync | execute 'source' fnameescape($MYVIMRC)
+      \| endif
+augroup END
 
 call plug#begin()
 
@@ -35,7 +42,6 @@ Plug 't9md/vim-choosewin'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'joshdick/onedark.vim'
-Plug 'cj/vim-webdevicons'
 Plug 'luochen1990/rainbow'
 Plug 'liuchengxu/vim-which-key'
 Plug 'norcalli/nvim-colorizer.lua'
@@ -66,17 +72,21 @@ Plug 'dense-analysis/ale'
 Plug 'folke/snacks.nvim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'MattesGroeger/vim-bookmarks'
+" vim-devicons must load after the plugins it decorates.
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
 " Source plugin-specific configs
-source $VIMCONFIG/plug-config/airline.vim
-source $VIMCONFIG/plug-config/choosewin.vim
-source $VIMCONFIG/plug-config/colorizer.vim
-source $VIMCONFIG/plug-config/rainbow.vim
-source $VIMCONFIG/plug-config/sneak.vim
-source $VIMCONFIG/plug-config/coc.vim
-source $VIMCONFIG/plug-config/crates.vim
-source $VIMCONFIG/plug-config/ale.vim
-source $VIMCONFIG/plug-config/snacks.vim
-source $VIMCONFIG/plug-config/codecompanion.vim
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/airline.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/choosewin.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/colorizer.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/fzf.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/rainbow.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/sneak.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/which-key.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/coc.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/crates.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/ale.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/snacks.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/codecompanion.vim')

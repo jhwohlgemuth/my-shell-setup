@@ -1,3 +1,7 @@
+if empty(globpath(&runtimepath, 'autoload/which_key.vim'))
+  finish
+endif
+
 let g:which_key_timeout = 100
 let g:which_key_display_names = {'<CR>': '↵', '<TAB>': '⇆'}
 let g:which_key_sep = '→'
@@ -31,7 +35,7 @@ let g:which_key_map.t = {
       \ 'g' : [':lua Snacks.lazygit()', 'git'],
       \ 'm' : [':lua Snacks.terminal.toggle("python", "python")', 'python'],
       \ 'n' : [':lua Snacks.terminal.toggle("node", "node")', 'node'],
-      \ 'p' : [':lua Snacks.terminal.toggle("powershell", "powershell")', 'powershell'],
+      \ 'p' : [':lua Snacks.terminal.toggle("powershell", vim.fn.executable("pwsh") == 1 and "pwsh" or "powershell")', 'PowerShell'],
       \ 't' : [':lua Snacks.terminal.toggle()', 'toggle'],
       \ }
 call which_key#register('<Space>', "g:which_key_map")

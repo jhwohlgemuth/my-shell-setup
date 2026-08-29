@@ -1,5 +1,10 @@
 lua << EOF
-require("snacks").setup({
+local ok, snacks = pcall(require, "snacks")
+if not ok then
+    return
+end
+
+snacks.setup({
     animate = { enabled = true },
     bigfile = { enabled = true },
     bufdelete = { enabled = true },
