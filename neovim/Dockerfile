@@ -16,4 +16,5 @@ USER testuser
 WORKDIR /home/testuser
 RUN nvim --headless "+PlugInstall --sync" +qa
 RUN nvim --headless "+lua for name, plugin in pairs(vim.g.plugs) do if vim.fn.isdirectory(plugin.dir) == 0 then print('Missing plugin: ' .. name); vim.cmd('cquit') end end; if vim.v.errmsg ~= '' then print(vim.v.errmsg); vim.cmd('cquit') end" +qa
+RUN nvim --headless "+lua Snacks.picker.files(); vim.wait(1000); if vim.v.errmsg ~= '' then print(vim.v.errmsg); vim.cmd('cquit') end" +qa
 CMD ["nvim"]

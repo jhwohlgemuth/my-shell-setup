@@ -50,7 +50,7 @@ Plug 'chrisbra/csv.vim'
 " === Editing ===
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-Plug 'jiangmiao/auto-pairs'
+Plug 'windwp/nvim-autopairs'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'alvan/vim-closetag'
 Plug 'godlygeek/tabular'
@@ -79,6 +79,7 @@ call plug#end()
 
 " Source plugin-specific configs
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/airline.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/autopairs.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/choosewin.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/colorizer.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/fzf.vim')
