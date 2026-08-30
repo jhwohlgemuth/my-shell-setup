@@ -38,26 +38,35 @@ git clone https://github.com/jhwohlgemuth/my-shell-setup "${HOME}/.dotfiles"
 ```shell
 stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh powerlevel10k powershell
 ```
+- clojure
+  - [Leiningen](https://leiningen.org/) user profile, aliases, dependencies, and plugins - [`profiles.clj`](./clojure/.lein/profiles.clj)
 - elixir
   - [IEx](https://hexdocs.pm/iex/1.12/IEx.html) configuration - [`.iex.exs`](./elixir/.iex.exs)
 - git
   - Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases - [`.gitconfig`](./git/.gitconfig)
 - gold
   - Collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for motivation and example usage.
+- hunk
+  - Review configuration - [`config.toml`](./hunk/.config/hunk/config.toml)
 - neovim
   - Usage and plugin guide - [README.md](./neovim/README.md)
   - Themes - [`themes/`](./neovim/.config/nvim/themes/)
   - Editor configuration - [`init.vim`](./neovim/.config/nvim/init.vim) and [`general/`](./neovim/.config/nvim/general/)
   - Plugin configuration - [`plug-config/`](./neovim/.config/nvim/plug-config/)
+- nushell
+  - Shell configuration - [`config.nu`](./nushell/.config/nushell/config.nu) and [`env.nu`](./nushell/.config/nushell/env.nu)
+  - Setup and reusable modules - [`setup.nu`](./nushell/.config/nushell/setup.nu) and [`modules/`](./nushell/.config/nushell/modules/)
 - ocaml
   - [utop](https://github.com/ocaml-community/utop) configuration - [`init.ml`](./ocaml/.config/utop/init.ml) and [`.utoprc`](./ocaml/.utoprc)
 - ohmyposh
   - Theme - [`.theme.omp.json`](./ohmyposh/.theme.omp.json)
-- powerlevel10k 
+- powerlevel10k
   - Configuration - [`.p10k.zsh`](./powerlevel10k/.p10k.zsh)
 - powershell
-  - Profile - [`Microsoft.Powershell_profile.ps1`](./powershell/.config/powershell/Microsoft.Powershell_profile.ps1)
-  - Settings - [`settings.json`](./public/settings.json)
+  - Profile - [`Microsoft.PowerShell_profile.ps1`](./powershell/.config/powershell/Microsoft.PowerShell_profile.ps1)
+  - Settings - [`settings.json`](./powershell/settings.json)
+- starship
+  - Prompt configuration and default theme - [`starship.toml`](./starship/.config/starship.toml) and [`default.toml`](./starship/.config/starship/default.toml)
 
 ### Remove packages
 ```shell
