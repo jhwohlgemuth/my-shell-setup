@@ -4,13 +4,22 @@ This project codifies how I configure my development environment across Windows,
 
 🚀 Quick Start
 --------------
-Run this in a Linux (or Mac) terminal
+Run this in a Linux or macOS terminal:
+
 ```bash
 curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash
 ```
 
 > [!TIP]
 > You can also pass package names to the script with `curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash -s -- <packages>` where the list of packages can include any listed in the [install packages](#install-packages) section
+
+On Windows, run this in PowerShell:
+
+```powershell
+irm https://shell.jasonwohlgemuth.me/install.ps1 | iex
+```
+
+The Windows installer requires Git. It clones the repository to `$HOME\.dotfiles` (or updates an existing clone), then installs the Nushell, Neovim, and Starship configuration. Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
 
 🤓 Manual Setup
 ------------
