@@ -50,6 +50,12 @@ export def x [] {
     $in | explore
 }
 
+# Create a directory and change into it.
+export def --env take [name: string] {
+    mkdir $name
+    cd $name
+}
+
 # Returns true when an external command is available on PATH.
 export def "command exists" [name: string]: nothing -> bool {
     which $name | is-not-empty
