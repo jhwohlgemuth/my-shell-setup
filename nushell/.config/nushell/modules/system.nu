@@ -60,3 +60,8 @@ export def --env take [name: string] {
 export def "command exists" [name: string]: nothing -> bool {
     which $name | is-not-empty
 }
+
+# Force-remove files and directories recursively.
+export def --wrapped rf [...rest: string] {
+    rm --force --recursive ...$rest
+}
