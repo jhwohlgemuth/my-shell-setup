@@ -52,6 +52,7 @@ git_dirty_bg = "#F3AE35"
 git_dirty_text = "#262B44"
 status_text = "#E0DEF4"
 status_error_text = "#FFFFFF"
+status_success_bg = "#00662C"
 
 [palettes.one_dark]
 black = "#282C34"
@@ -76,6 +77,7 @@ git_dirty_bg = "#E5C07B"
 git_dirty_text = "#282C34"
 status_text = "#282C34"
 status_error_text = "#FFFFFF"
+status_success_bg = "#00662C"
 
 [palettes.nord]
 black = "#2E3440"
@@ -100,6 +102,7 @@ git_dirty_bg = "#EBCB8B"
 git_dirty_text = "#2E3440"
 status_text = "#2E3440"
 status_error_text = "#ECEFF4"
+status_success_bg = "#00662C"
 
 [palettes.ornl]
 black = "#373A36"
@@ -139,6 +142,7 @@ git_dirty_bg = "#B50094"
 git_dirty_text = "#FFFFFF"
 status_text = "#FFFFFF"
 status_error_text = "#FFFFFF"
+status_success_bg = "#00662C"
 
 [fill]
 symbol = "·"
@@ -362,11 +366,11 @@ disabled = false
 # Failure uses a red icon on the same blue background so that the
 # transition remains seamless.
 style = "fg:status_error_text bg:red"
-success_style = "fg:status_text bg:blue"
+success_style = "fg:status_text bg:status_success_bg"
 failure_style = "fg:status_error_text bg:red"
 
 symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
-success_symbol = "[](fg:black bg:blue)[  ](fg:status_text bg:blue)[](fg:blue)"
+success_symbol = "[](fg:black bg:status_success_bg)[  ](fg:status_text bg:status_success_bg)[](fg:status_success_bg)"
 not_executable_symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
 not_found_symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
 sigint_symbol = "[](fg:black bg:red)[  ](fg:status_error_text bg:red)[](fg:red)"
