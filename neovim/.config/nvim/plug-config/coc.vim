@@ -18,7 +18,6 @@ let g:coc_global_extensions = [
   \ 'coc-pyright',
   \ '@yaegassy/coc-ruff',
   \ 'coc-rust-analyzer',
-  \ 'coc-reason',
   \ 'coc-snippets',
   \ 'coc-vimlsp',
   \ 'coc-xml',
@@ -192,3 +191,13 @@ imap <C-j> <Plug>(coc-snippets-expand-jump)
 " }}}
 " Disable UltiSnips (requires Python provider, we use native coc snippets)
 call coc#config('snippets.ultisnips.enable', v:false)
+
+" Optional Reason/OCaml support from the active opam environment.
+" https://reasonml.github.io/docs/en/editor-plugins
+if executable('ocamllsp') && executable('refmt')
+  call coc#config('languageserver.ocaml', {
+    \ 'command': exepath('ocamllsp'),
+    \ 'filetypes': ['ocaml', 'reason'],
+    \ 'rootPatterns': ['dune-project', 'dune-workspace', '*.opam']
+    \ })
+endif

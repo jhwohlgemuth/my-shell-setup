@@ -44,7 +44,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'joshdick/onedark.vim'
 Plug 'luochen1990/rainbow'
 Plug 'liuchengxu/vim-which-key'
-Plug 'norcalli/nvim-colorizer.lua'
+Plug 'catgoose/nvim-colorizer.lua', {'as': 'colorizer'}
 Plug 'chrisbra/csv.vim'
 
 " === Editing ===
@@ -68,6 +68,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'saecki/crates.nvim'
 
 " === Tools ===
+Plug 'nvim-orgmode/orgmode'
 Plug 'dense-analysis/ale'
 Plug 'folke/snacks.nvim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
@@ -88,6 +89,7 @@ execute 'source' fnameescape($VIMCONFIG . '/plug-config/sneak.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/which-key.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/coc.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/crates.vim')
+execute 'source' fnameescape($VIMCONFIG . '/plug-config/orgmode.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/ale.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/snacks.vim')
 execute 'source' fnameescape($VIMCONFIG . '/plug-config/codecompanion.vim')

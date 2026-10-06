@@ -77,6 +77,36 @@ Useful CoC commands:
 - `:Format`
 - `:OR` (organize imports)
 
+If an existing installation reports `(e.adapter || i.adapter) is not a function`
+on startup, check `:CocOpenLog`. The bundled downloader in `coc-reason` 0.1.2
+causes this error; this setup no longer installs that extension. Run
+`:CocUninstall coc-reason` once to remove an already-installed copy, then restart
+Neovim. Removing an extension from the automatic install list alone does not
+uninstall it.
+
+On Windows, `Error on install ...: Error: spawn EINVAL` can indicate an old CoC
+release trying to launch `npm.cmd` directly with a newer Node.js version. Run
+`:PlugUpdate coc.nvim`, restart Neovim, and retry with
+`:CocInstall coc-pyright @yaegassy/coc-ruff`. CoC's updated installer handles
+Windows command wrappers; changing Python settings does not fix this failure.
+
+### Optional Reason / OCaml Support
+
+CoC configures OCaml-LSP automatically when both `ocamllsp` and `refmt` are on
+Neovim's PATH. If either is missing, this setup skips the server configuration.
+The server is used for `reason` and `ocaml` buffers.
+
+Install the dependencies in your project's opam switch:
+
+```sh
+opam install ocaml-lsp-server reason
+opam exec -- nvim
+```
+
+Launch Neovim from the project directory with the appropriate switch active.
+Restart Neovim after installing dependencies or changing switches. This uses
+CoC's language server support directly and does not require `coc-reason`.
+
 ### ALE (non-LSP lint/fix)
 
 ALE is used for non-LSP tools while CoC handles LSP.
@@ -156,6 +186,19 @@ Visual undo history:
 ### Markdown Preview
 
 - Space m
+
+### Orgmode
+
+[nvim-orgmode](https://github.com/nvim-orgmode/orgmode) requires Neovim 0.12.0 or later.
+Create `~/orgfiles` for your Org files; the agenda searches this directory recursively,
+and captured notes go to `~/orgfiles/refile.org`.
+
+- Space o a: Open agenda prompt
+- Space o c: Open capture prompt
+- `g?` in an Org buffer: Show available mappings
+- `:help orgmode.txt`: Open documentation
+
+Settings are in `.config/nvim/plug-config/orgmode.vim`.
 
 ### Sneak
 
