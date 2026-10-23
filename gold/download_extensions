@@ -5,20 +5,21 @@ requires \
     curl \
     jq
 main() {
-    if [[ -z "$1" ]]; then
-        exit 1
-    else
-        ARGS=("$@")
-        for ARG in "${ARGS[@]}"; do
-            # shellcheck disable=SC2155
-            local NAMESPACE=$(echo "${ARG}" | cut -d. -f1)
-            # shellcheck disable=SC2155
-            local EXTENSION=$(echo "${ARG}" | cut -d. -f2)
-            # shellcheck disable=SC2155
-            local URL=$(curl -X 'GET' "https://open-vsx.org/api/${NAMESPACE}/${EXTENSION}" -H 'accept: application/json' | jq .downloads.universal)
-            local CMD="curl -fsSL ${URL} --output ${NAMESPACE}.${EXTENSION}.vsix"
-            eval "${CMD}"
-        done
+    local ARG NAMESPACE EXTENSION RESPONSE URL
+    if [[ "$#" -eq 0 ]]; then
+        printf 'Usage: %s <publisher.extension>...\n' "$(basename "$0")" >&2
+        return 2
     fi
+    for ARG in "$@"; do
+        if [[ ! "${ARG}" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*\.[A-Za-z0-9][A-Za-z0-9_-]*$ ]]; then
+            printf 'Invalid extension ID: %s\n' "${ARG}" >&2
+            return 2
+        fi
+        NAMESPACE="${ARG%%.*}"
+        EXTENSION="${ARG#*.}"
+        RESPONSE="$(curl -fsSL -- "https://open-vsx.org/api/${NAMESPACE}/${EXTENSION}")"
+        URL="$(jq -er '.downloads.universal | select(type == "string" and startswith("https://"))' <<< "${RESPONSE}")"
+        curl -fsSL --output "${ARG}.vsix" -- "${URL}"
+    done
 }
 main "$@"
