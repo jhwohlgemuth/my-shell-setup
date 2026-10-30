@@ -11,7 +11,19 @@ curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash
 ```
 
 > [!TIP]
-> You can also pass package names to the script with `curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash -s -- <packages>` where the list of packages can include any listed in the [install packages](#install-packages) section
+> Install only selected packages by passing their names after `bash -s --`:
+>
+> ```bash
+> curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash -s -- git neovim agents
+> ```
+>
+> Separate arguments are recommended. A comma-separated list also works:
+>
+> ```bash
+> curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash -s -- git,neovim,agents
+> ```
+>
+> Package names must match directories listed under [Install packages](#install-packages). With no names, the installer uses its default package set.
 
 On Windows, run this in PowerShell:
 
@@ -19,7 +31,13 @@ On Windows, run this in PowerShell:
 irm https://shell.jasonwohlgemuth.me/install.ps1 | iex
 ```
 
-The Windows installer requires Git. It clones the repository to `$HOME\.dotfiles` (or updates an existing clone), then installs the Nushell, Neovim, and Starship configuration. Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
+To install only selected Windows packages, invoke the downloaded script with `-Packages`:
+
+```powershell
+& ([scriptblock]::Create((irm https://shell.jasonwohlgemuth.me/install.ps1))) -Packages nushell,starship
+```
+
+The Windows installer supports `nushell`, `neovim`, and `starship`; with no package names, it installs all three. Package names can be separate array values, comma-separated strings, or space-separated strings. The installer requires Git and clones the repository to `$HOME\.dotfiles` (or updates an existing clone). Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
 
 🤓 Manual Setup
 ------------
@@ -38,35 +56,42 @@ git clone https://github.com/jhwohlgemuth/my-shell-setup "${HOME}/.dotfiles"
 ```shell
 stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh powerlevel10k powershell
 ```
-- clojure
-  - [Leiningen](https://leiningen.org/) user profile, aliases, dependencies, and plugins - [`profiles.clj`](./clojure/.lein/profiles.clj)
-- elixir
-  - [IEx](https://hexdocs.pm/iex/1.12/IEx.html) configuration - [`.iex.exs`](./elixir/.iex.exs)
-- git
-  - Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases - [`.gitconfig`](./git/.gitconfig)
-- gold
-  - Collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for motivation and example usage.
-- hunk
-  - Review configuration - [`config.toml`](./hunk/.config/hunk/config.toml)
-- neovim
-  - Usage and plugin guide - [README.md](./neovim/README.md)
-  - Themes - [`themes/`](./neovim/.config/nvim/themes/)
-  - Editor configuration - [`init.vim`](./neovim/.config/nvim/init.vim) and [`general/`](./neovim/.config/nvim/general/)
-  - Plugin configuration - [`plug-config/`](./neovim/.config/nvim/plug-config/)
-- nushell
-  - Shell configuration - [`config.nu`](./nushell/.config/nushell/config.nu) and [`env.nu`](./nushell/.config/nushell/env.nu)
-  - Setup and reusable modules - [`setup.nu`](./nushell/.config/nushell/setup.nu) and [`modules/`](./nushell/.config/nushell/modules/)
-- ocaml
-  - [utop](https://github.com/ocaml-community/utop) configuration - [`init.ml`](./ocaml/.config/utop/init.ml) and [`.utoprc`](./ocaml/.utoprc)
-- ohmyposh
-  - Theme - [`.theme.omp.json`](./ohmyposh/.theme.omp.json)
-- powerlevel10k
-  - Configuration - [`.p10k.zsh`](./powerlevel10k/.p10k.zsh)
-- powershell
-  - Profile - [`Microsoft.PowerShell_profile.ps1`](./powershell/.config/powershell/Microsoft.PowerShell_profile.ps1)
-  - Settings - [`settings.json`](./powershell/settings.json)
-- starship
-  - Prompt configuration and default theme - [`starship.toml`](./starship/.config/starship.toml) and [`default.toml`](./starship/.config/starship/default.toml)
+
+| Package | Configuration |
+| --- | --- |
+| <img src="https://api.iconify.design/mdi/robot-outline.svg?color=%238a8a8a" width="20" height="20" alt="Agent skills logo"> [agents](./agents/README.md) | Personal AI agent skills installed into `~/.agents` — [`skills/`](./agents/.agents/skills)<br>Waza development and test workflow — [`README.md`](./agents/README.md) |
+| <img src="https://cdn.simpleicons.org/clojure" width="20" height="20" alt="Clojure logo"> [clojure](./clojure/README.md) | [Leiningen](https://leiningen.org/) user profile, aliases, dependencies, and plugins — [`profiles.clj`](./clojure/.lein/profiles.clj) |
+| <img src="https://cdn.simpleicons.org/elixir" width="20" height="20" alt="Elixir logo"> [elixir](./elixir/README.md) | [IEx](https://hexdocs.pm/iex/1.12/IEx.html) configuration — [`.iex.exs`](./elixir/.iex.exs) |
+| <img src="https://cdn.simpleicons.org/git" width="20" height="20" alt="Git logo"> [git](./git/README.md) | Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases — [`.gitconfig`](./git/.gitconfig) |
+| <img src="https://cdn.simpleicons.org/gnubash" width="20" height="20" alt="GNU Bash logo"> [gold](./gold/README.md) | Collection of utility functions and installation scripts. See the [Gold](https://github.com/jhwohlgemuth/gold) project for motivation and example usage. |
+| <img src="https://raw.githubusercontent.com/modem-dev/hunk/main/assets/hunk-logo.webp" width="20" height="20" alt="Hunk logo"> [hunk](./hunk/README.md) | Review configuration — [`config.toml`](./hunk/.config/hunk/config.toml) |
+| <img src="https://cdn.simpleicons.org/neovim" width="20" height="20" alt="Neovim logo"> [neovim](./neovim/README.md) | Usage and plugin guide — [README.md](./neovim/README.md)<br>Themes — [`themes/`](./neovim/.config/nvim/themes/)<br>Editor configuration — [`init.vim`](./neovim/.config/nvim/init.vim) and [`general/`](./neovim/.config/nvim/general/)<br>Plugin configuration — [`plug-config/`](./neovim/.config/nvim/plug-config/) |
+| <img src="https://cdn.simpleicons.org/nushell" width="20" height="20" alt="Nushell logo"> [nushell](./nushell/README.md) | Shell configuration — [`config.nu`](./nushell/.config/nushell/config.nu) and [`env.nu`](./nushell/.config/nushell/env.nu)<br>Setup and reusable modules — [`setup.nu`](./nushell/.config/nushell/setup.nu) and [`modules/`](./nushell/.config/nushell/modules/) |
+| <img src="https://cdn.simpleicons.org/ocaml" width="20" height="20" alt="OCaml logo"> [ocaml](./ocaml/README.md) | [utop](https://github.com/ocaml-community/utop) configuration — [`init.ml`](./ocaml/.config/utop/init.ml) and [`.utoprc`](./ocaml/.utoprc) |
+| <img src="https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/website/static/img/logo-dark.svg#gh-light-mode-only" width="20" height="20" alt="Oh My Posh logo"><img src="https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/website/static/img/logo-light.svg#gh-dark-mode-only" width="20" height="20" alt="Oh My Posh logo"> [ohmyposh](./ohmyposh/README.md) | Theme — [`.theme.omp.json`](./ohmyposh/.theme.omp.json) |
+| <img src="https://cdn.simpleicons.org/zsh" width="20" height="20" alt="Zsh logo"> [powerlevel10k](./powerlevel10k/README.md) | Configuration — [`.p10k.zsh`](./powerlevel10k/.p10k.zsh) |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/powershell/powershell-original.svg" width="20" height="20" alt="PowerShell logo"> [powershell](./powershell/README.md) | Profile — [`Microsoft.PowerShell_profile.ps1`](./powershell/.config/powershell/Microsoft.PowerShell_profile.ps1)<br>Settings — [`settings.json`](./powershell/settings.json) |
+| <img src="https://cdn.simpleicons.org/starship" width="20" height="20" alt="Starship logo"> [starship](./starship/README.md) | Prompt configuration and default theme — [`starship.toml`](./starship/.config/starship.toml) and [`default.toml`](./starship/.config/starship/default.toml) |
+
+### Agent skills
+
+Install the agent skills into the home directory target used by the other packages. The package's `.agents/` directory maps to `~/.agents`:
+
+```shell
+stow --no-folding --dir "${HOME}/.dotfiles" --target "${HOME}" --stow agents
+```
+
+From the repository root, verify the Stow layout without changing your home directory, then use Waza for static checks, a credential-free mock test, or interactive development:
+
+```shell
+make agents-stow-check
+make agents-check
+make agents-test
+make agents-dev
+```
+
+The included `blank-test` skill is a canary for skill discovery. Ask an agent to run the blank test skill after installation; a successful invocation returns `BLANK_TEST_SKILL_OK`.
+Pass `AGENT_SKILL=<name>` to the Waza Make targets to develop another skill. See the [agent skills guide](./agents/README.md) for Waza installation and scaffolding.
 
 ### Remove packages
 ```shell

@@ -1,0 +1,17 @@
+skill: blank-test
+
+should_trigger_prompts:
+  - prompt: "Run the blank test skill."
+    reason: "Explicit request for the canary skill."
+    confidence: high
+  - prompt: "Verify that my personal agent skills are discoverable."
+    reason: "The skill exists to verify personal skill discovery."
+    confidence: high
+
+should_not_trigger_prompts:
+  - prompt: "Run the application test suite."
+    reason: "Application testing is outside this canary's scope."
+    confidence: high
+  - prompt: "Check whether GNU Stow is installed."
+    reason: "Dependency inspection does not require invoking the canary skill."
+    confidence: high

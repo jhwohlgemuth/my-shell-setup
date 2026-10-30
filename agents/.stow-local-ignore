@@ -1,0 +1,6 @@
+\.github
+\.gitignore
+README\.md
+evals
+tests
+trigger_tests\.yaml

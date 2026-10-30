@@ -1,0 +1,14 @@
+id: blank-test-unrelated-001
+name: Unrelated testing stays outside blank test
+description: Verify that general tests, application verification, and dependency checks remain outside this skill's scope.
+tags:
+  - negative
+  - routing
+
+inputs:
+  prompt: "Run the application test suite and check its dependencies. Do not use the blank test skill for this unrelated verification."
+
+expected:
+  should_trigger: false
+  output_contains:
+    - "blank test skill"

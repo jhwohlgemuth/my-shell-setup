@@ -1,4 +1,40 @@
-.PHONY: format neovim
+.PHONY: agents-check agents-dev agents-install agents-remove agents-stow-check agents-test format neovim
+
+AGENTS_PACKAGE = agents
+AGENT_SKILL ?= blank-test
+AGENTS_SKILL = $(AGENTS_PACKAGE)/.agents/skills/$(AGENT_SKILL)
+AGENTS_TARGET ?= $(HOME)
+STOW ?= stow
+WAZA ?= waza
+
+agents-install:
+	mkdir -p "$(AGENTS_TARGET)"
+	$(STOW) --no-folding --dir "$(CURDIR)" --target "$(AGENTS_TARGET)" --restow "$(AGENTS_PACKAGE)"
+
+agents-remove:
+	$(STOW) --no-folding --dir "$(CURDIR)" --target "$(AGENTS_TARGET)" --delete "$(AGENTS_PACKAGE)"
+
+agents-stow-check:
+	@set -e; \
+	target=$$(mktemp -d /tmp/my-shell-setup-agents.XXXXXX); \
+	trap 'rm -rf "$$target"' EXIT; \
+	$(STOW) --no-folding --dir "$(CURDIR)" --target "$$target" --stow "$(AGENTS_PACKAGE)"; \
+	test -L "$$target/.agents/skills/blank-test/SKILL.md"; \
+	test ! -e "$$target/.agents/skills/blank-test/evals"; \
+	test ! -e "$$target/.agents/skills/blank-test/trigger_tests.yaml"
+
+agents-check:
+	$(WAZA) check "$(AGENTS_SKILL)"
+	$(WAZA) spec verify "$(AGENTS_SKILL)" "$(AGENTS_SKILL)/evals/eval.yaml" --fail
+
+agents-test:
+	@set -e; \
+	results=$$(mktemp -d /tmp/my-shell-setup-waza.XXXXXX); \
+	trap 'rm -rf "$$results"' EXIT; \
+	$(WAZA) run "$(AGENTS_SKILL)/evals/eval.yaml" --output "$$results/results.json"
+
+agents-dev:
+	$(WAZA) dev "$(AGENTS_SKILL)/SKILL.md"
 
 format:
 	@for path in $(GOLD) ; do \

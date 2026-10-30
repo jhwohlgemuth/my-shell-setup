@@ -1,0 +1,14 @@
+id: blank-test-smoke-001
+name: Blank test skill setup smoke test
+description: Exercise running the blank test skill, verifying that personal agent skills are installed, and confirming that agent skill discovery works.
+tags:
+  - smoke
+  - setup
+
+inputs:
+  prompt: "Run the blank test skill, verify that personal agent skills are installed, and confirm that agent skill discovery works."
+
+expected:
+  should_trigger: true
+  output_contains:
+    - "blank test skill"
