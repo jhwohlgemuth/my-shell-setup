@@ -1,13 +1,14 @@
-.PHONY: agents-check agents-ci agents-dev agents-install agents-preflight agents-real agents-remove agents-stow-check agents-test format neovim
+.PHONY: agents-check agents-ci agents-coverage agents-dev agents-install agents-preflight agents-real agents-remove agents-stow-check agents-test format neovim
 
 AGENTS_PACKAGE = agents
 AGENT_SKILL ?= blank-test
 AGENTS_SKILL = $(AGENTS_PACKAGE)/.agents/skills/$(AGENT_SKILL)
 AGENTS_TARGET ?= $(HOME)
+AGENT_RESULTS_DIR ?=
 STOW ?= stow
 WAZA ?= waza
 
-agents-install:
+agents-install: agents-stow-check
 	mkdir -p "$(AGENTS_TARGET)"
 	$(STOW) --no-folding --dir "$(CURDIR)" --target "$(AGENTS_TARGET)" --restow "$(AGENTS_PACKAGE)"
 
@@ -15,24 +16,7 @@ agents-remove:
 	$(STOW) --no-folding --dir "$(CURDIR)" --target "$(AGENTS_TARGET)" --delete "$(AGENTS_PACKAGE)"
 
 agents-stow-check:
-	@set -e; \
-	target=$$(mktemp -d /tmp/my-shell-setup-agents.XXXXXX); \
-	trap 'rm -rf "$$target"' EXIT; \
-	$(STOW) --no-folding --dir "$(CURDIR)" --target "$$target" --stow "$(AGENTS_PACKAGE)"; \
-	found=0; \
-	for skill_file in "$(AGENTS_PACKAGE)"/.agents/skills/*/SKILL.md; do \
-		[ -f "$$skill_file" ] || continue; \
-		found=1; \
-		skill=$${skill_file%/SKILL.md}; skill=$${skill##*/}; \
-		test -L "$$target/.agents/skills/$$skill/SKILL.md"; \
-		test ! -e "$$target/.agents/skills/$$skill/evals"; \
-		test ! -e "$$target/.agents/skills/$$skill/trigger_tests.yaml"; \
-	done; \
-	[ "$$found" -eq 1 ]; \
-	test -L "$$target/.agents/skills/pikchr-diagram/assets/workflow-map.pikchr"; \
-	test -L "$$target/.agents/skills/pikchr-diagram/agents/openai.yaml"; \
-	test -L "$$target/.agents/skills/rust-best-practices/references/detailed-guidance.md"; \
-	test -L "$$target/.agents/skills/rust-review/references/review-checklist.md"
+	python3 agents/scripts/check_stow.py --stow "$(STOW)"
 
 agents-check:
 	$(WAZA) check "$(AGENTS_SKILL)"
@@ -65,16 +49,23 @@ agents-test:
 agents-real:
 	@set -eu; \
 	$(MAKE) --no-print-directory agents-preflight AGENT_SKILL="$(AGENT_SKILL)"; \
-	results=$$(mktemp -d /tmp/my-shell-setup-waza-real.XXXXXX); \
+	results="$(AGENT_RESULTS_DIR)"; \
+	[ -n "$$results" ] || results=$$(mktemp -d /tmp/my-shell-setup-waza-real.XXXXXX); \
+	mkdir -p "$$results/$(AGENT_SKILL)"; \
 	echo "Real-agent results: $$results"; \
 	found=0; \
 	for suite in "$(AGENTS_SKILL)"/evals/*.yaml; do \
 		[ -f "$$suite" ] || continue; \
 		[ "$${suite##*/}" = eval.yaml ] && continue; \
 		found=1; \
-		$(WAZA) run "$$suite" --no-cache --output "$$results/$${suite##*/}.json"; \
+		$(WAZA) run "$$suite" --no-cache --output "$$results/$(AGENT_SKILL)/$${suite##*/}.json"; \
 	done; \
-	[ "$$found" -eq 1 ] || { echo "No real-agent suites for $(AGENTS_SKILL)" >&2; exit 1; }
+	[ "$$found" -eq 1 ] || { echo "No real-agent suites for $(AGENTS_SKILL)" >&2; exit 1; }; \
+	python3 agents/scripts/skill_coverage.py --waza "$(WAZA)" \
+		--results-root "$$results" --record-skill "$(AGENT_SKILL)"
+
+agents-coverage:
+	python3 agents/scripts/skill_coverage.py --waza "$(WAZA)" --strict
 
 agents-ci:
 	@set -eu; \
@@ -88,6 +79,7 @@ agents-ci:
 		$(MAKE) --no-print-directory agents-test AGENT_SKILL="$$skill"; \
 	done; \
 	[ "$$found" -eq 1 ] || { echo "No installed skill sources found" >&2; exit 1; }
+	$(MAKE) --no-print-directory agents-coverage WAZA="$(WAZA)"
 
 agents-dev:
 	$(WAZA) dev "$(AGENTS_SKILL)/SKILL.md"

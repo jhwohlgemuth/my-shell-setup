@@ -2,16 +2,16 @@ skill: rust-best-practices
 
 should_trigger_prompts:
   - prompt: "Implement an idiomatic Rust parser with Result."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+    reason: "The source skill applies to writing Rust code."
     confidence: high
-  - prompt: "Refactor this Rust library API for clear ownership and errors."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+  - prompt: "Review this Rust library API for ownership and error handling."
+    reason: "The source skill also applies to Rust reviews."
     confidence: high
 
 should_not_trigger_prompts:
-  - prompt: "Review this Rust module only; do not edit code."
-    reason: "Outside this skill's requested capability."
+  - prompt: "Write a poem about a lighthouse."
+    reason: "No Rust code is involved."
     confidence: high
   - prompt: "Write a Bash script to list files."
-    reason: "Outside this skill's requested capability."
+    reason: "No Rust code is involved."
     confidence: high

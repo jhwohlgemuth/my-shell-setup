@@ -2,7 +2,7 @@ id: guidelines-rust-routing-negative-001
 name: Keep guidelines-rust out of an unrelated request
 description: Observe the negative routing boundary without injecting the skill body.
 inputs:
-  prompt: "Review this existing Rust pull request only; list findings and do not modify code."
+  prompt: "Write a short poem about a lighthouse. No code is involved."
 expected:
   should_trigger: false
 graders:

@@ -15,11 +15,11 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-The copied skill, examples, Pikchr source, SVG, and agent metadata are installed. Its entrypoint now derives roles from the requested process; Acorn-specific actor assignments remain only in example material. Waza 0.39.1 static checks, 3/3 spec coverage, preflight, and mock tasks pass locally, and Stow preserves runtime assets while excluding evals. `mdbook` and `mdbook-pikchr` rendered the bundled source in a temporary book, and its SVG was inspected; model-generated output remains unverified because the available Copilot CLI is not authenticated.
+The Acorn skill is the official starting point. Its full `SKILL.md`, examples, Pikchr source, SVG, and agent metadata are restored unchanged. The original entrypoint includes ACORN actor guidance and explicitly says to adapt roles for other domains. Waza's 500-token advisory reports the original entrypoint as long; shortening it is not a prerequisite. Stow preserves runtime assets while excluding evals. `mdbook` and `mdbook-pikchr` rendered the bundled source in a temporary book, and its SVG was inspected; model-generated output remains unverified because the available Copilot CLI is not authenticated.
 
 ## Acceptance criteria
 
-The installed skill creates an editable Pikchr source and a visually checked output for a supplied process, assigns roles from that process rather than ACORN defaults, and does not trigger for quantitative plotting or screenshot editing. Its reference files and assets are present after Stow installation.
+The installed skill matches Acorn's source. Waza fixtures check an editable Pikchr source for a non-ACORN process with source-grounded roles, and avoid quantitative plotting and screenshot editing. Rendered output is visually checked, and references and assets are present after Stow installation. Any instruction change starts from a recorded baseline, model-backed failure, and user-reviewed proposal.
 
 # Execution phases
 

@@ -2,7 +2,8 @@ id: guidelines-rust-mock-description-001
 name: guidelines-rust description coverage
 description: Verify the skill's general promise has a loaded harness task.
 inputs:
-  prompt: "Use guidelines-rust to Apply minimal project-aware Rust editing guidance that favors clear control flow without imposing blanket style rules"
+  prompt: |
+    Use guidelines-rust. Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria. These guidelines should be applied to all coding tasks. Functional programming (FP) principles should be used whenever code is involved. FP emphasizes immutability, composability, and purity to create clearer, more predictable code. This skill should be applied whenever writing or modifying code, especially when it can lead to simpler and more maintainable solutions. Use this skill whenever code is involved.
 expected:
   should_trigger: true
   output_contains: ["guidelines-rust"]

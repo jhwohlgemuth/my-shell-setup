@@ -2,7 +2,8 @@ id: sort-rust-mock-description-001
 name: sort-rust description coverage
 description: Verify the skill's general promise has a loaded harness task.
 inputs:
-  prompt: "Use sort-rust to Reorder independent Rust declarations safely while keeping comments and attributes attached and preserving semantic order"
+  prompt: |
+    Use sort-rust. Deterministic sorting behavior for code that improves readability. This skill should be applied whenever writing or modifying code, especially when it can lead to simpler and more maintainable solutions. Use this skill whenever code is involved, especially when adding new code.
 expected:
   should_trigger: true
   output_contains: ["sort-rust"]

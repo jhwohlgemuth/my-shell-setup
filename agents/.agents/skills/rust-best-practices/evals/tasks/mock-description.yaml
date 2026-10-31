@@ -2,7 +2,8 @@ id: rust-best-practices-mock-description-001
 name: rust-best-practices description coverage
 description: Verify the skill's general promise has a loaded harness task.
 inputs:
-  prompt: "Use rust-best-practices to Guide Rust implementation with project-aware choices about ownership, errors, APIs, tests, and documentation"
+  prompt: |
+    Use rust-best-practices to write idiomatic, robust, maintainable Rust. Apply it whenever you write, review, refactor, debug, or explain Rust code: new crates, modules, functions, structs, traits, error types, async code, unsafe or FFI code, Cargo.toml, tests, or rustdoc. Trigger on any mention of Rust, cargo, crates, .rs files, the borrow checker, lifetimes, traits, clippy, or rustfmt, even if the user does not request best practices. This skill synthesizes the Google Rust Style Guide, Rust API Guidelines, Effective Rust, Rust Design Patterns, and Microsoft Pragmatic Rust Guidelines.
 expected:
   should_trigger: true
   output_contains: ["rust-best-practices"]

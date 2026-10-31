@@ -1,0 +1,14 @@
+id: sort-rust-routing-code-001
+name: Invoke sort-rust while adding Rust code
+description: The original skill says to apply deterministic ordering whenever code is involved.
+inputs:
+  prompt: "Add two independent Rust helper functions named zebra and alpha to this module. Keep the new declarations in a deterministic order."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_sort_rust_for_new_code
+    config:
+      required_skills: [sort-rust]
+      mode: any_order
+      allow_extra: true

@@ -2,10 +2,10 @@ skill: pikchr-diagram
 
 should_trigger_prompts:
   - prompt: "Create an editable Pikchr workflow diagram for a clinic."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+    reason: "The source skill creates editable Pikchr workflow diagrams."
     confidence: high
   - prompt: "Revise this Pikchr process map with explicit role labels."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+    reason: "The source skill revises Pikchr process maps."
     confidence: high
 
 should_not_trigger_prompts:

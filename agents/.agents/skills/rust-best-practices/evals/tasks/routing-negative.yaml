@@ -2,7 +2,7 @@ id: rust-best-practices-routing-negative-001
 name: Keep rust-best-practices out of an unrelated request
 description: Observe the negative routing boundary without injecting the skill body.
 inputs:
-  prompt: "Review this existing Rust module only; report findings without implementing changes."
+  prompt: "Write a short poem about a lighthouse. No Rust code is involved."
 expected:
   should_trigger: false
 graders:

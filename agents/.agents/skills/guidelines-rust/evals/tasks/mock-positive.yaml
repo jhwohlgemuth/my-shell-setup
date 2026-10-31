@@ -2,7 +2,7 @@ id: guidelines-rust-mock-positive-001
 name: guidelines-rust harness positive
 description: Verify the in-scope prompt is loaded by the mock harness.
 inputs:
-  prompt: "Use guidelines-rust to simplify Rust error handling in a small code change."
+  prompt: "Use guidelines-rust while reviewing and refactoring Rust code with functional programming principles."
 expected:
   should_trigger: true
   output_contains: ["guidelines-rust"]

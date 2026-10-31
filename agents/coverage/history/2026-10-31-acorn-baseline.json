@@ -1,0 +1,541 @@
+{
+  "schema_version": 1,
+  "skills": {
+    "guidelines-rust": {
+      "sections": [
+        {
+          "id": "intro",
+          "heading": "Introduction",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "ceef8a6a851c78bc8839b03dee08e50dc0f5279aa8d212ecdb0c760256136460",
+          "current_sha256": "ceef8a6a851c78bc8839b03dee08e50dc0f5279aa8d212ecdb0c760256136460",
+          "behavior": [],
+          "routing": [
+            "guidelines-rust-routing-negative-001",
+            "guidelines-rust-routing-positive-001",
+            "guidelines-rust-routing-review-001"
+          ],
+          "behavior_verified": false
+        },
+        {
+          "id": "0-always-prefer-functional-programming-style-when-possible",
+          "heading": "0. Always prefer functional programming style when possible",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "b8d1a844a2efc774f0a00bb7f8298a419b41758f54c9e8b9d568279a139e44ab",
+          "current_sha256": "b8d1a844a2efc774f0a00bb7f8298a419b41758f54c9e8b9d568279a139e44ab",
+          "behavior": [
+            "guidelines-rust-functional-style-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "1-think-before-coding",
+          "heading": "1. Think Before Coding",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "1b148c623b1bfeecc7885570bb752c8b476f5d4b3927d52b6fb2ff4e06c59246",
+          "current_sha256": "1b148c623b1bfeecc7885570bb752c8b476f5d4b3927d52b6fb2ff4e06c59246",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "2-simplicity-first",
+          "heading": "2. Simplicity First",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "4ed273c37e31b59118ae6f184e14a2f31b22d5b543aa4d1d1250ffd0f4150397",
+          "current_sha256": "4ed273c37e31b59118ae6f184e14a2f31b22d5b543aa4d1d1250ffd0f4150397",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "3-surgical-changes",
+          "heading": "3. Surgical Changes",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "596e3199ed5adcb3153d4440b841f59f422e24a0f05792dd182a972e329e4141",
+          "current_sha256": "596e3199ed5adcb3153d4440b841f59f422e24a0f05792dd182a972e329e4141",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "4-goal-driven-execution",
+          "heading": "4. Goal-Driven Execution",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "008e9366edcd30f359326240ed3917cbec9a1282e6f848b2f2ad4e21227c4573",
+          "current_sha256": "008e9366edcd30f359326240ed3917cbec9a1282e6f848b2f2ad4e21227c4573",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "5-rust-specific-guidelines",
+          "heading": "5. Rust-Specific Guidelines",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "c3e85b09fc2bf64b3474c4cd38c0d1f3ee154ca83b1f5ea900ace5048df8501a",
+          "current_sha256": "c3e85b09fc2bf64b3474c4cd38c0d1f3ee154ca83b1f5ea900ace5048df8501a",
+          "behavior": [
+            "guidelines-rust-error-handling-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "general-guidelines",
+          "heading": "General Guidelines",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "921be4090cadad5781f183cc029e0c730c429eaa50764a6f931cef779b4c1eea",
+          "current_sha256": "921be4090cadad5781f183cc029e0c730c429eaa50764a6f931cef779b4c1eea",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        }
+      ],
+      "added_sections": []
+    },
+    "pikchr-diagram": {
+      "sections": [
+        {
+          "id": "intro",
+          "heading": "Introduction",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "5929b82b831601ce0fa3d3e1167f4b7a41c55c2c7f474c80d05d22ddeed29287",
+          "current_sha256": "5929b82b831601ce0fa3d3e1167f4b7a41c55c2c7f474c80d05d22ddeed29287",
+          "behavior": [],
+          "routing": [
+            "pikchr-diagram-routing-negative-001",
+            "pikchr-diagram-routing-positive-001"
+          ],
+          "behavior_verified": false
+        },
+        {
+          "id": "reference-assets",
+          "heading": "Reference assets",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "dfd5c461bee6c4cf30c648a48e76fa3f934796ad1f20f8e886ba5b2e8ccd1949",
+          "current_sha256": "dfd5c461bee6c4cf30c648a48e76fa3f934796ad1f20f8e886ba5b2e8ccd1949",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "describe-the-process-before-drawing",
+          "heading": "Describe the process before drawing",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "233ec22aeb4b1af239d5488f32ab5c3ccf151270dfe35b7d6a1ad102947d6b9c",
+          "current_sha256": "233ec22aeb4b1af239d5488f32ab5c3ccf151270dfe35b7d6a1ad102947d6b9c",
+          "behavior": [
+            "pikchr-diagram-generic-workflow-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "visual-language",
+          "heading": "Visual language",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "e36e489a5f70bd8be19f132f9a12f821b1ea32057fcd679253f0bed2f131f0ba",
+          "current_sha256": "e36e489a5f70bd8be19f132f9a12f821b1ea32057fcd679253f0bed2f131f0ba",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "structure-and-connectors",
+          "heading": "Structure and connectors",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "1cde4ef227330ac5602577639a8bea4ffde9d311fefc857bb4c59aaa95edad84",
+          "current_sha256": "1cde4ef227330ac5602577639a8bea4ffde9d311fefc857bb4c59aaa95edad84",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "render-and-distribute",
+          "heading": "Render and distribute",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "606587caab27bfa191561f88e1374d4d155578c733dee11dbacea686957e1edb",
+          "current_sha256": "606587caab27bfa191561f88e1374d4d155578c733dee11dbacea686957e1edb",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "visual-acceptance",
+          "heading": "Visual acceptance",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "7dee6c138c6271f7728dba72b6e05061b65f5e23efc629d15f0c1b86ea5d001c",
+          "current_sha256": "7dee6c138c6271f7728dba72b6e05061b65f5e23efc629d15f0c1b86ea5d001c",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        }
+      ],
+      "added_sections": []
+    },
+    "rust-best-practices": {
+      "sections": [
+        {
+          "id": "intro",
+          "heading": "Introduction",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "6c0dbb98a437856c11e414880cc83dd33144dc10333ab8f38095122bb91ea729",
+          "current_sha256": "6c0dbb98a437856c11e414880cc83dd33144dc10333ab8f38095122bb91ea729",
+          "behavior": [],
+          "routing": [
+            "rust-best-practices-routing-negative-001",
+            "rust-best-practices-routing-positive-001",
+            "rust-best-practices-routing-review-001"
+          ],
+          "behavior_verified": false
+        },
+        {
+          "id": "1-mindset",
+          "heading": "1. Mindset",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "f7ec0ff5640c6c5cef947607effc06016c5cd5281c2cbdfed8ab8db2f8ddd761",
+          "current_sha256": "f7ec0ff5640c6c5cef947607effc06016c5cd5281c2cbdfed8ab8db2f8ddd761",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "2-before-you-hand-back-code",
+          "heading": "2. Before you hand back code",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "d13f10cdc778504744c80b89c95f8f35ee3b0b1b3a860fe0d731e477239dfdde",
+          "current_sha256": "d13f10cdc778504744c80b89c95f8f35ee3b0b1b3a860fe0d731e477239dfdde",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "3-ownership-and-borrowing",
+          "heading": "3. Ownership and borrowing",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "0a25d3537592c1e328df33ace67355dfb8e27e0effd3679751294246c48fc71c",
+          "current_sha256": "0a25d3537592c1e328df33ace67355dfb8e27e0effd3679751294246c48fc71c",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "4-types-and-api-design",
+          "heading": "4. Types and API design",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "189ea0540aaf8655e05182478e38abf2f9a0c1f566d1d581004117b8ba20c177",
+          "current_sha256": "189ea0540aaf8655e05182478e38abf2f9a0c1f566d1d581004117b8ba20c177",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "5-errors-and-panics",
+          "heading": "5. Errors and panics",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "ab019588021237cb3a02b698cc197d223c63c14b9637415968c65ec607a7b55f",
+          "current_sha256": "ab019588021237cb3a02b698cc197d223c63c14b9637415968c65ec607a7b55f",
+          "behavior": [
+            "rust-best-practices-parser-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "6-everyday-idioms",
+          "heading": "6. Everyday idioms",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "9a3b2b267640f9f8e7acfbef46439b73728d30cb981282d3f5ba397cc93968d3",
+          "current_sha256": "9a3b2b267640f9f8e7acfbef46439b73728d30cb981282d3f5ba397cc93968d3",
+          "behavior": [
+            "rust-best-practices-repo-loop-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "7-concurrency-and-async",
+          "heading": "7. Concurrency and async",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "4512274425f06cdd951565eb4d75568351045c4680169880226ff8dc7bf3ebf6",
+          "current_sha256": "4512274425f06cdd951565eb4d75568351045c4680169880226ff8dc7bf3ebf6",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "8-unsafe-and-ffi",
+          "heading": "8. Unsafe and FFI",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "7be335eefdfd18a2480856273a12214c16d88a213b96f299aff112cabbe8a670",
+          "current_sha256": "7be335eefdfd18a2480856273a12214c16d88a213b96f299aff112cabbe8a670",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "9-crates-modules-dependencies",
+          "heading": "9. Crates, modules, dependencies",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "9b42ba1431e8237ec982091691a6b543078e96028801dd9e65ccd34649616a21",
+          "current_sha256": "9b42ba1431e8237ec982091691a6b543078e96028801dd9e65ccd34649616a21",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "10-documentation-and-comments",
+          "heading": "10. Documentation and comments",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "17398e2d309d96b445f6210198ff30bbc72d2721b582e9487ff0c05a1ba1f5d3",
+          "current_sha256": "17398e2d309d96b445f6210198ff30bbc72d2721b582e9487ff0c05a1ba1f5d3",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "11-tests",
+          "heading": "11. Tests",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "b14c32ff2d3745afc5cac57ce5349684d760b742fd14a6eaa54ae6380d479b1e",
+          "current_sha256": "b14c32ff2d3745afc5cac57ce5349684d760b742fd14a6eaa54ae6380d479b1e",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "12-performance-in-order",
+          "heading": "12. Performance, in order",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "31fcd558bd063f599a519a6bb3b3f16f78354337943c6a8d7bbb98789b765814",
+          "current_sha256": "31fcd558bd063f599a519a6bb3b3f16f78354337943c6a8d7bbb98789b765814",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "13-final-checklist",
+          "heading": "13. Final checklist",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "cbf4181a3d46bde72c1d2bcd58fe7e4f19cc39063427da614b868eb12f1f7535",
+          "current_sha256": "cbf4181a3d46bde72c1d2bcd58fe7e4f19cc39063427da614b868eb12f1f7535",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "references",
+          "heading": "References",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "f3c63b6c1a830afae088efc6c4b8e9d85b242e5d09bab2a4ce2d92ef0f495128",
+          "current_sha256": "f3c63b6c1a830afae088efc6c4b8e9d85b242e5d09bab2a4ce2d92ef0f495128",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        }
+      ],
+      "added_sections": []
+    },
+    "rust-review": {
+      "sections": [
+        {
+          "id": "intro",
+          "heading": "Introduction",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "0b14cf780cd6480689eaa2863b5ce5b77ebf25efb5418b5f4fa7c0ee0fe81e76",
+          "current_sha256": "0b14cf780cd6480689eaa2863b5ce5b77ebf25efb5418b5f4fa7c0ee0fe81e76",
+          "behavior": [],
+          "routing": [
+            "rust-review-routing-negative-001",
+            "rust-review-routing-positive-001"
+          ],
+          "behavior_verified": false
+        },
+        {
+          "id": "1-decide-the-scope",
+          "heading": "1. Decide the scope",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "e5c242512cfb3e4c4e4677d1267eaf8d12c925ac1487c41dc6df140aec5fe30b",
+          "current_sha256": "e5c242512cfb3e4c4e4677d1267eaf8d12c925ac1487c41dc6df140aec5fe30b",
+          "behavior": [
+            "rust-review-panic-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "2-run-the-tools-first-if-you-can",
+          "heading": "2. Run the tools first, if you can",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "d4af03924cbd0e01dc4103d3c41a051e359be3810507d337e7daed0ca64e418e",
+          "current_sha256": "d4af03924cbd0e01dc4103d3c41a051e359be3810507d337e7daed0ca64e418e",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "3-what-to-look-for-in-priority-order",
+          "heading": "3. What to look for, in priority order",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "193b1f3cccd1eca24c3deed9413c2495760c444ff66834ee0a59b8b76f586fcd",
+          "current_sha256": "193b1f3cccd1eca24c3deed9413c2495760c444ff66834ee0a59b8b76f586fcd",
+          "behavior": [
+            "rust-review-no-invented-defect-001",
+            "rust-review-panic-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "4-write-the-report",
+          "heading": "4. Write the report",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "c1e36e16f41786cb55f275b7f6a670240a822120ab788bff001f1d097ba84038",
+          "current_sha256": "c1e36e16f41786cb55f275b7f6a670240a822120ab788bff001f1d097ba84038",
+          "behavior": [
+            "rust-review-panic-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "5-offer-the-lints",
+          "heading": "5. Offer the lints",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "62b787460d6c185eb9cd09717da54046ac632e92faf03b7bb9b07d6b0a8f3802",
+          "current_sha256": "62b787460d6c185eb9cd09717da54046ac632e92faf03b7bb9b07d6b0a8f3802",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        }
+      ],
+      "added_sections": []
+    },
+    "sort-rust": {
+      "sections": [
+        {
+          "id": "intro",
+          "heading": "Introduction",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "a3d6b4e7c52f71e1f4646b4f1664ab67e6bca041e58a905c9558bf5dd49ea25a",
+          "current_sha256": "a3d6b4e7c52f71e1f4646b4f1664ab67e6bca041e58a905c9558bf5dd49ea25a",
+          "behavior": [],
+          "routing": [
+            "sort-rust-routing-code-001",
+            "sort-rust-routing-negative-001",
+            "sort-rust-routing-positive-001"
+          ],
+          "behavior_verified": false
+        },
+        {
+          "id": "alphabetic-sorting",
+          "heading": "Alphabetic Sorting",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "0f580fb138f95688e48bdf3da40ff7ee69c10741b045c886062a28234da4ab54",
+          "current_sha256": "0f580fb138f95688e48bdf3da40ff7ee69c10741b045c886062a28234da4ab54",
+          "behavior": [
+            "sort-rust-independent-001",
+            "sort-rust-semantic-order-001"
+          ],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "construct-grouping",
+          "heading": "Construct Grouping",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "64fa25f94d2354327c47cd37758d5565b17ae5164bb4a69220cbdfd1f72f3736",
+          "current_sha256": "64fa25f94d2354327c47cd37758d5565b17ae5164bb4a69220cbdfd1f72f3736",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "order-of-grouping-for-rust-constructs",
+          "heading": "Order of Grouping for Rust Constructs",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "618645df7f973f37e4f0482dd88c99aa72dc1a233761a4e4c11c98adc104649e",
+          "current_sha256": "618645df7f973f37e4f0482dd88c99aa72dc1a233761a4e4c11c98adc104649e",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "rust-implementations",
+          "heading": "Rust Implementations",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "6d72ee9278430b6831c2ced8d01e3e78880221e248a281b265fb4dce84a529af",
+          "current_sha256": "6d72ee9278430b6831c2ced8d01e3e78880221e248a281b265fb4dce84a529af",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        },
+        {
+          "id": "test-modules",
+          "heading": "Test Modules",
+          "source": "unchanged",
+          "approved": false,
+          "baseline_sha256": "9824f736ea5ceb66110c631ce279c3909921ea0588e0f7ea87fb16a2eadca9f1",
+          "current_sha256": "9824f736ea5ceb66110c631ce279c3909921ea0588e0f7ea87fb16a2eadca9f1",
+          "behavior": [],
+          "routing": [],
+          "behavior_verified": false
+        }
+      ],
+      "added_sections": []
+    }
+  },
+  "tasks": {},
+  "issues": [],
+  "summary": {
+    "sections": 42,
+    "unchanged": 42,
+    "modified": 0,
+    "missing": 0,
+    "behavior_mapped": 9,
+    "routing_mapped": 5,
+    "behavior_verified": 0
+  }
+}

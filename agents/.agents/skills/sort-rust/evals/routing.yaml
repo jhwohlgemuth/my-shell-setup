@@ -20,4 +20,5 @@ metrics:
 
 tasks:
   - tasks/routing-positive.yaml
+  - tasks/routing-code.yaml
   - tasks/routing-negative.yaml

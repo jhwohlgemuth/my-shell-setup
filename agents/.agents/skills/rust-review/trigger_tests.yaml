@@ -2,10 +2,10 @@ skill: rust-review
 
 should_trigger_prompts:
   - prompt: "Review this existing Rust module for correctness."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+    reason: "The source skill reviews Rust code."
     confidence: high
   - prompt: "Audit this Rust diff and prioritize API and panic findings."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+    reason: "The source skill audits Rust diffs for prioritized findings."
     confidence: high
 
 should_not_trigger_prompts:

@@ -93,6 +93,21 @@ make agents-dev
 The included `blank-test` skill is a canary for skill discovery. Ask an agent to run the blank test skill after installation; a successful invocation returns `BLANK_TEST_SKILL_OK`.
 Pass `AGENT_SKILL=<name>` to the Waza Make targets to develop another skill. See the [agent skills guide](./agents/README.md) for Waza installation and scaffolding.
 
+To improve a skill, run the offline checks, capture a real-agent baseline, inspect the failed tasks and transcripts, then make one focused change. Keep the imported Acorn instructions as the starting point and check that the change preserves their useful guidance. For example:
+
+```shell
+make agents-ci
+make agents-real AGENT_SKILL=guidelines-rust AGENT_RESULTS_DIR=/tmp/waza-before
+python3 agents/scripts/skill_coverage.py --results-root /tmp/waza-before --json-out /tmp/waza-before.json
+# Review the results in /tmp/waza-before/guidelines-rust/, then edit the skill.
+make agents-real AGENT_SKILL=guidelines-rust AGENT_RESULTS_DIR=/tmp/waza-after
+python3 agents/scripts/skill_coverage.py --results-root /tmp/waza-after --previous /tmp/waza-before.json
+make agents-ci
+make agents-stow-check
+```
+
+The coverage comparison shows gains and regressions; use `waza compare` on the saved result files to inspect individual tasks. Real-agent runs require authenticated Copilot access and can incur model usage. See the [agent skills guide](./agents/README.md) for result paths, comparison details, and CLI setup.
+
 ### Remove packages
 ```shell
 stow --delete <package names> --target <target>

@@ -2,7 +2,7 @@ id: sort-rust-routing-negative-001
 name: Keep sort-rust out of an unrelated request
 description: Observe the negative routing boundary without injecting the skill body.
 inputs:
-  prompt: "Write a Rust parser for a number; do not reorder unrelated declarations."
+  prompt: "Write a short poem about a lighthouse. No code is involved."
 expected:
   should_trigger: false
 graders:

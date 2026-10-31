@@ -1,6 +1,29 @@
-\.github
+# Package-level development files
+^/\.github$
+^/README\.md$
+^/coverage$
+^/scripts$
+^/results$
+
+# Skill-local evaluation files
+^/\.agents/skills/[^/]+/evals$
+^/\.agents/skills/[^/]+/tests$
+^/\.agents/skills/[^/]+/trigger_tests\.yaml$
+
+# Generated and version-control files; a local list replaces Stow's defaults
+\.git
 \.gitignore
-README\.md
-evals
-tests
-trigger_tests\.yaml
+\.gitattributes
+\.gitmodules
+\.svn
+\.hg
+\.DS_Store
+__pycache__
+\.pytest_cache
+\.mypy_cache
+\.ruff_cache
+\.coverage
+.+\.py[co]
+.+~
+\#.*\#
+\.\#.+

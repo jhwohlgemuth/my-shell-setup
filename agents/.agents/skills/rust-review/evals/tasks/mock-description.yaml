@@ -2,7 +2,8 @@ id: rust-review-mock-description-001
 name: rust-review description coverage
 description: Verify the skill's general promise has a loaded harness task.
 inputs:
-  prompt: "Use rust-review to Assess requested Rust code without editing it, prioritizing correctness and API impact and explaining fixes with locations"
+  prompt: |
+    Use rust-review. Review existing Rust code for idiom, API design, error handling, safety, and maintainability, and produce a prioritized report where every finding cites the rule it breaks and gives a concrete fix. Use this whenever the user asks to review, audit, critique, grade, or "check" Rust code, a crate, a module, a .rs file, a diff, or a pull request, or asks what is wrong with their Rust or how to make it more idiomatic, even if they don't say "review". Pairs with the rust-best-practices skill, which covers writing new code.
 expected:
   should_trigger: true
   output_contains: ["rust-review"]

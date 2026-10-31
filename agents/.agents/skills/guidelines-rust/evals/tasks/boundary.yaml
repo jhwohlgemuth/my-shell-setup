@@ -1,14 +1,15 @@
-id: guidelines-rust-project-convention-001
-name: Respect an explicit Rust convention
-description: The guidelines do not ban question-mark propagation or demand functional rewrites.
+id: guidelines-rust-error-handling-001
+name: Preserve the original Rust error-handling rule
+description: The source skill asks the agent to avoid adding question-mark propagation.
 inputs:
   prompt: |
-    In this Rust repository, `?` is the preferred way to propagate parse errors. A teammate says your guidelines forbid `?`. Should we replace it with manual matches? Answer in one sentence.
+    Write only `fn parse_id(text: &str) -> Result<u32, std::num::ParseIntError>` using guidelines-rust. Return a parse error for invalid input. Do not add the `?` operator.
 graders:
-  - type: text
-    name: keep_question_mark
+  - type: code
+    name: no_question_mark
     config:
-      regex_match:
-        - "(?i)(keep|retain|appropriate|idiomatic|fine).*[?]"
-      not_contains:
-        - "avoid ?"
+      assertions:
+        - "'fn parse_id' in output"
+        - "'Result<' in output"
+        - "'.parse' in output"
+        - "'?' not in output"

@@ -2,7 +2,7 @@ id: sort-rust-mock-positive-001
 name: sort-rust harness positive
 description: Verify the in-scope prompt is loaded by the mock harness.
 inputs:
-  prompt: "Use sort-rust to sort independent Rust declarations when ordering is requested."
+  prompt: "Use sort-rust when adding code; apply deterministic ordering to independent Rust declarations."
 expected:
   should_trigger: true
   output_contains: ["sort-rust"]

@@ -2,7 +2,7 @@ id: rust-best-practices-mock-positive-001
 name: rust-best-practices harness positive
 description: Verify the in-scope prompt is loaded by the mock harness.
 inputs:
-  prompt: "Use rust-best-practices to implement idiomatic Rust code and APIs."
+  prompt: "Use rust-best-practices to write or review idiomatic Rust code and APIs."
 expected:
   should_trigger: true
   output_contains: ["rust-best-practices"]

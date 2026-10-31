@@ -2,16 +2,16 @@ skill: guidelines-rust
 
 should_trigger_prompts:
   - prompt: "Simplify this Rust error handling with a small code change."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+    reason: "The source skill applies to writing and modifying code."
     confidence: high
-  - prompt: "Refactor this Rust function with a focused diff and idiomatic error propagation."
-    reason: "Matches the skill's Rust or Pikchr task scope."
+  - prompt: "Review this Rust function for unnecessary mutable state."
+    reason: "The source skill also applies to code review and functional style."
     confidence: high
 
 should_not_trigger_prompts:
-  - prompt: "Review this existing Rust pull request without changing code."
-    reason: "Outside this skill's requested capability."
+  - prompt: "Write a poem about a lighthouse."
+    reason: "No code is involved."
     confidence: high
-  - prompt: "Write a Bash script to list files."
-    reason: "Outside this skill's requested capability."
+  - prompt: "Summarize a history article without code."
+    reason: "No code is involved."
     confidence: high

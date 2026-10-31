@@ -1,21 +1,16 @@
-id: guidelines-rust-error-propagation-001
-name: Preserve idiomatic Rust error propagation
-description: A minimal Rust edit follows the repository's use of Result and question-mark propagation.
+id: guidelines-rust-functional-style-001
+name: Favor a small pure Rust function
+description: The original guidance favors immutability, composability, and purity.
 inputs:
   prompt: |
-    Replace this Rust function with a shorter equivalent. The repository uses `?` for ordinary error propagation and `std` normally. Return only the function.
-
-    fn parse_pair(a: &str, b: &str) -> Result<(u32, u32), std::num::ParseIntError> {
-        let first = match a.parse::<u32>() { Ok(value) => value, Err(error) => return Err(error) };
-        let second = match b.parse::<u32>() { Ok(value) => value, Err(error) => return Err(error) };
-        Ok((first, second))
-    }
+    Write only `fn count_nonempty(lines: &[&str]) -> usize`. Count nonempty strings without changing the input. Prefer the functional style described by guidelines-rust.
 graders:
   - type: code
-    name: idiomatic_result
+    name: immutable_pure_count
     config:
       assertions:
-        - "'?' in output"
-        - "'Result<' in output"
-        - "'exitcode' not in output.lower()"
-        - "'core::' not in output"
+        - "'fn count_nonempty' in output"
+        - "'.iter()' in output"
+        - "'.filter(' in output"
+        - "'.count()' in output"
+        - "'let mut' not in output"

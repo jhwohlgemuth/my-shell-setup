@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: Validate the Rust coding guidelines skill
-description: Confirm the renamed, scoped skill follows Rust conventions in model-backed trials.
+description: Validate the Acorn source skill under its renamed package identity without rewriting its guidance.
 difficulty: medium
 impact: medium
 package: [agents]
@@ -15,11 +15,11 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-The copied Acorn skill is installed as `guidelines-rust`. Its entrypoint now focuses on small Rust edits, permits idiomatic `?`, and follows repository conventions instead of mandating `core` or an `exitcode` dependency. Waza 0.39.1 static checks, 3/3 spec coverage, preflight, and mock tasks pass locally. The model-backed outcome, boundary, and routing tasks are authored but unrun because the available Copilot CLI is not authenticated.
+The Acorn `guidelines` skill is the official starting point. Its full instructions are restored in the package; only the metadata `name` is changed to `guidelines-rust`. The source applies to writing, reviewing, and refactoring code and retains its functional-programming and Rust-specific rules. Waza's 500-token advisory reports the original entrypoint as long; shortening it is not a prerequisite. Offline fixtures must reflect the original rules. Model-backed trials remain unrun because the available Copilot CLI is not authenticated.
 
 ## Acceptance criteria
 
-The installed skill is named `guidelines-rust`, triggers for focused Rust implementation, stays out of read-only reviews and unrelated work, and gives idiomatic advice that respects project conventions. Model-backed Waza tasks demonstrate routing, ordinary `?` propagation, and a project-convention boundary.
+The installed skill differs from Acorn's source only in its `name` field. Waza fixtures trigger on coding and review tasks, avoid non-code work, and test immutability, focused changes, and the source's rule against adding `?`. Any future instruction change starts from a recorded baseline, model-backed failure, and user-reviewed proposal.
 
 # Execution phases
 
@@ -30,6 +30,6 @@ The installed skill is named `guidelines-rust`, triggers for focused Rust implem
 - Prerequisites: authenticated Copilot access, configured model permission, and explicit opt-in to model usage.
 - Exact write set: GitHub Copilot model runtime; revise `agents/.agents/skills/guidelines-rust/SKILL.md` or its real suites only for an observed defect.
 - Primary integration lock: Rust guidelines evaluation.
-- Outcome: Positive, negative, and project-convention trials show correct routing and no blanket rejection of `?`; refine any observed failure and rerun.
+- Outcome: Positive and negative trials show source-aligned routing and functional Rust output. Record failures against the original instructions before proposing a change; do not rewrite the source solely to satisfy Waza's token score.
 - Focused validation: `make agents-real AGENT_SKILL=guidelines-rust`; inspect each grader and transcript.
 - Handoff: Record before/after trial evidence and remaining qualitative limitations.

@@ -21,6 +21,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Check out previous skill baseline
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000')
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          path: .coverage-baseline
+      - name: Install GNU Stow
+        run: |
+          if ! command -v stow >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install --yes stow
+          fi
+      - name: Verify Stow runtime inventory
+        run: make agents-stow-check
+      - name: Test skill tooling
+        run: python3 -m unittest discover -s agents/scripts -p 'test_*.py'
       - name: Install pinned Waza CLI
         shell: bash
         run: |
@@ -32,3 +48,33 @@ jobs:
         env:
           WAZA_NO_UPDATE_CHECK: "1"
         run: make agents-ci WAZA="$RUNNER_TEMP/waza"
+      - name: Report capability coverage change
+        if: always()
+        shell: bash
+        env:
+          WAZA_NO_UPDATE_CHECK: "1"
+        run: |
+          previous=()
+          if [[ -f .coverage-baseline/agents/coverage/capabilities.json ]]; then
+            python3 agents/scripts/skill_coverage.py \
+              --repo-root .coverage-baseline --waza "$RUNNER_TEMP/waza" \
+              --json-out "$RUNNER_TEMP/skill-coverage-previous.json" > /dev/null
+            previous=(--previous "$RUNNER_TEMP/skill-coverage-previous.json")
+          fi
+          set +e
+          python3 agents/scripts/skill_coverage.py \
+            --waza "$RUNNER_TEMP/waza" --strict \
+            --json-out "$RUNNER_TEMP/skill-coverage-current.json" \
+            "${previous[@]}" > "$RUNNER_TEMP/skill-coverage.md"
+          status=$?
+          cat "$RUNNER_TEMP/skill-coverage.md" >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+      - name: Save capability reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-capability-coverage
+          path: |
+            ${{ runner.temp }}/skill-coverage.md
+            ${{ runner.temp }}/skill-coverage-current.json
+            ${{ runner.temp }}/skill-coverage-previous.json

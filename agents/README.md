@@ -8,9 +8,11 @@ The runtime path mapping is:
 agents/.agents/skills/<skill>/SKILL.md -> ~/.agents/skills/<skill>/SKILL.md
 ```
 
-The package-local `.stow-local-ignore` excludes each skill's `evals/` directory and `trigger_tests.yaml` from the target. These files remain beside the skill source so Waza can use its standalone-skill workflow.
+The package-local `.stow-local-ignore` excludes each skill's `evals/` directory and `trigger_tests.yaml`, plus the package-level coverage manifest and scripts, from the target. These files remain beside the skill source so Waza can use its standalone-skill workflow.
 
 The package currently contains `blank-test`, `guidelines-rust`, `sort-rust`, `pikchr-diagram`, `rust-best-practices`, and `rust-review`. The imported Rust practice and review skills also retain their existing non-Waza evaluation fixtures under `evals/`.
+
+The five imported skills use their full Acorn source as the official starting point. Only the metadata names of `guidelines-rust` and `sort-rust` differ from Acorn. Waza's token and readiness scores are advisory; preserve the source instructions while collecting behavioral evidence and review any proposed instruction change against that baseline.
 
 Run the repository targets from its root:
 
@@ -21,10 +23,11 @@ make agents-check
 make agents-preflight
 make agents-test
 make agents-ci
+make agents-coverage
 make agents-dev
 ```
 
-`agents-stow-check` uses a temporary target and verifies every skill without changing `~/.agents`. `agents-check` performs Waza's static and spec coverage checks. `agents-preflight` checks every root suite for valid tasks and the expected executor. `agents-test` runs only `evals/eval.yaml` with the mock executor; it verifies harness wiring, not model behavior. `agents-ci` discovers every skill source with `SKILL.md` and runs all those offline checks. `agents-dev` starts Waza's interactive skill improvement workflow. CI runs `agents-ci` without model credentials.
+`agents-stow-check` uses a temporary target and compares every installed path with the expected runtime inventory without changing `~/.agents`. It catches leaked development files and missing references or scripts; `agents-install` runs it before installation. `agents-check` performs Waza's static and spec coverage checks. `agents-preflight` checks every root suite for valid tasks and the expected executor. `agents-test` runs only `evals/eval.yaml` with the mock executor; it verifies harness wiring, not model behavior. `agents-ci` discovers every skill source with `SKILL.md` and runs all those offline checks. `agents-dev` starts Waza's interactive skill improvement workflow. CI runs `agents-ci`, the Stow inventory check, and the tooling tests without model credentials.
 
 The Waza targets default to `blank-test`. Select another skill with the `AGENT_SKILL` Make variable:
 
@@ -43,7 +46,7 @@ make agents-real AGENT_SKILL=blank-test
 
 `agents-real` runs all non-mock root eval suites for the selected skill and prints the temporary results directory. If Waza cannot initialize its embedded Copilot CLI, set `COPILOT_CLI_PATH` to an authenticated compatible CLI, for example `COPILOT_CLI_PATH=/path/to/copilot make agents-real AGENT_SKILL=blank-test`. Check each task's grader results and transcript; a mock pass is never evidence of routing or output quality. Real runs can incur model usage. [Waza's executor guide](https://microsoft.github.io/waza/guides/eval-yaml/) describes the configuration and [authentication prerequisites](https://microsoft.github.io/waza/getting-started/#authenticate-before-real-execution).
 
-For a skill change, capture a focused baseline before editing, make one change, rerun the same task, then run the full real suites. For the canary's exact-output case:
+For a proposed skill change, capture a focused baseline and identify an observed failure first. Review the proposed instruction change against the Acorn source, rerun the same task, then run the full real suites. For the canary's exact-output case:
 
 ```shell
 waza run agents/.agents/skills/blank-test/evals/real.yaml --task blank-test-exact-response-001 --no-cache --output /tmp/blank-test-before.json
@@ -55,6 +58,39 @@ make agents-real AGENT_SKILL=blank-test
 
 Record the CLI version, model, prompts, observed skill and tool calls, grader outcomes, and any regression. Keep fixtures sanitized and leave real runs opt-in.
 
+## Track capability coverage over time
+
+`agents/coverage/capabilities.json` pins the original Acorn entrypoint sections by digest. It links a section to a Waza `real.yaml` or `routing.yaml` task only when that task checks a relevant behavior. The report distinguishes unchanged, modified, and missing source sections; mapped behavior and routing tests; and observed passes from saved real-agent results. It lists original sections without behavior evals so new tests can be chosen deliberately. The `blank-test` canary remains in the six-skill Waza gate but is outside the five-skill Acorn baseline.
+
+```shell
+make agents-coverage WAZA=/path/to/waza
+python3 agents/scripts/skill_coverage.py --waza /path/to/waza \
+    --json-out /tmp/skill-coverage-before.json > /tmp/skill-coverage-before.md
+```
+
+The report currently maps 9 of 42 original sections to behavioral tasks. No section has a verified real-agent result yet. Mapping is a coarse index, not proof that every statement in a section is tested. Waza's built-in `coverage` grid measures a different thing: its `eval.yaml` grader diversity. The mock harness leaves all six skills `Partial` in that grid; adding a meaningless second mock grader would not improve behavioral evidence. `spec verify` similarly checks whether task text covers metadata requirements, not whether the skill works.
+
+After authenticated model runs, keep results outside the installed package and produce a new report:
+
+```shell
+make agents-real AGENT_SKILL=guidelines-rust \
+    AGENT_RESULTS_DIR=/tmp/skill-trials WAZA=/path/to/waza
+python3 agents/scripts/skill_coverage.py --waza /path/to/waza \
+    --results-root /tmp/skill-trials \
+    --previous /tmp/skill-coverage-before.json \
+    --json-out /tmp/skill-coverage-after.json
+```
+
+`agents-real` writes `real.yaml.json` and `routing.yaml.json` under `<results-dir>/<skill>/` and records source-bound receipts for the skill, suites, tasks, and result files. The report rejects mock or stale results as behavioral evidence. It compares pass rates only for the same task, grader/prompt file, suite, model, engine, and trial count; changed conditions are marked incomparable. Use `waza compare` on the saved result files to inspect per-task detail. For a candidate skill revision, run both original and candidate checkouts with the same model and task suite, then compare their report JSON files.
+
+The current real suites use one trial per task. A passing result is one observation, not a reliable estimate of how often the skill succeeds. Increase `trials_per_task` in matched original and candidate suites before treating small score differences as a release decision.
+
+The offline CI gate fails when an original section changes without a digest-bound `accepted_change` record, a mapped task disappears, or a PR loses mapped coverage. An accepted change records the current section SHA-256, a reason, and an evidence reference in `capabilities.json`; the original SHA-256 remains intact. Reviewers can inspect the exact source diff and Waza evidence before accepting it. CI adds a Markdown report to the run summary, compares a PR with its base checkout, and uploads both JSON snapshots. It cannot mark behavior verified until real-agent results are supplied separately.
+
+For lasting history, commit selected sanitized report JSON snapshots under `agents/coverage/history/` after reviewing a real comparison. Raw Waza result files can contain prompts and outputs; keep them in a controlled artifact store and reference them from the review record. Git history preserves the manifest changes and report snapshots even after CI artifacts expire.
+
+The initial snapshot is `agents/coverage/history/2026-10-31-acorn-baseline.json`. Pass it to `--previous` to compare a later report with the official starting point.
+
 Waza 0.39.1 or newer is required so file paths work consistently with `waza dev`. CI pins the 0.39.1 Linux binary and checks its SHA-256 before execution. Follow the [official Waza installation instructions](https://microsoft.github.io/waza/getting-started/#installation), then verify the CLI with `waza --version`. Override `WAZA` when using a locally downloaded binary, for example `make agents-ci WAZA=/path/to/waza`.
 
 To scaffold another standalone skill in this package:
@@ -63,7 +99,7 @@ To scaffold another standalone skill in this package:
 waza new skill my-skill --output-dir agents/.agents/skills
 ```
 
-Review the generated skill and eval files before running the checks. The Stow ignore list keeps Waza's `evals/`, `tests/`, root trigger fixtures, workflow metadata, and README files out of `~/.agents`; runtime assets such as `scripts/`, `references/`, and `assets/` remain part of the installed skill.
+Review the generated skill and eval files before running the checks. The Stow ignore list keeps each skill's `evals/`, `tests/`, and root `trigger_tests.yaml`, plus package-level development files, out of `~/.agents`; runtime `scripts/`, `references/`, `assets/`, and agent metadata remain installed.
 
 To remove only links owned by this package:
 
