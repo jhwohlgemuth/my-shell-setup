@@ -1,0 +1,12 @@
+id: rust-best-practices-routing-negative-001
+name: Keep rust-best-practices out of an unrelated request
+description: Observe the negative routing boundary without injecting the skill body.
+inputs:
+  prompt: "Review this existing Rust module only; report findings without implementing changes."
+expected:
+  should_trigger: false
+graders:
+  - type: skill_invocation
+    name: avoids_rust_best_practices
+    config:
+      forbidden_skills: [rust-best-practices]

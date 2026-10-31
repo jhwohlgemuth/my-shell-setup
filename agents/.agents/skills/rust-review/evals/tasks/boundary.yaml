@@ -1,0 +1,16 @@
+id: rust-review-no-invented-defect-001
+name: Avoid invented must-fix findings
+description: A tiny private pure function should not receive a fabricated critical issue.
+inputs:
+  prompt: |
+    Review only for must-fix correctness or soundness problems in this private Rust function: `fn identity(x: u32) -> u32 { x }`. If there are none, say "No must-fix findings." Do not edit files.
+graders:
+  - type: text
+    name: no_fabricated_critical_issue
+    config:
+      contains:
+        - "No must-fix findings."
+  - type: tool_constraint
+    name: no_review_side_effects
+    config:
+      allow_only: []

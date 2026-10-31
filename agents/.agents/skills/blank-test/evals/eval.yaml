@@ -1,5 +1,5 @@
 name: blank-test-eval
-description: Credential-free harness smoke test for the blank-test skill.
+description: Credential-free task loading and grader plumbing for blank-test; not agent behavior evidence.
 skill: blank-test
 version: "1.0"
 
@@ -17,7 +17,7 @@ metrics:
 
 graders:
   - type: text
-    name: smoke_prompt_visible
+    name: mock_prompt_echo
     config:
       regex_match:
         - "(?i)blank test skill"

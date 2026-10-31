@@ -1,0 +1,8 @@
+id: rust-best-practices-mock-description-001
+name: rust-best-practices description coverage
+description: Verify the skill's general promise has a loaded harness task.
+inputs:
+  prompt: "Use rust-best-practices to Guide Rust implementation with project-aware choices about ownership, errors, APIs, tests, and documentation"
+expected:
+  should_trigger: true
+  output_contains: ["rust-best-practices"]

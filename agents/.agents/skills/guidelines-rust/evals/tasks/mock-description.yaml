@@ -1,0 +1,8 @@
+id: guidelines-rust-mock-description-001
+name: guidelines-rust description coverage
+description: Verify the skill's general promise has a loaded harness task.
+inputs:
+  prompt: "Use guidelines-rust to Apply minimal project-aware Rust editing guidance that favors clear control flow without imposing blanket style rules"
+expected:
+  should_trigger: true
+  output_contains: ["guidelines-rust"]

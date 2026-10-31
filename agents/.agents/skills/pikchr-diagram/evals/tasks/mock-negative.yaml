@@ -1,0 +1,8 @@
+id: pikchr-diagram-mock-negative-001
+name: pikchr-diagram harness negative
+description: Verify the out-of-scope prompt is loaded by the mock harness.
+inputs:
+  prompt: "Do not use pikchr-diagram to make quantitative scatter plots."
+expected:
+  should_trigger: false
+  output_contains: ["pikchr-diagram"]

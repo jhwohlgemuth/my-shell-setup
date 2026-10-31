@@ -1,0 +1,14 @@
+id: guidelines-rust-routing-positive-001
+name: Invoke guidelines-rust for an in-scope request
+description: Observe skill discovery without injecting the skill body.
+inputs:
+  prompt: "Make a minimal Rust edit that simplifies nested error propagation without changing behavior."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_guidelines_rust
+    config:
+      required_skills: [guidelines-rust]
+      mode: any_order
+      allow_extra: true

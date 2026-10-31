@@ -1,0 +1,8 @@
+id: rust-review-mock-description-001
+name: rust-review description coverage
+description: Verify the skill's general promise has a loaded harness task.
+inputs:
+  prompt: "Use rust-review to Assess requested Rust code without editing it, prioritizing correctness and API impact and explaining fixes with locations"
+expected:
+  should_trigger: true
+  output_contains: ["rust-review"]

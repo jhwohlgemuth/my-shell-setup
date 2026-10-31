@@ -1,0 +1,8 @@
+id: pikchr-diagram-mock-description-001
+name: pikchr-diagram description coverage
+description: Verify the skill's general promise has a loaded harness task.
+inputs:
+  prompt: "Use pikchr-diagram to Create editable Pikchr flowcharts grounded in the user's process, then render and inspect their visual output"
+expected:
+  should_trigger: true
+  output_contains: ["pikchr-diagram"]

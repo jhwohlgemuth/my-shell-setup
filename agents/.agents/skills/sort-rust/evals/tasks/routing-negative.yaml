@@ -1,0 +1,12 @@
+id: sort-rust-routing-negative-001
+name: Keep sort-rust out of an unrelated request
+description: Observe the negative routing boundary without injecting the skill body.
+inputs:
+  prompt: "Write a Rust parser for a number; do not reorder unrelated declarations."
+expected:
+  should_trigger: false
+graders:
+  - type: skill_invocation
+    name: avoids_sort_rust
+    config:
+      forbidden_skills: [sort-rust]

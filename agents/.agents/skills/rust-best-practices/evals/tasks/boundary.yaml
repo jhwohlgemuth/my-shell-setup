@@ -1,0 +1,14 @@
+id: rust-best-practices-repo-loop-001
+name: Respect an explicit simple loop convention
+description: Do not replace a clear loop merely to satisfy an abstract functional preference.
+inputs:
+  prompt: |
+    Our Rust application style uses a simple loop for accumulation. Write only `fn count_nonempty(lines: &[&str]) -> usize` using a `for` loop and a mutable counter. Follow this convention without adding a crate or helper type.
+graders:
+  - type: code
+    name: project_style_preserved
+    config:
+      assertions:
+        - "'let mut' in output"
+        - "'for ' in output"
+        - "'fn count_nonempty' in output"

@@ -1,0 +1,18 @@
+id: sort-rust-semantic-order-001
+name: Preserve overlapping Rust match arms
+description: A semantic catch-all arm stays after the specific case.
+inputs:
+  prompt: |
+    Review the order of these Rust match arms. The specific `Some(0)` case must run before `Some(_)`. Return the code unchanged, with no explanation.
+
+    match value {
+        Some(0) => "zero",
+        Some(_) => "some",
+        None => "none",
+    }
+graders:
+  - type: code
+    name: semantic_order_preserved
+    config:
+      assertions:
+        - "output.index('Some(0)') < output.index('Some(_)') < output.index('None')"

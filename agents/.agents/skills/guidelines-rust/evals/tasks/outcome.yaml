@@ -1,0 +1,21 @@
+id: guidelines-rust-error-propagation-001
+name: Preserve idiomatic Rust error propagation
+description: A minimal Rust edit follows the repository's use of Result and question-mark propagation.
+inputs:
+  prompt: |
+    Replace this Rust function with a shorter equivalent. The repository uses `?` for ordinary error propagation and `std` normally. Return only the function.
+
+    fn parse_pair(a: &str, b: &str) -> Result<(u32, u32), std::num::ParseIntError> {
+        let first = match a.parse::<u32>() { Ok(value) => value, Err(error) => return Err(error) };
+        let second = match b.parse::<u32>() { Ok(value) => value, Err(error) => return Err(error) };
+        Ok((first, second))
+    }
+graders:
+  - type: code
+    name: idiomatic_result
+    config:
+      assertions:
+        - "'?' in output"
+        - "'Result<' in output"
+        - "'exitcode' not in output.lower()"
+        - "'core::' not in output"

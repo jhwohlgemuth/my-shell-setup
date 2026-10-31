@@ -1,0 +1,17 @@
+skill: sort-rust
+
+should_trigger_prompts:
+  - prompt: "Sort these independent Rust declarations alphabetically."
+    reason: "Matches the skill's Rust or Pikchr task scope."
+    confidence: high
+  - prompt: "Keep the Rust doc comments attached while reordering independent functions."
+    reason: "Matches the skill's Rust or Pikchr task scope."
+    confidence: high
+
+should_not_trigger_prompts:
+  - prompt: "Sort JavaScript imports."
+    reason: "Outside this skill's requested capability."
+    confidence: high
+  - prompt: "Implement a Rust parser without reordering other declarations."
+    reason: "Outside this skill's requested capability."
+    confidence: high

@@ -1,0 +1,17 @@
+skill: guidelines-rust
+
+should_trigger_prompts:
+  - prompt: "Simplify this Rust error handling with a small code change."
+    reason: "Matches the skill's Rust or Pikchr task scope."
+    confidence: high
+  - prompt: "Refactor this Rust function with a focused diff and idiomatic error propagation."
+    reason: "Matches the skill's Rust or Pikchr task scope."
+    confidence: high
+
+should_not_trigger_prompts:
+  - prompt: "Review this existing Rust pull request without changing code."
+    reason: "Outside this skill's requested capability."
+    confidence: high
+  - prompt: "Write a Bash script to list files."
+    reason: "Outside this skill's requested capability."
+    confidence: high

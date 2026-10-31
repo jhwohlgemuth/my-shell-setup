@@ -1,4 +1,4 @@
-.PHONY: agents-check agents-dev agents-install agents-remove agents-stow-check agents-test format neovim
+.PHONY: agents-check agents-ci agents-dev agents-install agents-preflight agents-real agents-remove agents-stow-check agents-test format neovim
 
 AGENTS_PACKAGE = agents
 AGENT_SKILL ?= blank-test
@@ -19,19 +19,75 @@ agents-stow-check:
 	target=$$(mktemp -d /tmp/my-shell-setup-agents.XXXXXX); \
 	trap 'rm -rf "$$target"' EXIT; \
 	$(STOW) --no-folding --dir "$(CURDIR)" --target "$$target" --stow "$(AGENTS_PACKAGE)"; \
-	test -L "$$target/.agents/skills/blank-test/SKILL.md"; \
-	test ! -e "$$target/.agents/skills/blank-test/evals"; \
-	test ! -e "$$target/.agents/skills/blank-test/trigger_tests.yaml"
+	found=0; \
+	for skill_file in "$(AGENTS_PACKAGE)"/.agents/skills/*/SKILL.md; do \
+		[ -f "$$skill_file" ] || continue; \
+		found=1; \
+		skill=$${skill_file%/SKILL.md}; skill=$${skill##*/}; \
+		test -L "$$target/.agents/skills/$$skill/SKILL.md"; \
+		test ! -e "$$target/.agents/skills/$$skill/evals"; \
+		test ! -e "$$target/.agents/skills/$$skill/trigger_tests.yaml"; \
+	done; \
+	[ "$$found" -eq 1 ]; \
+	test -L "$$target/.agents/skills/pikchr-diagram/assets/workflow-map.pikchr"; \
+	test -L "$$target/.agents/skills/pikchr-diagram/agents/openai.yaml"; \
+	test -L "$$target/.agents/skills/rust-best-practices/references/detailed-guidance.md"; \
+	test -L "$$target/.agents/skills/rust-review/references/review-checklist.md"
 
 agents-check:
 	$(WAZA) check "$(AGENTS_SKILL)"
 	$(WAZA) spec verify "$(AGENTS_SKILL)" "$(AGENTS_SKILL)/evals/eval.yaml" --fail
 
+agents-preflight:
+	@set -eu; \
+	found=0; \
+	for suite in "$(AGENTS_SKILL)"/evals/*.yaml; do \
+		[ -f "$$suite" ] || continue; \
+		found=1; \
+		inventory=$$(mktemp /tmp/my-shell-setup-waza-preflight.XXXXXX); \
+		trap 'rm -f "$$inventory"' EXIT; \
+		$(WAZA) preflight "$$suite" --format json > "$$inventory"; \
+		expected=copilot-sdk; \
+		[ "$${suite##*/}" = eval.yaml ] && expected=mock; \
+		jq -e --arg executor "$$expected" '.executor == $$executor and .complete == true and (.tasks | length > 0)' "$$inventory" > /dev/null || { echo "Invalid or incomplete $$suite (expected $$expected executor)" >&2; exit 1; }; \
+		echo "Preflight passed: $$suite ($$expected)"; \
+		rm -f "$$inventory"; \
+	done; \
+	[ "$$found" -eq 1 ] || { echo "No eval suites for $(AGENTS_SKILL)" >&2; exit 1; }
+
 agents-test:
 	@set -e; \
+	$(MAKE) --no-print-directory agents-preflight AGENT_SKILL="$(AGENT_SKILL)"; \
 	results=$$(mktemp -d /tmp/my-shell-setup-waza.XXXXXX); \
 	trap 'rm -rf "$$results"' EXIT; \
 	$(WAZA) run "$(AGENTS_SKILL)/evals/eval.yaml" --output "$$results/results.json"
+
+agents-real:
+	@set -eu; \
+	$(MAKE) --no-print-directory agents-preflight AGENT_SKILL="$(AGENT_SKILL)"; \
+	results=$$(mktemp -d /tmp/my-shell-setup-waza-real.XXXXXX); \
+	echo "Real-agent results: $$results"; \
+	found=0; \
+	for suite in "$(AGENTS_SKILL)"/evals/*.yaml; do \
+		[ -f "$$suite" ] || continue; \
+		[ "$${suite##*/}" = eval.yaml ] && continue; \
+		found=1; \
+		$(WAZA) run "$$suite" --no-cache --output "$$results/$${suite##*/}.json"; \
+	done; \
+	[ "$$found" -eq 1 ] || { echo "No real-agent suites for $(AGENTS_SKILL)" >&2; exit 1; }
+
+agents-ci:
+	@set -eu; \
+	found=0; \
+	for skill_file in "$(AGENTS_PACKAGE)"/.agents/skills/*/SKILL.md; do \
+		[ -f "$$skill_file" ] || continue; \
+		found=1; \
+		skill=$${skill_file%/SKILL.md}; \
+		skill=$${skill##*/}; \
+		$(MAKE) --no-print-directory agents-check AGENT_SKILL="$$skill"; \
+		$(MAKE) --no-print-directory agents-test AGENT_SKILL="$$skill"; \
+	done; \
+	[ "$$found" -eq 1 ] || { echo "No installed skill sources found" >&2; exit 1; }
 
 agents-dev:
 	$(WAZA) dev "$(AGENTS_SKILL)/SKILL.md"

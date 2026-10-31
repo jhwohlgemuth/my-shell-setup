@@ -1,0 +1,8 @@
+id: rust-review-mock-positive-001
+name: rust-review harness positive
+description: Verify the in-scope prompt is loaded by the mock harness.
+inputs:
+  prompt: "Use rust-review to review existing Rust modules for correctness and API design."
+expected:
+  should_trigger: true
+  output_contains: ["rust-review"]

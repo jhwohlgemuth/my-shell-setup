@@ -1,21 +1,21 @@
 ---
 type: Plan
-title: Import and generalize the Pikchr diagram skill
-description: Preserve editable diagram examples while removing ACORN-only defaults from cross-project use.
+title: Validate the reusable Pikchr diagram skill
+description: Confirm source-grounded roles and visually checked output in a non-Acorn workflow.
 difficulty: medium
 impact: medium
 package: [agents]
 tags: [skills, diagrams, pikchr]
-status: planned
+status: waiting-on-validation
 execution: phased
 phase_budget_hours: 5
 ---
 
-# Import and generalize the Pikchr diagram skill
+# Validate the reusable Pikchr diagram skill
 
 ## Current evidence and decision
 
-Acorn's `/Users/o9w/dev/re/acorn/.agents/skills/pikchr-diagram` contains a skill, examples, an editable `.pikchr` asset, its SVG, and agent metadata. The core workflow is reusable, but ACORN-specific actor assignments and process distinctions should remain examples rather than defaults. Keep source assets and relative references intact; the target repository has no Pikchr renderer on PATH, so rendering is a documented prerequisite for visual acceptance.
+The copied skill, examples, Pikchr source, SVG, and agent metadata are installed. Its entrypoint now derives roles from the requested process; Acorn-specific actor assignments remain only in example material. Waza 0.39.1 static checks, 3/3 spec coverage, preflight, and mock tasks pass locally, and Stow preserves runtime assets while excluding evals. `mdbook` and `mdbook-pikchr` rendered the bundled source in a temporary book, and its SVG was inspected; model-generated output remains unverified because the available Copilot CLI is not authenticated.
 
 ## Acceptance criteria
 
@@ -23,24 +23,13 @@ The installed skill creates an editable Pikchr source and a visually checked out
 
 # Execution phases
 
-## PIK-01 — Import reusable Pikchr instructions and assets
+## PIK-02 — Validate diagrams outside the source domain
 
-- Status: ready
+- Status: blocked
 - Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `agents/.agents/skills/pikchr-diagram/SKILL.md`, `agents/.agents/skills/pikchr-diagram/agents/openai.yaml`, `agents/.agents/skills/pikchr-diagram/assets/workflow-map.pikchr`, `agents/.agents/skills/pikchr-diagram/assets/workflow-map.svg`, `agents/.agents/skills/pikchr-diagram/references/examples.md`, `agents/README.md`.
-- Primary integration lock: Pikchr skill package.
-- Outcome: The complete source skill is copied and its general instructions separate source-grounded roles from ACORN examples.
-- Focused validation: Check every relative link and asset, simulate Stow, and render the bundled example with a documented renderer.
-- Handoff: Record source revision, renderer command, and inspected example output.
-
-## PIK-02 — Evaluate diagrams outside the source domain
-
-- Status: planned
-- Budget: 5 active hours maximum
-- Prerequisites: PIK-01 and WAZ-01.
-- Exact write set: `agents/.agents/skills/pikchr-diagram/evals/eval.yaml`, `agents/.agents/skills/pikchr-diagram/evals/real.yaml`, `agents/.agents/skills/pikchr-diagram/evals/tasks/generic-workflow.yaml`, `agents/.agents/skills/pikchr-diagram/evals/tasks/role-correction.yaml`, `agents/.agents/skills/pikchr-diagram/evals/tasks/non-diagram.yaml`, `agents/.agents/skills/pikchr-diagram/trigger_tests.yaml`, `agents/.agents/skills/pikchr-diagram/SKILL.md`.
+- Prerequisites: authenticated Copilot access, configured model permission, and explicit opt-in to model usage.
+- Exact write set: GitHub Copilot model runtime and a rendered evaluation artifact; revise `agents/.agents/skills/pikchr-diagram/SKILL.md` or its real suites only for an observed defect.
 - Primary integration lock: Pikchr diagram evaluation.
-- Outcome: Waza tests routing and role fidelity on a non-ACORN process; the skill is refined against observed errors.
-- Focused validation: `waza spec verify --fail`, preflight, mock, and opt-in model-backed trials; render and inspect final diagrams at destination size.
+- Outcome: Waza trials show correct routing and role fidelity on a non-Acorn process, and the generated diagram is rendered and inspected at destination size.
+- Focused validation: `make agents-real AGENT_SKILL=pikchr-diagram`; render and inspect the generated `.pikchr` output.
 - Handoff: Record trial scores, rendered artifact checks, and any visual judgment requiring human review.

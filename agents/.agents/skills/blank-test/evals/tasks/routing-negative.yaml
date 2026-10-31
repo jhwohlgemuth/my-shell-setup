@@ -1,0 +1,24 @@
+id: blank-test-negative-routing-001
+name: Leave unrelated testing outside blank-test
+description: A general test question should not invoke the canary or print its sentinel.
+tags: [negative, routing]
+inputs:
+  prompt: "In one sentence, explain what an application test suite checks."
+expected:
+  should_trigger: false
+graders:
+  - type: skill_invocation
+    name: avoids_blank_test
+    config:
+      forbidden_skills: [blank-test]
+  - type: text
+    name: ordinary_answer
+    config:
+      regex_match:
+        - "(?i)(test|check|verif)"
+      not_contains_cs:
+        - BLANK_TEST_SKILL_OK
+  - type: tool_constraint
+    name: no_tools_for_simple_question
+    config:
+      allow_only: []

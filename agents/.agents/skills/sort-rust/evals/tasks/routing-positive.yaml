@@ -1,0 +1,14 @@
+id: sort-rust-routing-positive-001
+name: Invoke sort-rust for an in-scope request
+description: Observe skill discovery without injecting the skill body.
+inputs:
+  prompt: "Alphabetize these independent Rust functions and keep each doc comment attached to its function."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_sort_rust
+    config:
+      required_skills: [sort-rust]
+      mode: any_order
+      allow_extra: true

@@ -1,0 +1,20 @@
+id: pikchr-diagram-generic-workflow-001
+name: Draw a non-Acorn workflow with source-grounded roles
+description: Create an editable Pikchr workflow for a clinic without copying example actors.
+inputs:
+  prompt: |
+    Create workflow.pikchr for this process: a PATIENT submits a form, a RECEPTIONIST checks it, then a SYSTEM sends a confirmation. Put each role in a visible label, connect steps with arrows, and use only these actors. Do not reuse roles from a sample diagram.
+graders:
+  - type: file
+    name: editable_source_and_roles
+    config:
+      must_exist: [workflow.pikchr]
+      content_patterns:
+        - path: workflow.pikchr
+          must_match:
+            - "(?i)PATIENT"
+            - "(?i)RECEPTIONIST"
+            - "(?i)SYSTEM"
+            - "(?i)arrow"
+          must_not_match:
+            - "(?i)ACORN|DEVELOPER|DEV / REVIEWER"

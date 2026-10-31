@@ -1,0 +1,34 @@
+name: Agent skill checks
+
+"on":
+  push:
+    paths:
+      - "agents/**"
+      - "Makefile"
+      - ".github/workflows/skills.yml"
+  pull_request:
+    paths:
+      - "agents/**"
+      - "Makefile"
+      - ".github/workflows/skills.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Waza CLI
+        shell: bash
+        run: |
+          curl -fsSL https://github.com/microsoft/waza/releases/download/v0.39.1/waza-linux-amd64 -o "$RUNNER_TEMP/waza"
+          echo "43fedb4405851021663d75309bd2b6f5df317239859c8c6e741da20565b55fc1  $RUNNER_TEMP/waza" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/waza"
+          "$RUNNER_TEMP/waza" --version
+      - name: Check every installed skill offline
+        env:
+          WAZA_NO_UPDATE_CHECK: "1"
+        run: make agents-ci WAZA="$RUNNER_TEMP/waza"

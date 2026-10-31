@@ -1,0 +1,14 @@
+id: rust-best-practices-routing-positive-001
+name: Invoke rust-best-practices for an in-scope request
+description: Observe skill discovery without injecting the skill body.
+inputs:
+  prompt: "Implement an idiomatic Rust parser that returns Result for invalid input."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_rust_best_practices
+    config:
+      required_skills: [rust-best-practices]
+      mode: any_order
+      allow_extra: true

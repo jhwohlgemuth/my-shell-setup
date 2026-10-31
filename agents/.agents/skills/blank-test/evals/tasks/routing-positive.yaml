@@ -1,0 +1,25 @@
+id: blank-test-positive-routing-001
+name: Invoke blank-test for an explicit request
+description: The agent discovers the skill and invokes it for an in-scope prompt.
+tags: [positive, routing]
+inputs:
+  prompt: "Run the blank test skill."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_blank_test
+    config:
+      required_skills: [blank-test]
+      mode: exact_match
+      allow_extra: false
+  - type: code
+    name: exact_routed_output
+    config:
+      assertions:
+        - "output == 'BLANK_TEST_SKILL_OK'"
+  - type: tool_constraint
+    name: no_auxiliary_tools
+    config:
+      allow_only:
+        - tool: skill

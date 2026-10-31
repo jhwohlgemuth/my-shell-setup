@@ -1,0 +1,14 @@
+id: pikchr-diagram-routing-positive-001
+name: Invoke pikchr-diagram for an in-scope request
+description: Observe skill discovery without injecting the skill body.
+inputs:
+  prompt: "Create an editable Pikchr workflow diagram for a clinic intake process with visible role labels."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_pikchr_diagram
+    config:
+      required_skills: [pikchr-diagram]
+      mode: any_order
+      allow_extra: true

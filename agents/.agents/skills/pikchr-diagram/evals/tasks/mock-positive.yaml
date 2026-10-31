@@ -1,0 +1,8 @@
+id: pikchr-diagram-mock-positive-001
+name: pikchr-diagram harness positive
+description: Verify the in-scope prompt is loaded by the mock harness.
+inputs:
+  prompt: "Use pikchr-diagram to create editable Pikchr workflow diagrams with role labels."
+expected:
+  should_trigger: true
+  output_contains: ["pikchr-diagram"]

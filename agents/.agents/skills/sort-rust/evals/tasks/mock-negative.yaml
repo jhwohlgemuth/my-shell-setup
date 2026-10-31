@@ -1,0 +1,8 @@
+id: sort-rust-mock-negative-001
+name: sort-rust harness negative
+description: Verify the out-of-scope prompt is loaded by the mock harness.
+inputs:
+  prompt: "Do not use sort-rust to sort JavaScript imports."
+expected:
+  should_trigger: false
+  output_contains: ["sort-rust"]

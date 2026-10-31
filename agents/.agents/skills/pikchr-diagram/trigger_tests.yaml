@@ -1,0 +1,17 @@
+skill: pikchr-diagram
+
+should_trigger_prompts:
+  - prompt: "Create an editable Pikchr workflow diagram for a clinic."
+    reason: "Matches the skill's Rust or Pikchr task scope."
+    confidence: high
+  - prompt: "Revise this Pikchr process map with explicit role labels."
+    reason: "Matches the skill's Rust or Pikchr task scope."
+    confidence: high
+
+should_not_trigger_prompts:
+  - prompt: "Make a quantitative scatter plot."
+    reason: "Outside this skill's requested capability."
+    confidence: high
+  - prompt: "Edit this screenshot to remove a label."
+    reason: "Outside this skill's requested capability."
+    confidence: high

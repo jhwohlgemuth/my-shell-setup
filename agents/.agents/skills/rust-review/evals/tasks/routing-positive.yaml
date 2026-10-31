@@ -1,0 +1,14 @@
+id: rust-review-routing-positive-001
+name: Invoke rust-review for an in-scope request
+description: Observe skill discovery without injecting the skill body.
+inputs:
+  prompt: "Audit this existing Rust module for reachable panics and API issues; return review findings."
+expected:
+  should_trigger: true
+graders:
+  - type: skill_invocation
+    name: invokes_rust_review
+    config:
+      required_skills: [rust-review]
+      mode: any_order
+      allow_extra: true

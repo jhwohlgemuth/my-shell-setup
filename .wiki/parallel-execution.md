@@ -2,15 +2,13 @@
 
 Only ready phases appear below. Give each listed phase its primary integration lock; phases with a shared exact write set must merge sequentially even when their plan outcomes are independent.
 
+The [Waza validation phases](waza-skill-workflow.md), [Rust guidelines](guidelines-rust-skill.md), [Rust sorting](sort-rust-skill.md), and [Pikchr diagram](pikchr-diagram-skill.md) validation phases await authenticated model access or a hosted CI run, so they are outside the ready-phase table.
+
 | Ready phase | Primary integration lock | Shared-file exclusion |
 | --- | --- | --- |
 | [PSH-01](powershell-profile.md) | PowerShell startup profile | none |
-| [VAL-01](validation-gates.md) | Makefile validation interface | WAZ-01, ASD-01 (`Makefile`) |
-| [WAZ-01](waza-skill-workflow.md) | Waza runner interface | GDR-01, SOR-01, PIK-01, ASD-01 (`agents/README.md`); VAL-01, ASD-01 (`Makefile`) |
-| [GDR-01](guidelines-rust-skill.md) | Rust guidelines skill body | WAZ-01, SOR-01, PIK-01, ASD-01 (`agents/README.md`) |
-| [SOR-01](sort-rust-skill.md) | Rust sorting skill body | WAZ-01, GDR-01, PIK-01, ASD-01 (`agents/README.md`) |
-| [PIK-01](pikchr-diagram-skill.md) | Pikchr skill package | WAZ-01, GDR-01, SOR-01, ASD-01 (`agents/README.md`) |
-| [ASD-01](agent-skills-web-distribution.md) | Agents package build interface | VAL-01, WAZ-01 (`Makefile`); WAZ-01, GDR-01, SOR-01, PIK-01 (`agents/README.md`) |
+| [VAL-01](validation-gates.md) | Makefile validation interface | ASD-01 (`Makefile`) |
+| [ASD-01](agent-skills-web-distribution.md) | Agents package build interface | VAL-01 (`Makefile`) |
 | [WIN-01](windows-setup.md) | Windows bootstrap interface | none |
 | [PLT-01](installer-platforms.md) | Gold platform documentation | none |
 | [SEC-01](verified-bootstrap.md) | Nix installer | none |
@@ -31,4 +29,4 @@ Only ready phases appear below. Give each listed phase its primary integration l
 | [PUB-01](published-bootstrap.md) | Shell quick-start interface | none |
 | [NVP-01](neovim-reproducibility.md) | Neovim plugin bootstrap | none |
 
-After their prerequisites, schedule WIN-02 and PUB-02 only when the hosted deployment system is available. Schedule VAL-02 after VAL-01; ASD-02 and ASD-05 after ASD-01, serializing their builder edits; ASD-03 after ASD-05, ASD-04 after ASD-03, and ASD-06 after ASD-04 and release immutability is enabled. Schedule PLT-02 and PLT-03 after PLT-01, NVP-02 after NVP-01, NVP-03 after NVP-02, and the SEC menu phases in network order. Run each skill's evaluation phase after its import and WAZ-01; run WAZ-02 after all three imported-skill evaluation phases. Keep shared-file exclusions above when later phases become ready.
+After their prerequisites, schedule WIN-02 and PUB-02 only when the hosted deployment system is available. Schedule VAL-02 after VAL-01; ASD-02 and ASD-05 after ASD-01, serializing their builder edits; ASD-03 after ASD-05, ASD-04 after ASD-03, and ASD-06 after ASD-04 and release immutability is enabled. Schedule PLT-02 and PLT-03 after PLT-01, NVP-02 after NVP-01, NVP-03 after NVP-02, and the SEC menu phases in network order. Run the six skill behavior suites when authenticated model access is available, and run WAZ-02 after the workflow is on a branch with hosted CI. Keep shared-file exclusions above when later phases become ready.

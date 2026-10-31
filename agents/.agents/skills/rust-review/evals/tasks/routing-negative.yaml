@@ -1,0 +1,12 @@
+id: rust-review-routing-negative-001
+name: Keep rust-review out of an unrelated request
+description: Observe the negative routing boundary without injecting the skill body.
+inputs:
+  prompt: "Implement a new Rust parser that returns Result; this is a coding request, not a review."
+expected:
+  should_trigger: false
+graders:
+  - type: skill_invocation
+    name: avoids_rust_review
+    config:
+      forbidden_skills: [rust-review]

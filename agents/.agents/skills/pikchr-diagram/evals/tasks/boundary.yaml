@@ -1,0 +1,15 @@
+id: pikchr-diagram-plot-boundary-001
+name: Leave quantitative plotting to a plot tool
+description: A chart request must not produce an unrelated Pikchr process diagram.
+inputs:
+  prompt: "I need a scatter plot of height versus weight, not a workflow. Explain what kind of plot to make; do not create workflow.pikchr."
+graders:
+  - type: file
+    name: no_workflow_source
+    config:
+      must_not_exist: [workflow.pikchr]
+  - type: text
+    name: plotting_answer
+    config:
+      regex_match:
+        - "(?i)(scatter|plot)"

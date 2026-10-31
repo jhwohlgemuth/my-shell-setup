@@ -1,0 +1,14 @@
+id: rust-best-practices-parser-001
+name: Implement fallible Rust parsing without panic
+description: Use Result and question-mark propagation for a small library function.
+inputs:
+  prompt: |
+    Write only a Rust function `parse_pair(a: &str, b: &str) -> Result<(u32, u32), std::num::ParseIntError>` that parses both inputs and returns the pair. This is a library; invalid input must return an error without panic.
+graders:
+  - type: code
+    name: fallible_parser
+    config:
+      assertions:
+        - "'Result<' in output"
+        - "'?' in output"
+        - "'unwrap(' not in output and 'expect(' not in output"

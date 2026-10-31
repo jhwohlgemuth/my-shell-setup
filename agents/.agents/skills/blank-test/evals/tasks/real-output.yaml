@@ -1,0 +1,18 @@
+id: blank-test-exact-response-001
+name: Exact canary response without tools
+description: The installed canary responds with only its sentinel and calls no tools.
+tags: [positive, outcome]
+inputs:
+  prompt: "Run the blank test skill."
+expected:
+  should_trigger: true
+graders:
+  - type: code
+    name: exact_canary_output
+    config:
+      assertions:
+        - "output == 'BLANK_TEST_SKILL_OK'"
+  - type: tool_constraint
+    name: no_tool_calls
+    config:
+      allow_only: []

@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decisions
 
-The Stow package installs runtime files from `agents/.agents/skills/` into `~/.agents/skills/`. It currently contains the `blank-test` canary; GDR-01, SOR-01, and PIK-01 plan additional skills in the same directory. Waza evaluation fixtures live beside skill sources but `.stow-local-ignore` deliberately excludes `evals/`, `tests/`, `trigger_tests.yaml`, workflow metadata, and package README files from the runtime installation.
+The Stow package installs runtime files from `agents/.agents/skills/` into `~/.agents/skills/`. It currently contains six skills: `blank-test`, `guidelines-rust`, `sort-rust`, `pikchr-diagram`, `rust-best-practices`, and `rust-review`. Waza evaluation fixtures live beside skill sources but `.stow-local-ignore` deliberately excludes `evals/`, `tests/`, `trigger_tests.yaml`, workflow metadata, and package README files from the runtime installation.
 
 The repository has no GitHub Pages workflow, skill ZIP builder, portable plugin manifest, marketplace catalog, or tagged skill-release workflow. Preserve `agents/.agents/skills/` as the only maintained runtime source. A deterministic builder will discover every immediate child containing `SKILL.md`, apply the Stow runtime exclusions, retain runtime `references/`, `scripts/`, `assets/`, and agent metadata, and produce per-skill, aggregate, and clean plugin artifacts. New skills become distributable without editing a hardcoded inventory.
 
@@ -25,7 +25,7 @@ Do not use `agents/.agents/` directly as the plugin root: its skill folders cont
 
 A read-only probe on 2026-10-30 found that the proposed `github.io` catalog URL redirected to `shell.jasonwohlgemuth.com/agent-skills/catalog.json` and returned 404; the repository Pages API also returned 404. Treat the catalog as unpublished. Configure this repository's project Pages with GitHub Actions and no custom domain, then verify the canonical project URL after deployment. The Pages artifact must have a top-level `index.html` and an `agent-skills/` subtree; [GitHub Pages requires a top-level entry file](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
-ASD-01 shares `Makefile` and `agents/README.md` with ready Waza and skill-import phases. Merge those edits sequentially and rebase the documented commands on the winning interface before validation. ASD-02 and ASD-05 both extend the builder after ASD-01, so integrate those edits sequentially too.
+ASD-01 shares `Makefile` with VAL-01. Integrate those edits sequentially and rebase the documented commands on the winning interface before validation. ASD-02 and ASD-05 both extend the builder after ASD-01, so integrate those edits sequentially too.
 
 ## Public interfaces
 
@@ -46,7 +46,7 @@ Every runtime skill beneath `agents/.agents/skills/` appears in the generated Op
 
 - Status: ready
 - Budget: 5 active hours maximum
-- Prerequisites: none; serialize edits with VAL-01, WAZ-01, GDR-01, SOR-01, and PIK-01 where their write sets overlap.
+- Prerequisites: none; serialize Makefile edits with VAL-01.
 - Exact write set: `agents/scripts/package_skills.py`, `agents/scripts/test_package_skills.py`, `Makefile`, `agents/README.md`.
 - Primary integration lock: agents package build interface.
 - Outcome: One standard-library builder discovers packaged skills, validates their entrypoints and safe paths, applies the Stow runtime exclusions, and emits deterministic per-skill and aggregate ZIPs plus an OpenCode v2 `index.json` into a caller-selected output directory. ZIP roots are `.agents/skills/<skill>/`; each catalog entry uses a full content SHA-256 version and lists every runtime file beneath `<skill>/`.

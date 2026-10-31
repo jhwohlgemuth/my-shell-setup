@@ -1,0 +1,8 @@
+id: rust-best-practices-mock-negative-001
+name: rust-best-practices harness negative
+description: Verify the out-of-scope prompt is loaded by the mock harness.
+inputs:
+  prompt: "Do not use rust-best-practices for read-only Rust reviews."
+expected:
+  should_trigger: false
+  output_contains: ["rust-best-practices"]

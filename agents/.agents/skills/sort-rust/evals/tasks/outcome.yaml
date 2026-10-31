@@ -1,0 +1,20 @@
+id: sort-rust-independent-001
+name: Sort independent declarations with attachments
+description: Alphabetize independent Rust functions while retaining their documentation and cfg attribute.
+inputs:
+  prompt: |
+    Sort these independent Rust functions alphabetically. Keep each doc comment and attribute attached to its function. Return only Rust code.
+
+    #[cfg(feature = "z")]
+    /// Handles zebra.
+    fn zebra() {}
+    /// Handles alpha.
+    fn alpha() {}
+graders:
+  - type: code
+    name: sorted_and_attached
+    config:
+      assertions:
+        - "output.index('fn alpha') < output.index('#[cfg') < output.index('fn zebra')"
+        - "output.index('/// Handles alpha.') < output.index('fn alpha')"
+        - "output.index('/// Handles zebra.') < output.index('fn zebra')"

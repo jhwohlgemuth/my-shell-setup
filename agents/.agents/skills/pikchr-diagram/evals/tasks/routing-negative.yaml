@@ -1,0 +1,12 @@
+id: pikchr-diagram-routing-negative-001
+name: Keep pikchr-diagram out of an unrelated request
+description: Observe the negative routing boundary without injecting the skill body.
+inputs:
+  prompt: "Make a quantitative scatter plot of height versus weight."
+expected:
+  should_trigger: false
+graders:
+  - type: skill_invocation
+    name: avoids_pikchr_diagram
+    config:
+      forbidden_skills: [pikchr-diagram]
