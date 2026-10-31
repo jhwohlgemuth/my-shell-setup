@@ -3,7 +3,7 @@ type: Plan
 title: Add reliable validation gates
 description: Separate formatting from nonmutating checks and run them in CI.
 difficulty: low
-impact: medium
+impact: high
 package: [my-shell-setup]
 tags: [make, ci, validation]
 status: planned
@@ -15,11 +15,11 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`make format` rewrites every Gold shell script and runs ShellCheck in a loop without fail-fast behavior. This repository has no checked-in CI workflow. Keep `format` for local writes; add a nonmutating `check` target that checks Bash syntax, shfmt, ShellCheck, Nushell syntax, and PowerShell parsing where the tools are available. CI must install the required tools and fail on any single file.
+`make format` rewrites every Gold shell script and runs ShellCheck in a loop without fail-fast behavior. This repository has no checked-in CI workflow. Read-only Bash syntax, ShellCheck, shfmt, Nushell load, PowerShell parse, and Stow simulation checks passed in the review, but they are not collected into one gate. Keep `format` for local writes; add a nonmutating `check` target and require all tools in CI.
 
 ## Acceptance criteria
 
-`make check` leaves tracked files unchanged and returns nonzero for a deliberately invalid early script. CI runs the same check on every pull request and push to the main branch.
+`make check` leaves tracked files unchanged, checks shell and configuration syntax plus Stow layout, and returns nonzero for a deliberately invalid early script. CI runs the same check on every pull request and push to the main branch.
 
 # Execution phases
 
@@ -30,7 +30,7 @@ phase_budget_hours: 5
 - Prerequisites: none.
 - Exact write set: `Makefile`.
 - Primary integration lock: Makefile validation interface.
-- Outcome: Formatting and validation are separate targets with reliable error propagation.
+- Outcome: Formatting and validation are separate targets; the check includes Bash, shfmt, ShellCheck, Nushell, PowerShell, and Stow with reliable error propagation.
 - Focused validation: Run `make check`, inspect `git diff`, and exercise one deliberately failing script in an isolated temporary copy.
 - Handoff: Record required command versions and the check target's invocation.
 

@@ -3,7 +3,7 @@ type: Plan
 title: Make PowerShell startup safe
 description: Remove global repository-policy mutation and optional-module dependency from profile loading.
 difficulty: low
-impact: medium
+impact: high
 package: [powershell]
 tags: [powershell, profile, startup]
 status: planned

@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`install_nix`, `install_java`, `install_conda`, `install_homebrew`, `install_nim`, `install_ohmyzsh`, and many choices in `install_wasm_tools` execute downloaded shell code. Review each upstream installer, use a fixed release or commit and a checked SHA-256 for the exact script or artifact, and fail before execution if download or verification fails. Keep each installer's existing user-facing command and defaults unless the pinned version requires a documented update.
+`install_nix`, `install_java`, `install_conda`, `install_homebrew`, `install_nim`, `install_ohmyzsh`, and many choices in `install_wasm_tools` execute downloaded shell code. Use a fixed release or commit and a checked SHA-256 for each exact script or artifact, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
 
 ## Acceptance criteria
 
@@ -23,49 +23,126 @@ None of the named scripts execute a mutable URL directly. Every downloaded insta
 
 # Execution phases
 
-## SEC-01 — Pin Nix and Java bootstrap inputs
+## SEC-01 — Verify the Nix bootstrap input
 
 - Status: ready
 - Budget: 5 active hours maximum
 - Prerequisites: none.
-- Exact write set: `gold/install_nix`, `gold/install_java`.
-- Primary integration lock: Nix and Java bootstrap.
-- Outcome: Both scripts verify a fixed installer before executing it.
-- Focused validation: ShellCheck, shfmt check, and mocked successful, corrupt, and failed-download paths for both scripts.
-- Handoff: Record pinned upstream identifiers and checksums in the scripts.
+- Exact write set: `gold/install_nix`.
+- Primary integration lock: Nix installer.
+- Outcome: Nix executes only a verified fixed installer.
+- Focused validation: ShellCheck, shfmt diff, and mocked successful, corrupt, and failed downloads.
+- Handoff: Record the upstream identifier and checksum in the script.
 
-## SEC-02 — Pin shell and package-manager bootstrap inputs
+## SEC-06 — Verify the Java bootstrap input
 
 - Status: ready
 - Budget: 5 active hours maximum
 - Prerequisites: none.
-- Exact write set: `gold/install_homebrew`, `gold/install_nim`, `gold/install_ohmyzsh`.
-- Primary integration lock: shell and package-manager bootstrap.
-- Outcome: Each script executes only a verified fixed installer.
-- Focused validation: ShellCheck, shfmt check, and mocked checksum-failure paths; run one container smoke test for each supported installer.
-- Handoff: Record pinned upstream identifiers and focused test results.
+- Exact write set: `gold/install_java`.
+- Primary integration lock: Java installer.
+- Outcome: SDKMAN executes only a verified fixed installer.
+- Focused validation: ShellCheck, shfmt diff, and mocked successful, corrupt, and failed downloads.
+- Handoff: Record the upstream identifier and checksum in the script.
 
-## SEC-03 — Verify the first WASM installer choices
+## SEC-02 — Verify the Homebrew bootstrap input
+
+- Status: ready
+- Budget: 5 active hours maximum
+- Prerequisites: none.
+- Exact write set: `gold/install_homebrew`.
+- Primary integration lock: Homebrew installer.
+- Outcome: Homebrew executes only a verified fixed installer.
+- Focused validation: ShellCheck, shfmt diff, mocked checksum failure, and a supported-host smoke test.
+- Handoff: Record the upstream identifier and test result.
+
+## SEC-07 — Verify the Nim bootstrap input
+
+- Status: ready
+- Budget: 5 active hours maximum
+- Prerequisites: none.
+- Exact write set: `gold/install_nim`.
+- Primary integration lock: Nim installer.
+- Outcome: Nim executes only a verified fixed installer.
+- Focused validation: ShellCheck, shfmt diff, mocked checksum failure, and a supported-host smoke test.
+- Handoff: Record the upstream identifier and test result.
+
+## SEC-08 — Verify the Oh My Zsh bootstrap input
+
+- Status: ready
+- Budget: 5 active hours maximum
+- Prerequisites: none.
+- Exact write set: `gold/install_ohmyzsh`.
+- Primary integration lock: Oh My Zsh installer.
+- Outcome: Oh My Zsh executes only a verified fixed installer.
+- Focused validation: ShellCheck, shfmt diff, mocked checksum failure, and a supported-host smoke test.
+- Handoff: Record the upstream identifier and test result.
+
+## SEC-03 — Verify Cosmonic and MoonBit choices
 
 - Status: ready
 - Budget: 5 active hours maximum
 - Prerequisites: none.
 - Exact write set: `gold/install_wasm_tools`.
 - Primary integration lock: WASM installer menu.
-- Outcome: Cosmonic, MoonBit, Scale, Spin, and WasmCloud use pinned, verified bootstrap inputs.
-- Focused validation: ShellCheck, shfmt check, and mocked corrupt-download paths for the five choices.
-- Handoff: Record pins and checksums for SEC-04 to preserve the same download pattern.
+- Outcome: Cosmonic and MoonBit use verified fixed bootstrap inputs.
+- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
+- Handoff: Record pins and checksums for subsequent menu phases.
 
-## SEC-04 — Verify the remaining WASM installer choices
+## SEC-09 — Verify Scale and Spin choices
 
 - Status: planned
 - Budget: 5 active hours maximum
 - Prerequisites: SEC-03.
 - Exact write set: `gold/install_wasm_tools`.
 - Primary integration lock: WASM installer menu.
-- Outcome: WasmEdge, Wasmtime, Wazero, WANIX, and WWS use pinned, verified bootstrap inputs.
-- Focused validation: ShellCheck, shfmt check, and mocked corrupt-download paths for the five choices.
-- Handoff: Record all remaining pins and an inventory showing no direct downloaded-script execution in scope.
+- Outcome: Scale and Spin use verified fixed bootstrap inputs.
+- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
+- Handoff: Record both pins and checksums.
+
+## SEC-10 — Verify the WasmCloud choice
+
+- Status: planned
+- Budget: 5 active hours maximum
+- Prerequisites: SEC-09.
+- Exact write set: `gold/install_wasm_tools`.
+- Primary integration lock: WASM installer menu.
+- Outcome: WasmCloud uses a verified fixed bootstrap input.
+- Focused validation: ShellCheck, shfmt diff, and mocked corrupt and unavailable downloads.
+- Handoff: Record the pinned input and checksum.
+
+## SEC-04 — Verify WasmEdge and Wasmtime choices
+
+- Status: planned
+- Budget: 5 active hours maximum
+- Prerequisites: SEC-10.
+- Exact write set: `gold/install_wasm_tools`.
+- Primary integration lock: WASM installer menu.
+- Outcome: WasmEdge and Wasmtime use verified fixed bootstrap inputs.
+- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
+- Handoff: Record both pins and checksums.
+
+## SEC-11 — Verify Wazero and WANIX choices
+
+- Status: planned
+- Budget: 5 active hours maximum
+- Prerequisites: SEC-04.
+- Exact write set: `gold/install_wasm_tools`.
+- Primary integration lock: WASM installer menu.
+- Outcome: Wazero and WANIX use verified fixed bootstrap inputs.
+- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
+- Handoff: Record both pins and checksums.
+
+## SEC-12 — Verify the WWS choice
+
+- Status: planned
+- Budget: 5 active hours maximum
+- Prerequisites: SEC-11.
+- Exact write set: `gold/install_wasm_tools`.
+- Primary integration lock: WASM installer menu.
+- Outcome: WWS uses a verified fixed bootstrap input, completing the scoped remote-script choices.
+- Focused validation: ShellCheck, shfmt diff, a mocked corrupt download, and an inventory of direct downloaded-script execution.
+- Handoff: Record the final pin and the inventory result.
 
 ## SEC-05 — Verify the Miniconda bootstrap input
 
@@ -75,5 +152,5 @@ None of the named scripts execute a mutable URL directly. Every downloaded insta
 - Exact write set: `gold/install_conda`.
 - Primary integration lock: Conda bootstrap.
 - Outcome: The downloaded Miniconda installer is versioned and verified before Bash runs it.
-- Focused validation: ShellCheck, shfmt check, and mocked successful, corrupt, and failed-download paths.
+- Focused validation: ShellCheck, shfmt diff, and mocked successful, corrupt, and failed-download paths.
 - Handoff: Record the installer version, checksum, and a container smoke-test result.
