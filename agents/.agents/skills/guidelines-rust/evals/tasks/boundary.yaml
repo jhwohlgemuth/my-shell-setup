@@ -9,5 +9,5 @@ graders:
     name: handles_both_errors_without_question_mark
     config:
       command: python3
-      args: [agents/scripts/grade_rust_parse_pair.py]
+      args: [scripts/grade_rust_parse_pair.py]
       timeout: 60

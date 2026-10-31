@@ -31,5 +31,5 @@ The installed skill differs from Acorn's source only in its `name` field. Waza f
 - Exact write set: GitHub Copilot model runtime; revise `agents/.agents/skills/guidelines-rust/SKILL.md` or its real suites only for an observed defect.
 - Primary integration lock: Rust guidelines evaluation.
 - Outcome: Positive and negative trials show source-aligned routing and functional Rust output. Record failures against the original instructions before proposing a change; do not rewrite the source solely to satisfy Waza's token score.
-- Focused validation: `make agents-real AGENT_SKILL=guidelines-rust`; inspect each grader and transcript.
+- Focused validation: `make -C agents real AGENT_SKILL=guidelines-rust`; inspect each grader and transcript.
 - Handoff: Record before/after trial evidence and remaining qualitative limitations.

@@ -50,7 +50,7 @@ Every runtime skill beneath `agents/.agents/skills/` appears in the generated Op
 - Exact write set: `agents/scripts/package_skills.py`, `agents/scripts/test_package_skills.py`, `Makefile`, `agents/README.md`.
 - Primary integration lock: agents package build interface.
 - Outcome: One standard-library builder discovers packaged skills, validates their entrypoints and safe paths, applies the Stow runtime exclusions, and emits deterministic per-skill and aggregate ZIPs plus an OpenCode v2 `index.json` into a caller-selected output directory. ZIP roots are `.agents/skills/<skill>/`; each catalog entry uses a full content SHA-256 version and lists every runtime file beneath `<skill>/`.
-- Focused validation: Run the packaging unit tests, build twice into separate temporary directories, compare hashes and file lists, compare each ZIP with a temporary `agents-stow-check` installation, validate safe same-origin catalog paths, and prove a fixture content change changes only that skill's catalog version.
+- Focused validation: Run the packaging unit tests, build twice into separate temporary directories, compare hashes and file lists, compare each ZIP with the temporary Stow inventory checked by `make -C agents stow-check`, validate safe same-origin catalog paths, and prove a fixture content change changes only that skill's catalog version.
 - Handoff: Record the discovered skill names, OpenCode catalog entries and versions, exclusion comparison, artifact hashes, and exact Make target or script invocation used by publishing phases.
 
 ## ASD-02 — Publish the latest web catalog

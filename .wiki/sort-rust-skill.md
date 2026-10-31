@@ -31,5 +31,5 @@ The installed skill differs from Acorn's source only in its `name` field. Waza f
 - Exact write set: GitHub Copilot model runtime; revise `agents/.agents/skills/sort-rust/SKILL.md` or its real suites only for an observed defect.
 - Primary integration lock: Rust sorting evaluation.
 - Outcome: Trials show deterministic ordering, attached attributes/comments, semantic-order preservation, and non-code non-triggering. Record failures against the original instructions before proposing a change.
-- Focused validation: `make agents-real AGENT_SKILL=sort-rust`; inspect output order and each grader.
+- Focused validation: `make -C agents real AGENT_SKILL=sort-rust`; inspect output order and each grader.
 - Handoff: Record before/after trial results and any rule that could not be graded mechanically.

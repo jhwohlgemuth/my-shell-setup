@@ -84,10 +84,10 @@ stow --no-folding --dir "${HOME}/.dotfiles" --target "${HOME}" --stow agents
 From the repository root, verify the Stow layout without changing your home directory, then use Waza for static checks, a credential-free mock test, or interactive development:
 
 ```shell
-make agents-stow-check
-make agents-check
-make agents-test
-make agents-dev
+make -C agents stow-check
+make -C agents check
+make -C agents test
+make -C agents dev
 ```
 
 The included `blank-test` skill is a canary for skill discovery. Ask an agent to run the blank test skill after installation; a successful invocation returns `BLANK_TEST_SKILL_OK`.
@@ -96,13 +96,13 @@ Pass `AGENT_SKILL=<name>` to the Waza Make targets to develop another skill. See
 To improve a skill, capture a real-agent assessment, inspect failures, make one focused change, and assess again. Repeat the same command for every revision; it saves numbered runs and compares each one with the previous completed run. Keep the imported Acorn instructions as the starting point:
 
 ```shell
-make agents-ci
-make agents-assess AGENT_SKILL=guidelines-rust AGENT_TRIALS=5
+make -C agents ci
+make -C agents assess AGENT_SKILL=guidelines-rust AGENT_TRIALS=5
 # Review the saved results, then edit the skill.
-make agents-assess AGENT_SKILL=guidelines-rust AGENT_TRIALS=5
+make -C agents assess AGENT_SKILL=guidelines-rust AGENT_TRIALS=5
 ```
 
-The default history lives under `/tmp/my-shell-setup-waza-iterations`; set `AGENT_ITERATIONS_DIR` for durable storage. Add `AGENT_EFFECT=1` to each assessment to also measure the skill against a no-skill control. Real-agent runs require authenticated Copilot access and can incur model usage. See the [agent skills guide](./agents/README.md) for result paths and review steps.
+The default history lives under `/tmp/my-shell-setup-waza-iterations`; set `AGENT_ITERATIONS_DIR` for durable storage. Each assessment also measures the skill against a no-skill control; set `AGENT_EFFECT=0` to skip that extra run. Real-agent runs require authenticated Copilot access and can incur model usage. See the [agent skills guide](./agents/README.md) for result paths and review steps.
 
 ### Remove packages
 ```shell

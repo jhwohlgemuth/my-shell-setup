@@ -4,12 +4,10 @@ name: Agent skill checks
   push:
     paths:
       - "agents/**"
-      - "Makefile"
       - ".github/workflows/skills.yml"
   pull_request:
     paths:
       - "agents/**"
-      - "Makefile"
       - ".github/workflows/skills.yml"
   workflow_dispatch:
 
@@ -34,7 +32,7 @@ jobs:
             sudo apt-get install --yes stow
           fi
       - name: Verify Stow runtime inventory
-        run: make agents-stow-check
+        run: make -C agents stow-check
       - name: Test skill tooling
         run: python3 -m unittest discover -s agents/scripts -p 'test_*.py'
       - name: Install pinned Waza CLI
@@ -47,7 +45,7 @@ jobs:
       - name: Check every installed skill offline
         env:
           WAZA_NO_UPDATE_CHECK: "1"
-        run: make agents-ci WAZA="$RUNNER_TEMP/waza"
+        run: make -C agents ci WAZA="$RUNNER_TEMP/waza"
       - name: Report capability coverage change
         if: always()
         shell: bash

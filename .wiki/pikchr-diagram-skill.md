@@ -31,5 +31,5 @@ The installed skill matches Acorn's source. Waza fixtures check an editable Pikc
 - Exact write set: GitHub Copilot model runtime and a rendered evaluation artifact; revise `agents/.agents/skills/pikchr-diagram/SKILL.md` or its real suites only for an observed defect.
 - Primary integration lock: Pikchr diagram evaluation.
 - Outcome: Waza trials show correct routing and role fidelity on a non-Acorn process, and the generated diagram is rendered and inspected at destination size.
-- Focused validation: `make agents-real AGENT_SKILL=pikchr-diagram`; render and inspect the generated `.pikchr` output.
+- Focused validation: `make -C agents real AGENT_SKILL=pikchr-diagram`; render and inspect the generated `.pikchr` output.
 - Handoff: Record trial scores, rendered artifact checks, and any visual judgment requiring human review.

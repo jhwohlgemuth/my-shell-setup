@@ -1,6 +1,7 @@
 # Package-level development files
 ^/\.github$
 ^/README\.md$
+^/Makefile$
 ^/coverage$
 ^/scripts$
 ^/results$

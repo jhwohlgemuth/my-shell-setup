@@ -21,7 +21,8 @@ class IterateSkillTests(unittest.TestCase):
 
             def fake_run(command, **kwargs):
                 commands.append(command)
-                if "agents-real" in command:
+                if "real" in command:
+                    self.assertEqual(kwargs["cwd"], repo / "agents")
                     result_root = Path(next(value.split("=", 1)[1] for value in command
                                             if value.startswith("AGENT_RESULTS_DIR=")))
                     result_skill = result_root / skill
@@ -35,6 +36,7 @@ class IterateSkillTests(unittest.TestCase):
                 elif "compare" in command:
                     kwargs["stdout"].write("task comparison\n")
                 elif "--baseline" in command:
+                    self.assertEqual(kwargs["cwd"], repo / "agents")
                     Path(command[command.index("--output") + 1]).write_text("{}")
                 return type("Result", (), {"returncode": 0})()
 

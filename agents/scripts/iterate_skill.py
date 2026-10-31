@@ -52,9 +52,9 @@ def run_assessment(repo: Path, skill: str, runs_dir: Path, trials: int,
     print(f"Results: {current}", flush=True)
 
     subprocess.run(
-        [make, "--no-print-directory", "agents-real", f"AGENT_SKILL={skill}",
+        [make, "--no-print-directory", "real", f"AGENT_SKILL={skill}",
          f"AGENT_RESULTS_DIR={current}", f"AGENT_TRIALS={trials}", f"WAZA={waza}"],
-        cwd=repo, check=True,
+        cwd=repo / "agents", check=True,
     )
 
     command = [sys.executable, str(repo / "agents/scripts/skill_coverage.py"),
@@ -70,7 +70,7 @@ def run_assessment(repo: Path, skill: str, runs_dir: Path, trials: int,
             [waza, "run", str(repo / "agents/.agents/skills" / skill / "evals/real.yaml"),
              "--baseline", "--no-cache", "--trials", str(trials),
              "--output", str(current / "effect.json")],
-            cwd=repo, check=True,
+            cwd=repo / "agents", check=True,
         )
 
     (current / "assessment.json").write_text(json.dumps({
