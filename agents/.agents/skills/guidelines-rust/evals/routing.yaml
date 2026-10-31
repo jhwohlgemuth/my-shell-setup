@@ -11,7 +11,7 @@ config:
   executor: copilot-sdk
   model: claude-sonnet-4.6
   inject_skill_body: false
-  trigger_skill_routing: true
+  trigger_skill_routing: false
 
 metrics:
   - name: task_completion

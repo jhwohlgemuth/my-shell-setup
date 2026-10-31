@@ -24,6 +24,7 @@ make agents-preflight
 make agents-test
 make agents-ci
 make agents-coverage
+make agents-assess AGENT_SKILL=guidelines-rust
 make agents-dev
 ```
 
@@ -57,6 +58,21 @@ make agents-real AGENT_SKILL=blank-test
 ```
 
 Record the CLI version, model, prompts, observed skill and tool calls, grader outcomes, and any regression. Keep fixtures sanitized and leave real runs opt-in.
+
+## Repeat an assessment after each edit
+
+`agents-assess` runs the selected skill's real and routing suites, saves a source-bound coverage report, and compares each completed run with the preceding one. Run it once before editing, inspect the transcripts and graders, then run the same command after each focused change:
+
+```shell
+make agents-assess AGENT_SKILL=guidelines-rust AGENT_TRIALS=5 AGENT_EFFECT=1
+# Inspect the printed run directory and revise the skill based on an observed failure.
+make agents-assess AGENT_SKILL=guidelines-rust AGENT_TRIALS=5 AGENT_EFFECT=1
+# Repeat after the next revision.
+```
+
+Each run is saved under `/tmp/my-shell-setup-waza-iterations/<skill>/<number>/` by default. Set `AGENT_ITERATIONS_DIR` to a controlled persistent directory if the history needs to survive temporary-file cleanup. `coverage.md` summarizes source retention and pass-rate changes; `compare-real.txt` and `compare-routing.txt` show Waza's task-level differences. `AGENT_EFFECT=1` also writes `effect.json` using Waza's paired with-skill and no-skill mode. It adds model calls. Keep `AGENT_TRIALS`, model, and task definitions fixed for comparable runs. If a task or grader changes, the coverage report marks its pass rates incomparable. An interrupted run stays on disk and the next assessment compares with the last completed run.
+
+The guidelines-rust error-handling task now asks for two fallible parses without telling the agent to avoid `?`; its routing suite also omits Waza's eval-only routing hint. Its program grader compiles the returned function with `rustc`, exercises both error paths, and rejects `?` in the generated code. This task requires `rustc` on the machine running real-agent evals. Inspect the transcript as well: a passing standalone function does not prove the agent will follow the rule during larger repository edits. Treat the original Acorn skill as the official baseline; review a source change and its observed effect before adding an `accepted_change` record and running the strict `make agents-ci` gate. Saved raw results can contain prompts and outputs.
 
 ## Track capability coverage over time
 

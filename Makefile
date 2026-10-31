@@ -1,10 +1,13 @@
-.PHONY: agents-check agents-ci agents-coverage agents-dev agents-install agents-preflight agents-real agents-remove agents-stow-check agents-test format neovim
+.PHONY: agents-assess agents-check agents-ci agents-coverage agents-dev agents-install agents-preflight agents-real agents-remove agents-stow-check agents-test format neovim
 
 AGENTS_PACKAGE = agents
 AGENT_SKILL ?= blank-test
 AGENTS_SKILL = $(AGENTS_PACKAGE)/.agents/skills/$(AGENT_SKILL)
 AGENTS_TARGET ?= $(HOME)
 AGENT_RESULTS_DIR ?=
+AGENT_ITERATIONS_DIR ?= /tmp/my-shell-setup-waza-iterations
+AGENT_TRIALS ?= 1
+AGENT_EFFECT ?= 0
 STOW ?= stow
 WAZA ?= waza
 
@@ -58,7 +61,7 @@ agents-real:
 		[ -f "$$suite" ] || continue; \
 		[ "$${suite##*/}" = eval.yaml ] && continue; \
 		found=1; \
-		$(WAZA) run "$$suite" --no-cache --output "$$results/$(AGENT_SKILL)/$${suite##*/}.json"; \
+		$(WAZA) run "$$suite" --no-cache --trials "$(AGENT_TRIALS)" --output "$$results/$(AGENT_SKILL)/$${suite##*/}.json"; \
 	done; \
 	[ "$$found" -eq 1 ] || { echo "No real-agent suites for $(AGENTS_SKILL)" >&2; exit 1; }; \
 	python3 agents/scripts/skill_coverage.py --waza "$(WAZA)" \
@@ -66,6 +69,11 @@ agents-real:
 
 agents-coverage:
 	python3 agents/scripts/skill_coverage.py --waza "$(WAZA)" --strict
+
+agents-assess:
+	python3 agents/scripts/iterate_skill.py --repo-root "$(CURDIR)" \
+		--skill "$(AGENT_SKILL)" --runs-dir "$(AGENT_ITERATIONS_DIR)" \
+		--trials "$(AGENT_TRIALS)" --waza "$(WAZA)" $(if $(filter 1,$(AGENT_EFFECT)),--effect,)
 
 agents-ci:
 	@set -eu; \

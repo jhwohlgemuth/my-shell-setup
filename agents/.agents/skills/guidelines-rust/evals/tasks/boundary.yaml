@@ -1,15 +1,13 @@
 id: guidelines-rust-error-handling-001
-name: Preserve the original Rust error-handling rule
-description: The source skill asks the agent to avoid adding question-mark propagation.
+name: Handle two fallible Rust parses
+description: Measure whether the skill changes error handling without repeating its rule in the prompt.
 inputs:
   prompt: |
-    Write only `fn parse_id(text: &str) -> Result<u32, std::num::ParseIntError>` using guidelines-rust. Return a parse error for invalid input. Do not add the `?` operator.
+    Write only `fn parse_pair(left: &str, right: &str) -> Result<(u32, u32), std::num::ParseIntError>`. Parse both values and return the parse error if either is invalid.
 graders:
-  - type: code
-    name: no_question_mark
+  - type: program
+    name: handles_both_errors_without_question_mark
     config:
-      assertions:
-        - "'fn parse_id' in output"
-        - "'Result<' in output"
-        - "'.parse' in output"
-        - "'?' not in output"
+      command: python3
+      args: [agents/scripts/grade_rust_parse_pair.py]
+      timeout: 60
