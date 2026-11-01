@@ -84,6 +84,8 @@ stow --no-folding --dir "${HOME}/.dotfiles" --target "${HOME}" --stow agents
 From the repository root, verify the Stow layout without changing your home directory, then use Waza for static checks, a credential-free mock test, or interactive development:
 
 ```shell
+make help
+make -C agents help
 make -C agents stow-check
 make -C agents check
 make -C agents test

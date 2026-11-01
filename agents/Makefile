@@ -1,5 +1,5 @@
-.PHONY: assess check ci coverage dev install preflight real remove stow-check test
-.DEFAULT_GOAL := ci
+.PHONY: assess check ci coverage dev help install preflight real remove stow-check test
+.DEFAULT_GOAL := help
 
 REPO_ROOT := $(abspath ..)
 AGENTS_PACKAGE = agents
@@ -13,20 +13,29 @@ AGENT_EFFECT ?= 1
 STOW ?= stow
 WAZA ?= waza
 
+## Show available agent package tasks.
+help:
+	@awk '/^## / { description = substr($$0, 4); next } /^[a-z][a-z0-9-]*:/ && description != "" { split($$0, parts, ":"); printf "  %-15s %s\n", parts[1], description; description = "" }' $(firstword $(MAKEFILE_LIST))
+
+## Install skill runtime files into AGENTS_TARGET with Stow.
 install: stow-check
 	mkdir -p "$(AGENTS_TARGET)"
 	$(STOW) --no-folding --dir "$(REPO_ROOT)" --target "$(AGENTS_TARGET)" --restow "$(AGENTS_PACKAGE)"
 
+## Remove only this package's Stow links from AGENTS_TARGET.
 remove:
 	$(STOW) --no-folding --dir "$(REPO_ROOT)" --target "$(AGENTS_TARGET)" --delete "$(AGENTS_PACKAGE)"
 
+## Verify the exact Stow runtime inventory without changing home.
 stow-check:
 	python3 scripts/check_stow.py --stow "$(STOW)"
 
+## Check AGENT_SKILL readiness and eval spec coverage with Waza.
 check:
 	$(WAZA) check "$(AGENTS_SKILL)"
 	$(WAZA) spec verify "$(AGENTS_SKILL)" "$(AGENTS_SKILL)/evals/eval.yaml" --fail
 
+## Validate every AGENT_SKILL eval suite without model calls.
 preflight:
 	@set -eu; \
 	found=0; \
@@ -44,6 +53,7 @@ preflight:
 	done; \
 	[ "$$found" -eq 1 ] || { echo "No eval suites for $(AGENTS_SKILL)" >&2; exit 1; }
 
+## Run the selected skill's credential-free mock harness.
 test:
 	@set -e; \
 	$(MAKE) --no-print-directory preflight AGENT_SKILL="$(AGENT_SKILL)" WAZA="$(WAZA)"; \
@@ -51,6 +61,7 @@ test:
 	trap 'rm -rf "$$results"' EXIT; \
 	$(WAZA) run "$(AGENTS_SKILL)/evals/eval.yaml" --output "$$results/results.json"
 
+## Run model-backed suites and record source-bound results.
 real:
 	@set -eu; \
 	$(MAKE) --no-print-directory preflight AGENT_SKILL="$(AGENT_SKILL)" WAZA="$(WAZA)"; \
@@ -69,14 +80,17 @@ real:
 	python3 scripts/skill_coverage.py --waza "$(WAZA)" \
 		--results-root "$$results" --record-skill "$(AGENT_SKILL)"
 
+## Check original Acorn content and mapped capability coverage.
 coverage:
 	python3 scripts/skill_coverage.py --waza "$(WAZA)" --strict
 
+## Save and compare a numbered model-backed skill assessment.
 assess:
 	python3 scripts/iterate_skill.py --repo-root "$(REPO_ROOT)" \
 		--skill "$(AGENT_SKILL)" --runs-dir "$(AGENT_ITERATIONS_DIR)" \
 		--trials "$(AGENT_TRIALS)" --waza "$(WAZA)" $(if $(filter 1,$(AGENT_EFFECT)),--effect,)
 
+## Run all offline skill checks and the strict coverage gate.
 ci:
 	@set -eu; \
 	found=0; \
@@ -91,5 +105,6 @@ ci:
 	[ "$$found" -eq 1 ] || { echo "No installed skill sources found" >&2; exit 1; }
 	$(MAKE) --no-print-directory coverage WAZA="$(WAZA)"
 
+## Open Waza's interactive workflow for AGENT_SKILL.
 dev:
 	$(WAZA) dev "$(AGENTS_SKILL)/SKILL.md"

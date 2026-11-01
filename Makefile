@@ -1,5 +1,12 @@
-.PHONY: format neovim
+.PHONY: format help neovim
+.DEFAULT_GOAL := help
 
+## Show available root tasks and where to find agent tasks.
+help:
+	@awk '/^## / { description = substr($$0, 4); next } /^[a-z][a-z0-9-]*:/ && description != "" { split($$0, parts, ":"); printf "  %-15s %s\n", parts[1], description; description = "" }' $(firstword $(MAKEFILE_LIST))
+	@printf '\nAgent tasks: make -C agents help\n'
+
+## Format, normalize line endings, and lint all gold shell scripts.
 format:
 	@for path in $(GOLD) ; do \
         dos2unix ./gold/$$path; \
@@ -7,6 +14,7 @@ format:
         shellcheck ./gold/$$path --enable all; \
     done
 
+## Build and run the Neovim Docker image.
 neovim:
 	docker build -t my-shell-setup/neovim:latest neovim
 	docker run --rm -it my-shell-setup/neovim:latest

@@ -17,6 +17,7 @@ The five imported skills use their full Acorn source as the official starting po
 Run the package targets from the repository root (or `cd agents` and omit `-C agents`):
 
 ```shell
+make -C agents help
 make -C agents stow-check
 make -C agents install
 make -C agents check
