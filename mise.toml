@@ -1,0 +1,26 @@
+# Tool versions and machine packages only; run project tasks with the Makefiles.
+[tools]
+python = "3.12"
+rust = "1.99.1"
+jq = "1.7.1"
+shfmt = "3.14.1"
+shellcheck = "0.11.0"
+
+[tools."github:microsoft/waza"]
+version = "0.39.1"
+format = "raw"
+bin = "waza"
+
+[tools."github:microsoft/waza".platforms]
+macos-x64 = { asset_pattern = "waza-darwin-amd64" }
+macos-arm64 = { asset_pattern = "waza-darwin-arm64" }
+linux-x64 = { asset_pattern = "waza-linux-amd64", checksum = "sha256:43fedb4405851021663d75309bd2b6f5df317239859c8c6e741da20565b55fc1" }
+linux-arm64 = { asset_pattern = "waza-linux-arm64" }
+windows-x64 = { asset_pattern = "waza-windows-amd64.exe", bin = "waza.exe" }
+windows-arm64 = { asset_pattern = "waza-windows-arm64.exe", bin = "waza.exe" }
+
+[bootstrap.packages]
+"brew:stow" = { os = "macos" }
+"brew:dos2unix" = { os = "macos" }
+"apt:stow" = { os = "linux" }
+"apt:dos2unix" = { os = "linux" }

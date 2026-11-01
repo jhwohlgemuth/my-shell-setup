@@ -36,7 +36,7 @@ def next_run(skill_dir: Path) -> Path:
 
 
 def run_assessment(repo: Path, skill: str, runs_dir: Path, trials: int,
-                   waza: str, make: str, effect: bool = False) -> Path:
+                   waza: str, make: str, effect: bool = False, mise: str = "mise") -> Path:
     if not re.fullmatch(r"[a-z0-9-]+", skill):
         raise ValueError(f"Invalid skill name: {skill}")
     if trials < 1:
@@ -53,7 +53,8 @@ def run_assessment(repo: Path, skill: str, runs_dir: Path, trials: int,
 
     subprocess.run(
         [make, "--no-print-directory", "real", f"AGENT_SKILL={skill}",
-         f"AGENT_RESULTS_DIR={current}", f"AGENT_TRIALS={trials}", f"WAZA={waza}"],
+         f"AGENT_RESULTS_DIR={current}", f"AGENT_TRIALS={trials}", f"WAZA={waza}",
+         f"MISE={mise}"],
         cwd=repo / "agents", check=True,
     )
 
@@ -109,12 +110,13 @@ def main() -> int:
     parser.add_argument("--trials", type=int, default=1)
     parser.add_argument("--waza", default="waza")
     parser.add_argument("--make", default="make")
+    parser.add_argument("--mise", default="mise")
     parser.add_argument("--effect", action="store_true",
                         help="Also run Waza's with-skill versus no-skill comparison")
     args = parser.parse_args()
     try:
         run_assessment(args.repo_root.resolve(), args.skill, args.runs_dir,
-                       args.trials, args.waza, args.make, args.effect)
+                       args.trials, args.waza, args.make, args.effect, args.mise)
     except (OSError, ValueError, subprocess.CalledProcessError) as error:
         print(f"Skill assessment failed: {error}", file=sys.stderr)
         return 1

@@ -73,6 +73,19 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/powershell/powershell-original.svg" width="20" height="20" alt="PowerShell logo"> [powershell](./powershell/README.md) | Profile — [`Microsoft.PowerShell_profile.ps1`](./powershell/.config/powershell/Microsoft.PowerShell_profile.ps1)<br>Settings — [`settings.json`](./powershell/settings.json) |
 | <img src="https://cdn.simpleicons.org/starship" width="20" height="20" alt="Starship logo"> [starship](./starship/README.md) | Prompt configuration and default theme — [`starship.toml`](./starship/.config/starship.toml) and [`default.toml`](./starship/.config/starship/default.toml) |
 
+### Optional developer tools with mise
+
+The root [`mise.toml`](./mise.toml) selects the Python, Rust, jq, shell formatting, and Waza versions used for development. It also declares Stow and dos2unix as system packages for macOS and Debian-based Linux. After reviewing the config, install the tools with [mise](https://mise.jdx.dev/getting-started/):
+
+```shell
+mise trust mise.toml
+mise bootstrap packages apply
+mise install
+make -C agents ci
+```
+
+Make remains the task runner. Its recipes call `mise exec` for the selected tools, so shell activation is optional. Use `make help` and `make -C agents help` to list tasks.
+
 ### Agent skills
 
 Install the agent skills into the home directory target used by the other packages. The package's `.agents/` directory maps to `~/.agents`:

@@ -1,5 +1,6 @@
 .PHONY: format help neovim
 .DEFAULT_GOAL := help
+MISE ?= mise
 
 ## Show available root tasks and where to find agent tasks.
 help:
@@ -8,11 +9,11 @@ help:
 
 ## Format, normalize line endings, and lint all gold shell scripts.
 format:
-	@for path in $(GOLD) ; do \
-        dos2unix ./gold/$$path; \
+	@$(MISE) exec -- sh -ec 'for path in $(GOLD); do \
+		dos2unix ./gold/$$path; \
 		shfmt --write --list --indent 4 --case-indent --space-redirects ./gold/$$path; \
-        shellcheck ./gold/$$path --enable all; \
-    done
+		shellcheck ./gold/$$path --enable all; \
+	done'
 
 ## Build and run the Neovim Docker image.
 neovim:

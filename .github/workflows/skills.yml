@@ -4,10 +4,12 @@ name: Agent skill checks
   push:
     paths:
       - "agents/**"
+      - "mise.toml"
       - ".github/workflows/skills.yml"
   pull_request:
     paths:
       - "agents/**"
+      - "mise.toml"
       - ".github/workflows/skills.yml"
   workflow_dispatch:
 
@@ -27,25 +29,21 @@ jobs:
           path: .coverage-baseline
       - name: Install GNU Stow
         run: |
-          if ! command -v stow >/dev/null; then
+          if ! command -v stow >/dev/null || ! command -v dos2unix >/dev/null; then
             sudo apt-get update
-            sudo apt-get install --yes stow
+            sudo apt-get install --yes stow dos2unix
           fi
+      - uses: jdx/mise-action@v5
+        with:
+          version: 2026.10.24
       - name: Verify Stow runtime inventory
         run: make -C agents stow-check
       - name: Test skill tooling
-        run: python3 -m unittest discover -s agents/scripts -p 'test_*.py'
-      - name: Install pinned Waza CLI
-        shell: bash
-        run: |
-          curl -fsSL https://github.com/microsoft/waza/releases/download/v0.39.1/waza-linux-amd64 -o "$RUNNER_TEMP/waza"
-          echo "43fedb4405851021663d75309bd2b6f5df317239859c8c6e741da20565b55fc1  $RUNNER_TEMP/waza" | sha256sum --check
-          chmod +x "$RUNNER_TEMP/waza"
-          "$RUNNER_TEMP/waza" --version
+        run: mise exec -- python3 -m unittest discover -s agents/scripts -p 'test_*.py'
       - name: Check every installed skill offline
         env:
           WAZA_NO_UPDATE_CHECK: "1"
-        run: make -C agents ci WAZA="$RUNNER_TEMP/waza"
+        run: make -C agents ci
       - name: Report capability coverage change
         if: always()
         shell: bash
@@ -54,14 +52,14 @@ jobs:
         run: |
           previous=()
           if [[ -f .coverage-baseline/agents/coverage/capabilities.json ]]; then
-            python3 agents/scripts/skill_coverage.py \
-              --repo-root .coverage-baseline --waza "$RUNNER_TEMP/waza" \
+            mise exec -- python3 agents/scripts/skill_coverage.py \
+              --repo-root .coverage-baseline --waza waza \
               --json-out "$RUNNER_TEMP/skill-coverage-previous.json" > /dev/null
             previous=(--previous "$RUNNER_TEMP/skill-coverage-previous.json")
           fi
           set +e
-          python3 agents/scripts/skill_coverage.py \
-            --waza "$RUNNER_TEMP/waza" --strict \
+          mise exec -- python3 agents/scripts/skill_coverage.py \
+            --waza waza --strict \
             --json-out "$RUNNER_TEMP/skill-coverage-current.json" \
             "${previous[@]}" > "$RUNNER_TEMP/skill-coverage.md"
           status=$?

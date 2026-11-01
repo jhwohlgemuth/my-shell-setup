@@ -2,6 +2,8 @@
 
 This Stow package installs reusable AI agent skills into `~/.agents` while keeping Waza development files in the repository.
 
+The Make targets use the root `mise.toml` for their Python, jq, and Waza commands. Install the toolchain as described in the [root README](../README.md#optional-developer-tools-with-mise) before running them.
+
 The runtime path mapping is:
 
 ```text
@@ -51,10 +53,10 @@ make -C agents real AGENT_SKILL=blank-test
 For a proposed skill change, capture a focused baseline and identify an observed failure first. Review the proposed instruction change against the Acorn source, rerun the same task, then run the full real suites. For the canary's exact-output case:
 
 ```shell
-waza run agents/.agents/skills/blank-test/evals/real.yaml --task blank-test-exact-response-001 --no-cache --output /tmp/blank-test-before.json
+mise exec -- waza run agents/.agents/skills/blank-test/evals/real.yaml --task blank-test-exact-response-001 --no-cache --output /tmp/blank-test-before.json
 # Edit the skill or its grader.
-waza run agents/.agents/skills/blank-test/evals/real.yaml --task blank-test-exact-response-001 --no-cache --output /tmp/blank-test-after.json
-waza compare /tmp/blank-test-before.json /tmp/blank-test-after.json
+mise exec -- waza run agents/.agents/skills/blank-test/evals/real.yaml --task blank-test-exact-response-001 --no-cache --output /tmp/blank-test-after.json
+mise exec -- waza compare /tmp/blank-test-before.json /tmp/blank-test-after.json
 make -C agents real AGENT_SKILL=blank-test
 ```
 
@@ -108,12 +110,12 @@ For lasting history, commit selected sanitized report JSON snapshots under `agen
 
 The initial snapshot is `agents/coverage/history/2026-10-31-acorn-baseline.json`. Pass it to `--previous` to compare a later report with the official starting point.
 
-Waza 0.39.1 or newer is required so file paths work consistently with `waza dev`. CI pins the 0.39.1 Linux binary and checks its SHA-256 before execution. Follow the [official Waza installation instructions](https://microsoft.github.io/waza/getting-started/#installation), then verify the CLI with `waza --version`. Override `WAZA` when using a locally downloaded binary, for example `make -C agents ci WAZA=/path/to/waza`.
+Waza 0.39.1 or newer is required so file paths work consistently with `waza dev`. The root `mise.toml` selects 0.39.1 and pins the Linux x64 SHA-256 used by CI. Run `mise exec -- waza --version` to verify it. Override `WAZA` when using a locally downloaded binary, for example `make -C agents ci WAZA=/path/to/waza`.
 
 To scaffold another standalone skill in this package:
 
 ```shell
-waza new skill my-skill --output-dir agents/.agents/skills
+mise exec -- waza new skill my-skill --output-dir agents/.agents/skills
 ```
 
 Review the generated skill and eval files before running the checks. The Stow ignore list keeps each skill's `evals/`, `tests/`, and root `trigger_tests.yaml`, plus package-level development files, out of `~/.agents`; runtime `scripts/`, `references/`, `assets/`, and agent metadata remain installed.
