@@ -42,7 +42,45 @@ make -C agents test AGENT_SKILL=my-skill
 make -C agents dev AGENT_SKILL=my-skill
 ```
 
-Each copied skill has a mock harness suite, a model-backed outcome and boundary suite, and a model-backed positive and negative routing suite. The canary's `evals/real.yaml` checks the exact `BLANK_TEST_SKILL_OK` output and zero tool calls with the skill body supplied. Its `evals/routing.yaml` withholds the body so positive and negative cases can check actual skill invocation; only the positive case permits the `skill` tool, and neither permits unrelated tools. Model-backed suites are separate from mock suites and never run in CI. To run them deliberately with authenticated GitHub Copilot access and model permission:
+## Create, test, and improve a new skill
+
+There is no Make target for scaffolding. From the repository root, create the skill with Waza and move its generated project evals into the layout used by this package:
+
+```shell
+mise exec -- waza new skill my-skill --output-dir agents/.agents/skills
+mv agents/.agents/evals/my-skill agents/.agents/skills/my-skill/evals
+mv agents/.agents/skills/my-skill/evals/eval.yaml agents/.agents/skills/my-skill/evals/real.yaml
+```
+
+Write the skill's `SKILL.md` with a clear description of when to use it and useful instructions. The generated eval is model-backed, so the last command names it `real.yaml`. Replace its generic tasks and graders with cases that check the skill's intended behavior and failure boundaries. Add `evals/eval.yaml` as a credential-free `mock` suite for harness wiring, and `evals/routing.yaml` as a `copilot-sdk` suite with both should-trigger and should-not-trigger tasks. Use `blank-test/evals/` as a layout example; adapt its prompts and graders to the new skill. Keep eval fixtures under `evals/` so they are not installed as runtime files.
+
+Run the offline checks first. `check` needs `evals/eval.yaml`; `preflight` expects that file to use the mock executor and other root eval suites to use `copilot-sdk`:
+
+```shell
+make -C agents check AGENT_SKILL=my-skill
+make -C agents preflight AGENT_SKILL=my-skill
+make -C agents test AGENT_SKILL=my-skill
+make -C agents stow-check
+make -C agents ci
+```
+
+Then capture model-backed results before changing the skill. Inspect task results and transcripts for missed behavior or incorrect routing. After one focused edit, rerun the same suites with the same model, tasks, graders, and trial count, then compare results:
+
+```shell
+mise exec -- waza run agents/.agents/skills/my-skill/evals/real.yaml --no-cache --trials 5 --output /tmp/my-skill-real-before.json
+mise exec -- waza run agents/.agents/skills/my-skill/evals/routing.yaml --no-cache --trials 5 --output /tmp/my-skill-routing-before.json
+# Edit SKILL.md based on an observed failure.
+mise exec -- waza run agents/.agents/skills/my-skill/evals/real.yaml --no-cache --trials 5 --output /tmp/my-skill-real-after.json
+mise exec -- waza run agents/.agents/skills/my-skill/evals/routing.yaml --no-cache --trials 5 --output /tmp/my-skill-routing-after.json
+mise exec -- waza compare /tmp/my-skill-real-before.json /tmp/my-skill-real-after.json
+mise exec -- waza compare /tmp/my-skill-routing-before.json /tmp/my-skill-routing-after.json
+```
+
+Repeat the edit and comparison until the skill behaves reliably, then run `make -C agents ci` and `make -C agents install`. `make -C agents dev AGENT_SKILL=my-skill` opens Waza's interactive workflow at any point. A paired `waza run .../real.yaml --baseline --no-cache` adds a with-skill versus no-skill comparison. Model runs require authenticated Copilot access and can incur usage.
+
+The numbered `assess` target and the source-bound `real` recorder currently accept only the five imported skills and `blank-test`. For a newly scaffolded skill, use the explicit Waza run/compare commands above until it is added to the coverage tooling.
+
+Each existing skill has a mock harness suite, a model-backed outcome and boundary suite, and a model-backed positive and negative routing suite. The canary's `evals/real.yaml` checks the exact `BLANK_TEST_SKILL_OK` output and zero tool calls with the skill body supplied. Its `evals/routing.yaml` withholds the body so positive and negative cases can check actual skill invocation; only the positive case permits the `skill` tool, and neither permits unrelated tools. Model-backed suites are separate from mock suites and never run in CI. To run them deliberately with authenticated GitHub Copilot access and model permission:
 
 ```shell
 make -C agents real AGENT_SKILL=blank-test
@@ -112,13 +150,7 @@ The initial snapshot is `agents/coverage/history/2026-10-31-acorn-baseline.json`
 
 Waza 0.39.1 or newer is required so file paths work consistently with `waza dev`. The root `mise.toml` selects 0.39.1 and pins the Linux x64 SHA-256 used by CI. Run `mise exec -- waza --version` to verify it. Override `WAZA` when using a locally downloaded binary, for example `make -C agents ci WAZA=/path/to/waza`.
 
-To scaffold another standalone skill in this package:
-
-```shell
-mise exec -- waza new skill my-skill --output-dir agents/.agents/skills
-```
-
-Review the generated skill and eval files before running the checks. The Stow ignore list keeps each skill's `evals/`, `tests/`, and root `trigger_tests.yaml`, plus package-level development files, out of `~/.agents`; runtime `scripts/`, `references/`, `assets/`, and agent metadata remain installed.
+The Stow ignore list keeps each skill's `evals/`, `tests/`, and root `trigger_tests.yaml`, plus package-level development files, out of `~/.agents`; runtime `scripts/`, `references/`, `assets/`, and agent metadata remain installed.
 
 To remove only links owned by this package:
 
