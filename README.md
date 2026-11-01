@@ -37,7 +37,7 @@ To install only selected Windows packages, invoke the downloaded script with `-P
 & ([scriptblock]::Create((irm https://shell.jasonwohlgemuth.me/install.ps1))) -Packages nushell,starship
 ```
 
-The Windows installer supports `nushell`, `neovim`, and `starship`; with no package names, it installs all three. Package names can be separate array values, comma-separated strings, or space-separated strings. The installer requires Git and clones the repository to `$HOME\.dotfiles` (or updates an existing clone). Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
+The Windows installer supports `nushell`, `neovim`, `starship`, and `agents`; with no package names, it installs all four. The `agents` package copies skill runtime files to `$HOME\.agents\skills` without evaluation fixtures. Package names can be separate array values, comma-separated strings, or space-separated strings. The installer requires Git and clones the repository to `$HOME\.dotfiles` (or updates an existing clone). Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
 
 🤓 Manual Setup
 ------------
