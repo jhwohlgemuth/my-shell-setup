@@ -6,7 +6,7 @@ difficulty: medium
 impact: medium
 package: [my-shell-setup]
 tags: [bootstrap, provenance, documentation]
-status: planned
+status: waiting-on-validation
 execution: phased
 phase_budget_hours: 5
 ---
@@ -15,30 +15,19 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`README.md` runs `https://shell.jasonwohlgemuth.me/install.sh`, but this repository has no `install.sh` or deployment definition. Capture the hosted behavior in a checked-in script and document how a reviewed revision reaches the hosted route. This is separate from pinning upstream installers used by Gold.
+The new repository-local `install.sh` preserves the hosted route's default packages and Gold versus home Stow targets. It also validates separate and comma-separated names before Git changes, checks an existing checkout's origin and `main` branch, and updates by fast-forward only. Bash syntax, shfmt, ShellCheck, and isolated-home mocked default, selected, invalid, and rerun scenarios passed, including this repository's GitHub SSH-over-443 origin. The hosted route is reachable, but its bytes and behavior have not been brought into line with this source.
 
 ## Acceptance criteria
 
-The shell quick-start source and its package selection behavior are versioned here, and the deployed route is verified against a reviewed revision.
+The hosted shell quick-start matches the checked-in source and its package selection behavior; its deployed bytes and an isolated Linux smoke test are verified against a reviewed revision.
 
 # Execution phases
-
-## PUB-01 — Check in the shell bootstrap source
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `install.sh`, `README.md`.
-- Primary integration lock: shell quick-start interface.
-- Outcome: A checked-in script implements the documented default, separate, and comma-separated package selections.
-- Focused validation: ShellCheck, shfmt diff, and isolated-home tests for default, selected, invalid, and repeat invocations.
-- Handoff: Record the source revision and local usage command.
 
 ## PUB-02 — Publish and compare the shell bootstrap
 
 - Status: blocked
 - Budget: 5 active hours maximum
-- Prerequisites: PUB-01 and access to the `shell.jasonwohlgemuth.me` deployment system.
+- Prerequisites: a committed reviewed bootstrap revision and access to the `shell.jasonwohlgemuth.me` deployment system.
 - Exact write set: `README.md`; external system: `shell.jasonwohlgemuth.me` shell bootstrap route.
 - Primary integration lock: published shell installer.
 - Outcome: The hosted route serves reviewed source and its deployment procedure is documented.

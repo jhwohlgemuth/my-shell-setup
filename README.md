@@ -25,6 +25,8 @@ curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash
 >
 > Package names must match directories listed under [Install packages](#install-packages). With no names, the installer uses its default package set.
 
+The repository's [shell installer](./install.sh) defaults to `gold git neovim ohmyposh powershell powerlevel10k`. It uses `$GOLD_DOTFILES` or `~/.dotfiles` for the checkout, installs Gold commands into `/usr/local/bin`, and installs other selected packages into `$HOME`.
+
 On Windows, run this in PowerShell:
 
 ```powershell
@@ -38,6 +40,12 @@ To install only selected Windows packages, invoke the downloaded script with `-P
 ```
 
 The Windows installer supports `nushell`, `neovim`, `starship`, and `agents`; with no package names, it installs all four. The `agents` package copies skill runtime files to `$HOME\.agents\skills` without evaluation fixtures. Package names can be separate array values, comma-separated strings, or space-separated strings. The installer requires Git and clones the repository to `$HOME\.dotfiles` (or updates an existing clone). Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
+
+The repository's [Windows bootstrap](./install.ps1) updates the checkout and invokes the file-backed [package copier](./Invoke-WindowsSetup.ps1). To run exactly the source in this repository from a clone, use `bash ./install.sh` on Linux or macOS, or `& ./install.ps1 -Packages agents` in PowerShell. Hosted publication is verified separately.
+
+For safe reruns, both bootstraps require an existing checkout to use this repository as its Git origin and to be on `main`. The Windows bootstrap also refuses to run a locally modified package copier.
+
+The PowerShell profile does not change PSGallery's installation policy during startup. If you want to trust PSGallery for module installation, run `Set-PSRepository -Name PSGallery -InstallationPolicy Trusted` explicitly.
 
 🤓 Manual Setup
 ------------
@@ -81,10 +89,11 @@ The root [`mise.toml`](./mise.toml) selects the Python, Rust, jq, shell formatti
 mise trust mise.toml
 mise bootstrap packages apply
 mise install
+make check
 make -C agents ci
 ```
 
-Make remains the task runner. Its recipes call `mise exec` for the selected tools, so shell activation is optional. Use `make help` and `make -C agents help` to list tasks.
+Make remains the task runner. Its recipes call `mise exec` for the selected tools, so shell activation is optional. `make check` is a read-only local gate for shell scripts, Nushell, PowerShell, and Stow; it needs Nushell and PowerShell installed alongside the mise-selected tools. Use `make help` and `make -C agents help` to list tasks.
 
 ### Agent skills
 

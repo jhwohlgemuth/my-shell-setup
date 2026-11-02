@@ -6,7 +6,7 @@ difficulty: medium
 impact: high
 package: [my-shell-setup]
 tags: [windows, bootstrap, correctness]
-status: planned
+status: waiting-on-validation
 execution: phased
 phase_budget_hours: 5
 ---
@@ -15,30 +15,19 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`README.md` documents `irm .../install.ps1 | iex` and a downloaded script block. `Invoke-WindowsSetup.ps1` copies from `$PSScriptRoot`, which is empty for a script block; a `-WhatIf` reproduction confirmed this. Keep the package copier file-backed. Put the Windows bootstrap source in this repository and make it download or update a checkout before invoking the local file.
+The new repository-local `install.ps1` validates package selections before Git changes, clones or fast-forward updates a verified `main` checkout, and invokes the file-backed `Invoke-WindowsSetup.ps1`. It accepts this repository's HTTPS and SSH origins, including GitHub SSH over port 443, and refuses a locally modified copier. Both README invocation forms, default and selected packages, invalid input, `-WhatIf`, update failures, and runtime skill copying passed temporary-home mocked tests; both PowerShell scripts parse. A read-only `-WhatIf` against this checkout passed. The hosted route and a native Windows install remain unverified.
 
 ## Acceptance criteria
 
-The documented default and selected-package Windows commands locate real package sources. `-WhatIf` and unknown-package errors work without copying files. A clean-home test installs each supported package from a checkout.
+The hosted default and selected-package Windows commands serve the reviewed `install.ps1` and install from a checkout in an isolated Windows environment. Deployed bytes match the checked-in source.
 
 # Execution phases
-
-## WIN-01 — Add a file-backed Windows bootstrap
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `install.ps1`, `Invoke-WindowsSetup.ps1`, `README.md`.
-- Primary integration lock: Windows bootstrap interface.
-- Outcome: Documented Windows commands invoke the checked-in installer from a checkout with a valid `$PSScriptRoot`.
-- Focused validation: Parse both scripts; mock Git, clone/update, and copy operations; test default, selected, invalid, and `-WhatIf` inputs.
-- Handoff: Record the exact verified commands and checkout location.
 
 ## WIN-02 — Publish and verify the Windows bootstrap
 
 - Status: blocked
 - Budget: 5 active hours maximum
-- Prerequisites: WIN-01 and access to the `shell.jasonwohlgemuth.me` deployment system.
+- Prerequisites: a committed reviewed bootstrap revision, access to the `shell.jasonwohlgemuth.me` deployment system, and an isolated Windows host.
 - Exact write set: `README.md`; external system: `shell.jasonwohlgemuth.me` Windows bootstrap route.
 - Primary integration lock: published Windows installer.
 - Outcome: The hosted route serves the reviewed `install.ps1`, and the README command succeeds against that route.

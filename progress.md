@@ -1,5 +1,15 @@
 # Implementation progress
 
+## Implementation — startup and bootstrap
+
+- Plans: PSH-01 complete and retired; VAL-01, WIN-01, and PUB-01 complete. VAL-02 remains ready; WIN-02 and PUB-02 await hosted publication and verification.
+- Authorized scope: Make PowerShell startup safe, add a nonmutating local validation gate, and add the Windows and Linux/macOS bootstrap sources. Hosted publication phases are outside this request.
+- Baseline: `7218998` on `main`; worktree was clean before implementation.
+- Verified state: The PowerShell profile parsed and loaded with optional commands hidden and no Prelude; a mocked McFly initialized exactly once and a policy-changing `Set-PSRepository` mock was never called. `make check` passed Bash syntax, shfmt, ShellCheck, Nushell load, PowerShell parse, agent Stow inventory (15 links), and all-package Stow simulation after both bootstrap sources were added; the tracked diff SHA-256 was unchanged across the final run. An invalid first Gold script made `make check-gold` exit 2. Temporary-home mocked Git/Stow tests passed for shell default, selected, comma-separated, invalid, rerun, wrong-origin, and wrong-branch cases. Temporary-home PowerShell tests passed both README invocation forms, default and selected packages, invalid input, `-WhatIf`, failed updates, wrong origin/branch, dirty copier, and missing Git. An actual-checkout Windows `-WhatIf` also passed without writes. Planning wiki validation passed. These checks used the current uncommitted worktree.
+- Remaining work: None within the authorized local phases. VAL-02, WIN-02, and PUB-02 remain separate hosted phases; native Windows installation and hosted bytes have not been verified.
+- Budget: All four authorized phases finished within their separate five-hour ceilings.
+- Next action: After reviewing and committing this work, run VAL-02 in hosted CI and publish/verify the two bootstrap routes when deployment access is available.
+
 ## Implementation — Waza skill workflow
 
 - Plan: `.wiki/waza-skill-workflow.md`; active phases: WAZ-01 through WAZ-04 plus GDR-02, SOR-02, and PIK-02; state: blocked on external validation.

@@ -17,7 +17,6 @@ if (Test-Installed PSReadLine) {
     Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 $Modules = @(
     'PSScriptAnalyzer'
     'posh-git'
@@ -33,7 +32,7 @@ foreach ($Module in $Modules) {
 # Set aliases
 #
 Set-Alias -Scope Global -Option AllScope -Name ls -Value Get-ChildItem
-if (Test-Command -Name git) {
+if (Get-Command -Name git -ErrorAction SilentlyContinue) {
     function Invoke-GitCommand { git $Args }
     function Invoke-GitCommit { git commit -vam $Args }
     function Invoke-GitDiff { git diff $Args }
@@ -57,7 +56,7 @@ if (Test-Command -Name git) {
     Set-Alias -Scope Global -Option AllScope -Name gsb -Value Invoke-GitStatus
     Set-Alias -Scope Global -Option AllScope -Name gco -Value Invoke-GitCheckout
 }
-if (Test-Command -Name docker) {
+if (Get-Command -Name docker -ErrorAction SilentlyContinue) {
     if (Test-Installed DockerCompletion) {
         Import-Module -Name DockerCompletion
     }
@@ -75,19 +74,18 @@ if (Test-Command -Name docker) {
 }
 # glab completion setup
 # https://gitlab.com/gitlab-org/cli
-if (Test-Command -Name glab) {
+if (Get-Command -Name glab -ErrorAction SilentlyContinue) {
     glab completion -s powershell | Out-String | Invoke-Expression
 }
 # McFly setup
 # https://github.com/cantino/mcfly
-if (Test-Command -Name mcfly) {
-    Invoke-Expression -Command $(mcfly init powershell | Out-String)
+if (Get-Command -Name mcfly -ErrorAction SilentlyContinue) {
     mcfly init powershell | Out-String | Invoke-Expression
 }
 #
 # Zoxide setup
 #
-if (Test-Command -Name zoxide) {
+if (Get-Command -Name zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& { (zoxide init powershell | Out-String) })
 }
 #
@@ -108,6 +106,6 @@ if (Test-Path $ChocolateyProfile) {
 #
 # Initialize oh-my-posh and set custom theme
 #
-if (Test-Command -Name 'oh-my-posh') {
+if (Get-Command -Name 'oh-my-posh' -ErrorAction SilentlyContinue) {
     oh-my-posh init pwsh --config ~/.theme.omp.json | Invoke-Expression
 }

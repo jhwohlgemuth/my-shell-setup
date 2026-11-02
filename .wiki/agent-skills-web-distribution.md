@@ -25,7 +25,7 @@ Do not use `agents/.agents/` directly as the plugin root: its skill folders cont
 
 A read-only probe on 2026-10-30 found that the proposed `github.io` catalog URL redirected to `shell.jasonwohlgemuth.com/agent-skills/catalog.json` and returned 404; the repository Pages API also returned 404. Treat the catalog as unpublished. Configure this repository's project Pages with GitHub Actions and no custom domain, then verify the canonical project URL after deployment. The Pages artifact must have a top-level `index.html` and an `agent-skills/` subtree; [GitHub Pages requires a top-level entry file](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
-ASD-01 shares `Makefile` with VAL-01. Integrate those edits sequentially and rebase the documented commands on the winning interface before validation. ASD-02 and ASD-05 both extend the builder after ASD-01, so integrate those edits sequentially too.
+The root `Makefile` now has a nonmutating `check` target; ASD-01 should preserve it while adding the packaging interface. ASD-02 and ASD-05 both extend the builder after ASD-01, so integrate those edits sequentially.
 
 ## Public interfaces
 
@@ -46,7 +46,7 @@ Every runtime skill beneath `agents/.agents/skills/` appears in the generated Op
 
 - Status: ready
 - Budget: 5 active hours maximum
-- Prerequisites: none; serialize Makefile edits with VAL-01.
+- Prerequisites: none.
 - Exact write set: `agents/scripts/package_skills.py`, `agents/scripts/test_package_skills.py`, `Makefile`, `agents/README.md`.
 - Primary integration lock: agents package build interface.
 - Outcome: One standard-library builder discovers packaged skills, validates their entrypoints and safe paths, applies the Stow runtime exclusions, and emits deterministic per-skill and aggregate ZIPs plus an OpenCode v2 `index.json` into a caller-selected output directory. ZIP roots are `.agents/skills/<skill>/`; each catalog entry uses a full content SHA-256 version and lists every runtime file beneath `<skill>/`.

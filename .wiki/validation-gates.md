@@ -15,30 +15,19 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`make format` rewrites every Gold shell script and runs ShellCheck in a loop without fail-fast behavior. This repository has no checked-in CI workflow. Read-only Bash syntax, ShellCheck, shfmt, Nushell load, PowerShell parse, and Stow simulation checks passed in the review, but they are not collected into one gate. Keep `format` for local writes; add a nonmutating `check` target and require all tools in CI.
+`make format` remains the local rewriting command. `make check` now runs Bash syntax, shfmt diff, and ShellCheck for the listed Gold scripts; loads Nushell configuration without user config or history; parses PowerShell scripts; checks the exact agent Stow inventory; and simulates all package links. It passed locally, left tracked files unchanged, and rejected a deliberately invalid first Gold script. `.github/workflows/skills.yml` already checks the agents package, but no general workflow invokes the root gate.
 
 ## Acceptance criteria
 
-`make check` leaves tracked files unchanged, checks shell and configuration syntax plus Stow layout, and returns nonzero for a deliberately invalid early script. CI runs the same check on every pull request and push to the main branch.
+CI runs the nonmutating `make check` gate on every pull request and push to the main branch.
 
 # Execution phases
 
-## VAL-01 — Add a nonmutating local check
+## VAL-02 — Enforce checks in CI
 
 - Status: ready
 - Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `Makefile`.
-- Primary integration lock: Makefile validation interface.
-- Outcome: Formatting and validation are separate targets; the check includes Bash, shfmt, ShellCheck, Nushell, PowerShell, and Stow with reliable error propagation.
-- Focused validation: Run `make check`, inspect `git diff`, and exercise one deliberately failing script in an isolated temporary copy.
-- Handoff: Record required command versions and the check target's invocation.
-
-## VAL-02 — Enforce checks in CI
-
-- Status: planned
-- Budget: 5 active hours maximum
-- Prerequisites: VAL-01.
+- Prerequisites: none; `make check` is available.
 - Exact write set: `.github/workflows/check.yml`.
 - Primary integration lock: CI check workflow.
 - Outcome: Pull requests and main-branch pushes run the nonmutating check target.
