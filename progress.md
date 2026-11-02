@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — correctness-tool menu
+
+- Plan: `.wiki/correctness-choices.md`; active phase: none; state: complete and plan retired.
+- Authorized scope and decisions: Execute COR-01 only; remove Lean until an installer exists and route Rocq to the existing `install_rocq` command.
+- Baseline and local work: `44a9ae7` on `main`; the worktree was clean before implementation. Changed `gold/install_correctness_tools` and reconciled the completed plan's wiki references.
+- Verified state: `bash -n`, shfmt diff, and ShellCheck with all checks enabled passed. A mocked Gum run verified that Lean is absent from the chooser and selecting Rocq calls `install_rocq`. A static audit verified all ten displayed choices map to executable `gold/install_*` commands. These checks used the current uncommitted worktree.
+- Remaining work: None within COR-01.
+- Budget: Completed in under one active hour (estimate), within the five-hour phase ceiling.
+- Blockers / failed approaches: None.
+- Next action: Review and commit the completed phase.
+
 ## Implementation — startup and bootstrap
 
 - Plans: PSH-01 complete and retired; VAL-01, WIN-01, and PUB-01 complete. VAL-02 remains ready; WIN-02 and PUB-02 await hosted publication and verification.

@@ -29,7 +29,6 @@ main() {
         Creusot:creusot-rustc
         Frama-C:frama-c
         KLEE:klee
-        Lean:lean
         Prusti:prusti-rustc
         RefinedRust:refinedrust
         Rocq:coqc
@@ -81,10 +80,6 @@ main() {
                 install_klee
                 complete "${CHOICE}"
                 ;;
-            Lean)
-                install_lean
-                complete "${CHOICE}"
-                ;;
             Prusti)
                 install_prusti
                 complete "${CHOICE}"
@@ -94,7 +89,7 @@ main() {
                 complete "${CHOICE}"
                 ;;
             Rocq)
-                install_coq
+                install_rocq
                 complete "${CHOICE}"
                 ;;
             rust2ada)

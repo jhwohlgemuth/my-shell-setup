@@ -16,7 +16,6 @@ The [Waza validation phases](waza-skill-workflow.md), [Rust guidelines](guidelin
 | [SEC-08](verified-bootstrap.md) | Oh My Zsh installer | none |
 | [SEC-03](verified-bootstrap.md) | WASM installer menu | REP-04; subsequent SEC menu phases |
 | [SEC-05](verified-bootstrap.md) | Conda bootstrap | PLT-02 (`install_conda`) |
-| [COR-01](correctness-choices.md) | Correctness-tool menu | none |
 | [PRU-01](prusti-path.md) | Prusti installer | none |
 | [NUH-01](nushell-history.md) | Nushell history configuration | none |
 | [EXT-01](extension-install.md) | Code-server extension flow | none |
