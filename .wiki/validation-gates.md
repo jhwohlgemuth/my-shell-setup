@@ -6,7 +6,7 @@ difficulty: low
 impact: high
 package: [my-shell-setup]
 tags: [make, ci, validation]
-status: planned
+status: waiting-on-validation
 execution: phased
 phase_budget_hours: 5
 ---
@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`make format` remains the local rewriting command. `make check` now runs Bash syntax, shfmt diff, and ShellCheck for the listed Gold scripts; loads Nushell configuration without user config or history; parses PowerShell scripts; checks the exact agent Stow inventory; and simulates all package links. It passed locally, left tracked files unchanged, and rejected a deliberately invalid first Gold script. `.github/workflows/skills.yml` already checks the agents package, but no general workflow invokes the root gate.
+`make format` remains the local rewriting command. `make check` runs Bash syntax, shfmt diff, and ShellCheck for the listed Gold scripts; loads Nushell configuration without user config or history; parses PowerShell scripts; checks the exact agent Stow inventory; and simulates all package links. `.github/workflows/check.yml` now invokes that root gate for pull requests, pushes to `main`, and manual dispatch, using Mise 2026.10.24 and Nushell 0.116.1. The workflow structure, isolated tool provisioning, and root gate pass locally; the first hosted run remains pending until the workflow is committed and pushed.
 
 ## Acceptance criteria
 
@@ -25,9 +25,9 @@ CI runs the nonmutating `make check` gate on every pull request and push to the 
 
 ## VAL-02 — Enforce checks in CI
 
-- Status: ready
+- Status: blocked
 - Budget: 5 active hours maximum
-- Prerequisites: none; `make check` is available.
+- Prerequisites: commit and push `.github/workflows/check.yml`, then inspect its first GitHub Actions run; local workflow validation and `make check` pass.
 - Exact write set: `.github/workflows/check.yml`.
 - Primary integration lock: CI check workflow.
 - Outcome: Pull requests and main-branch pushes run the nonmutating check target.

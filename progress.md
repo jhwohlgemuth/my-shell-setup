@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — validation gate and Gold platform matrix
+
+- Plans: `.wiki/validation-gates.md` and `.wiki/installer-platforms.md`; active phase: none; state: VAL-02 waiting on hosted validation, PLT-01 complete and pruned.
+- Authorized scope and decisions: Implement VAL-02, complete PLT-01, then make PLT-02 and PLT-03 ready alongside independent SEC phases. Do not commit, push, or start later implementation phases.
+- Baseline and local work: `a12d479` on `main`; the worktree was clean. Added `.github/workflows/check.yml`, published the current support matrix in `gold/README.md`, and reconciled the plan index, dependency network, and parallel schedule.
+- Verified state: The workflow targets pushes to `main`, pull requests, and manual dispatch; pins Mise 2026.10.24; provisions Nushell 0.116.1; and invokes `make check`. Compatible Ruby/Psych parsing confirmed the required triggers and command, isolated Mise provisioning reported Nushell 0.116.1, and `make check` passed. The support matrix accounts for all 39 `gold/install_*` commands and all 16 WASM choices.
+- Remaining work: Obtain the first hosted VAL-02 run after commit/push. PLT-02 and PLT-03 are ready but were scheduled, not started; PLT-02 must serialize with SEC-05 while PLT-03 can run beside the independent SEC phases.
+- Budget: VAL-02 completed its local implementation in under one active hour (estimate); PLT-01 completed within its five-hour ceiling.
+- Blockers / failed approaches: VAL-02's hosted run requires a commit and push. The first YAML assertion used unavailable `YAML.safe_load_file`; the compatible `YAML.safe_load(File.read(...))` assertion passed.
+- Next action: Commit and push the workflow, then inspect its first hosted run; execute the scheduled platform and SEC phases only when authorized.
+
 ## Implementation — installer repeatability
 
 - Plan: `.wiki/installer-repeatability.md`; active phase: none; state: complete and plan retired.
