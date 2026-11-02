@@ -2,9 +2,13 @@
 set -e
 
 requires \
+    awk \
     cargo \
+    cat \
     git \
+    grep \
     java \
+    mktemp \
     python3
 main() {
     #
@@ -20,8 +24,22 @@ main() {
     chmod +x "${HOME}/.local/bin/prusti-rustc"
     chmod +x "${HOME}/.local/bin/cargo-prusti"
     # shellcheck disable=SC2016
-    echo 'export PATH="${HOME}/prusti/bin:${PATH}"' >> "${HOME}/.zshrc"
-    export PATH="${SRC_DIRECTORY}/bin:${PATH}"
+    local OLD_PATH_LINE='export PATH="${HOME}/prusti/bin:${PATH}"'
+    if [[ -f "${HOME}/.zshrc" ]] && grep -Fqx "${OLD_PATH_LINE}" "${HOME}/.zshrc"; then
+        local PROFILE_TMP
+        PROFILE_TMP="$(mktemp "${HOME}/.zshrc.XXXXXX")"
+        awk -v old="${OLD_PATH_LINE}" '$0 != old' "${HOME}/.zshrc" > "${PROFILE_TMP}"
+        cat "${PROFILE_TMP}" > "${HOME}/.zshrc"
+        rm -f "${PROFILE_TMP}"
+    fi
+    # shellcheck disable=SC2016
+    local PATH_LINE='case ":${PATH}:" in *":${HOME}/.local/bin:"*) ;; *) export PATH="${HOME}/.local/bin:${PATH}" ;; esac'
+    if ! grep -Fqx "${PATH_LINE}" "${HOME}/.zshrc" 2> /dev/null; then
+        printf '%s\n' "${PATH_LINE}" >> "${HOME}/.zshrc"
+    fi
+    if [[ ":${PATH}:" != *":${HOME}/.local/bin:"* ]]; then
+        export PATH="${HOME}/.local/bin:${PATH}"
+    fi
     popd > /dev/null || exit
     rm -rf "${SRC_DIRECTORY}"
 }

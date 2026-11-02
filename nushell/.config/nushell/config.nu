@@ -54,10 +54,11 @@ $env.config.history = {
     max_size: 10_000
     sync_on_enter: true
     isolation: false
-    path: (
-        $nu.home-dir
-        | path join "OneDrive" "Documents" "PowerShell" "nushell-history.sqlite3"
-    )
+}
+
+let history_dir = ($nu.home-dir | path join "OneDrive" "Documents" "PowerShell")
+if ($history_dir | path exists) {
+    $env.config.history.path = ($history_dir | path join "nushell-history.sqlite3")
 }
 
 # =============================================================================

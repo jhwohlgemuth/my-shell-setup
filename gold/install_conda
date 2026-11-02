@@ -4,6 +4,7 @@ set -e
 requires \
     bash \
     curl \
+    uname \
     zsh
 main() {
     #
@@ -14,6 +15,13 @@ main() {
     local CONDA_ENVS_PATH="${CONDA_PREFIX}/envs"
     local CONDA_PKGS_DIRS="${CONDA_PREFIX}/pkgs"
     local CONDA_BIN="${HOME}/miniconda3/bin/conda"
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    if [[ "${OS}" != Linux || "${ARCH}" != x86_64 ]]; then
+        printf '==> [ERROR] Miniconda installer supports Linux x86-64, detected %s %s\n' "${OS}" "${ARCH}" >&2
+        return 1
+    fi
     mkdir -p "${CONDA_PREFIX}"
     mkdir -p "${CONDA_ENVS_PATH}" "${CONDA_PKGS_DIRS}"
     curl -fsSL -o /tmp/install_miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh

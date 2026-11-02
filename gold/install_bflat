@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e
 
-requires curl
+requires curl getconf uname
 main() {
     #
     # Install bflat
@@ -9,6 +9,17 @@ main() {
     local HOME="${1:-/home/nonroot}"
     local VERSION="${2:-"8.0.0"}"
     local SRC_DIRECTORY="${HOME}/bflat"
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    if [[ "${OS}" != Linux || "${ARCH}" != x86_64 ]]; then
+        printf '==> [ERROR] bflat installer supports Linux x86-64, detected %s %s\n' "${OS}" "${ARCH}" >&2
+        return 1
+    fi
+    if ! getconf GNU_LIBC_VERSION > /dev/null 2>&1; then
+        printf '==> [ERROR] bflat installer requires glibc on Linux x86-64, detected %s %s without glibc\n' "${OS}" "${ARCH}" >&2
+        return 1
+    fi
     mkdir -p "${SRC_DIRECTORY}"
     pushd "${SRC_DIRECTORY}" > /dev/null
     curl -o bflat.tar.gz -LJ "https://github.com/bflattened/bflat/releases/download/v${VERSION}/bflat-${VERSION}-linux-glibc-x64.tar.gz"

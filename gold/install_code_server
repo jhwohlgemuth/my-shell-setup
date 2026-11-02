@@ -1,12 +1,19 @@
 #! /bin/bash
 set -e
 
-requires curl
+requires curl uname
 main() {
     #
     # Install code-server
     #
     local CODE_SERVER_CONFIG_DIR=${1:-/app/code-server/config}
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    if [[ "${OS}" != Linux || "${ARCH}" != x86_64 ]]; then
+        printf '==> [ERROR] code-server installer supports Linux x86-64, detected %s %s\n' "${OS}" "${ARCH}" >&2
+        return 1
+    fi
     # shellcheck disable=SC2155
     local CODE_RELEASE=$(curl -sX GET https://api.github.com/repos/coder/code-server/releases/latest | awk '/tag_name/{print $4;exit}' FS='[""]' | sed 's|^v||')
     # shellcheck disable=SC2154

@@ -15,24 +15,13 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`gold/README.md` now records the host, architecture, privilege or target, and package-manager or toolchain assumptions for all 39 `install_*` commands, including all 16 `install_wasm_tools` choices. It identifies upstream-defined or otherwise ambiguous support instead of claiming it. `install_conda`, `install_code_server`, and `install_bflat` still fetch Linux x86-64 artifacts without early guards; `install_cuda_toolkit`, `install_dotnet`, and `install_docker` still need explicit distro, architecture, and privilege checks before mutation.
+`gold/README.md` records the host, architecture, privilege or target, and package-manager or toolchain assumptions for all 39 `install_*` commands, including all 16 `install_wasm_tools` choices. The downloaded-binary installers now reject hosts outside Linux x86-64 before directory creation or download; `install_bflat` also requires glibc. Mocked Linux x86-64, Linux arm64, macOS, and non-glibc Linux checks passed on 2026-11-02. `install_cuda_toolkit`, `install_dotnet`, and `install_docker` still need explicit distro, architecture, and privilege checks before mutation.
 
 ## Acceptance criteria
 
 Gold documentation states the supported host for each installer family. The named installers reject unsupported OS, architecture, distro, or privilege combinations before changing the host, and supported combinations keep their existing interface.
 
 # Execution phases
-
-## PLT-02 — Guard downloaded binary installers
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none; the Gold support matrix is published in `gold/README.md`.
-- Exact write set: `gold/install_conda`, `gold/install_code_server`, `gold/install_bflat`.
-- Primary integration lock: downloaded binary installer guards.
-- Outcome: These scripts select a supported artifact or fail before download with the detected host in the message.
-- Focused validation: ShellCheck, shfmt diff, and mocked Linux x86-64, Linux arm64, and macOS detection.
-- Handoff: Record supported artifact mappings and unsupported-host output.
 
 ## PLT-03 — Guard distro-specific system installers
 

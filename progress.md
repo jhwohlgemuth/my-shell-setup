@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — platform guards, Prusti PATH, and Nushell history
+
+- Plans: `.wiki/installer-platforms.md` (PLT-02 complete; PLT-03 remains), `.wiki/prusti-path.md` (retired), and `.wiki/nushell-history.md` (retired); active phase: none.
+- Authorized scope: Execute PLT-02, PRU-01, and NUH-01. Preserve the supported Linux x86-64 installer artifacts, existing Prusti binaries, and the OneDrive path when available.
+- Baseline and local work: `a931a43` on `main`; `.agents/` was already untracked from the requested planning-skill installation. Changed the three downloaded-binary installers, Prusti installer, and Nushell config; pruned or retired the completed wiki phases and reconciled portfolio links.
+- Verified state: `make check-gold` and `make check-nushell` passed. Mocked Darwin x86-64 and Linux arm64 calls to each downloaded-binary installer failed before directory creation or download; Linux x86-64 reached the existing download route; bflat additionally rejected a non-glibc Linux host. A temporary-home double Prusti install removed the exact obsolete profile entry, preserved unrelated text, left one guarded `~/.local/bin` entry, and resolved both binaries in a fresh zsh. Nushell startup with temporary homes used the default history path without OneDrive and the expected custom path with its parent directory. Wiki validation and `git diff --check` passed. Live upstream installation was not run.
+- Remaining work: PLT-03 is outside this authorization. SEC-05 may now edit `gold/install_conda` without a shared PLT-02 phase. VAL-03 is separately ready to repair missing Stow in hosted CI.
+- Budget: Each phase finished in under one active hour (estimate), within its five-hour ceiling.
+- Blockers / failed approaches: Initial test fixtures omitted bflat's working directory and compared noncanonical Nushell paths; corrected fixtures passed. A temporary Prusti test exposed that bare `mktemp` used an unwritable system cache directory here; the installer now creates its temporary profile file beside `.zshrc`.
+- Next action: Review and commit these changes; run PLT-03 only when authorized.
+
 ## Implementation — validation gate and Gold platform matrix
 
 - Plans: `.wiki/validation-gates.md` and `.wiki/installer-platforms.md`; active phase: none; state: VAL-02 waiting on hosted validation, PLT-01 complete and pruned.
