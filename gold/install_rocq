@@ -2,6 +2,7 @@
 set -e
 
 requires \
+    append_if_missing \
     bwrap \
     install_extensions \
     libgmp-dev \
@@ -13,7 +14,8 @@ install_ocaml_tools() {
     #
     eval "$(opam env)"
     # shellcheck disable=SC2016
-    echo 'eval "$(opam env)"' >> "${HOME}/.zshrc"
+    local OPAM_ENV_LINE='eval "$(opam env)"'
+    append_if_missing "${OPAM_ENV_LINE}" "${HOME}/.zshrc"
     opam install \
         dune \
         jupyter \

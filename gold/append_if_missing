@@ -1,0 +1,13 @@
+#! /bin/bash
+set -e
+
+main() {
+    local LINE="${1:-}"
+    local FILE="${2:-}"
+    if [[ -z "${LINE}" || -z "${FILE}" ]]; then
+        echo "Usage: append_if_missing <line> <file>" >&2
+        exit 1
+    fi
+    grep -Fqx -- "${LINE}" "${FILE}" 2> /dev/null || printf '%s\n' "${LINE}" >> "${FILE}"
+}
+main "$@"

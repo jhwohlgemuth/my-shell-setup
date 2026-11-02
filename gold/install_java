@@ -3,14 +3,19 @@ set -e
 
 requires \
     curl
+clear_directory() {
+    local DIRECTORY="$1"
+    [[ -d "${DIRECTORY}" ]] || return 0
+    find "${DIRECTORY}" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
+}
 main() {
     local VERSION=${1:-"23-open"}
     curl -s "https://get.sdkman.io" | bash
     # shellcheck source=/dev/null
     source "${HOME}/.sdkman/bin/sdkman-init.sh"
     yes | sdk install java "${VERSION}"
-    rm -rf "${HOME}/.sdkman/archives/*"
-    rm -rf "${HOME}/.sdkman/tmp/*"
+    clear_directory "${HOME}/.sdkman/archives"
+    clear_directory "${HOME}/.sdkman/tmp"
     printf "\n=> [WARNING] Run 'source \${HOME}/.zshrc' or restart your shell to apply PATH changes\n"
 }
 main "$@"

@@ -2,13 +2,19 @@
 set -e
 
 requires \
+    append_if_missing \
     dotnet \
     jupyter \
     zsh
 main() {
-    dotnet tool install --global Microsoft.dotnet-interactive
-    dotnet interactive jupyter install
+    local DOTNET_TOOLS_DIR="${HOME}/.dotnet/tools"
     # shellcheck disable=SC2016
-    echo 'export PATH="${PATH}:/root/.dotnet/tools"' >> "${HOME}/.zshrc"
+    local PATH_LINE='export PATH="${PATH}:${HOME}/.dotnet/tools"'
+    local ZSHRC="${HOME}/.zshrc"
+    dotnet tool update --global Microsoft.dotnet-interactive ||
+        dotnet tool install --global Microsoft.dotnet-interactive
+    export PATH="${PATH}:${DOTNET_TOOLS_DIR}"
+    dotnet interactive jupyter install
+    append_if_missing "${PATH_LINE}" "${ZSHRC}"
 }
 main "$@"

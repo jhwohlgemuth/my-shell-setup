@@ -2,11 +2,17 @@
 set -e
 
 requires \
+    append_if_missing \
     curl \
     zsh
 main() {
+    local CUDA_HOME_LINE
     local CUDA_HOME_DIR="${1:-/usr/local/cuda}"
+    # shellcheck disable=SC2016
+    local CUDA_PATH_LINE='export PATH=${CUDA_HOME}/bin:${PATH}'
     local DEBIAN_VERSION
+    # shellcheck disable=SC2016
+    local LD_LIBRARY_PATH_LINE='export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}'
     local TARGET_HOME
     local ZSHRC
     if [[ -n "${SUDO_USER:-}" ]]; then
@@ -22,11 +28,10 @@ main() {
     rm cuda-keyring_1.1-1_all.deb
     apt-get update
     apt-get install --yes cuda-toolkit
-    {
-        echo "export CUDA_HOME=${CUDA_HOME_DIR}"
-        echo "export PATH=\${CUDA_HOME}/bin:\${PATH}"
-        echo "export LD_LIBRARY_PATH=\${CUDA_HOME}/lib64:\${LD_LIBRARY_PATH}"
-    } >> "${ZSHRC}"
+    CUDA_HOME_LINE="export CUDA_HOME=${CUDA_HOME_DIR}"
+    append_if_missing "${CUDA_HOME_LINE}" "${ZSHRC}"
+    append_if_missing "${CUDA_PATH_LINE}" "${ZSHRC}"
+    append_if_missing "${LD_LIBRARY_PATH_LINE}" "${ZSHRC}"
     printf "\n=> [WARNING] Run 'source %s' or restart your shell to apply PATH changes\n" "${ZSHRC}"
 }
 main "$@"

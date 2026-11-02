@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — installer repeatability
+
+- Plan: `.wiki/installer-repeatability.md`; active phase: none; state: complete and plan retired.
+- Authorized scope and decisions: Completed REP-01 through REP-04 while preserving unrelated profile content and the established target-user rules; corrected Cosmonic's related `/root` PATH to use `${HOME}`. Exact-line profile writes share the standalone `append_if_missing` Gold utility.
+- Baseline and local work: `fcfb584` on `main`; the worktree was clean before implementation. Added `gold/append_if_missing` and its Makefile inventory entry; changed `gold/install_dotnet_jupyter_kernel`, `gold/install_java`, `gold/install_homebrew`, `gold/install_cuda_toolkit`, `gold/install_rocq`, and `gold/install_wasm_tools`; then reconciled the retired plan's wiki references.
+- Verified state: Bash syntax, shfmt, and ShellCheck pass for every changed script; `make check-gold` and `make check-stow` pass. The standalone utility rejects missing arguments, preserves unrelated content, and appends an exact line only when absent. Temporary-home double runs leave one .NET, Homebrew, Rocq, and each CUDA line. Java removes visible, hidden, and nested entries only from SDKMAN `archives/` and `tmp/`, preserving candidate and configuration files. Double selections leave one each of the Emscripten, Cosmonic, and WasmEdge lines and one each of the two Wasmtime lines; Cosmonic uses `${HOME}/.cosmo/bin`.
+- Remaining work: None within the REP plan.
+- Budget: REP-01 through REP-04 each completed in under one active hour (estimates), within their separate five-hour ceilings.
+- Blockers / failed approaches: Initial CUDA and WasmEdge mocks lacked host/installer fixtures; the corrected Debian/passwd and environment-file fixtures passed. The first full Gold gate emitted sandbox cache warnings, so the clean result was obtained outside the sandbox. No product blocker remains.
+- Next action: Review and commit the completed plan.
+
 ## Implementation — correctness-tool menu
 
 - Plan: `.wiki/correctness-choices.md`; active phase: none; state: complete and plan retired.

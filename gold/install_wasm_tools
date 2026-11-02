@@ -2,7 +2,10 @@
 # shellcheck disable=SC2016,SC2155
 set -e
 
+EMSDK_DIRECTORY="${EMSDK_DIRECTORY:-/emsdk}"
+
 requires \
+    append_if_missing \
     brew \
     cargo \
     curl \
@@ -10,16 +13,17 @@ requires \
     gum \
     rustup
 install_emscripten() {
+    local EMSDK_ENV_LINE="source \"${EMSDK_DIRECTORY}/emsdk_env.sh\""
     #
     # Install Emscripten tools (emsdk and emcc)
     #
-    git clone https://github.com/emscripten-core/emsdk.git /emsdk
-    cd /emsdk || exit
+    git clone https://github.com/emscripten-core/emsdk.git "${EMSDK_DIRECTORY}"
+    cd "${EMSDK_DIRECTORY}" || exit
     ./emsdk install latest
     ./emsdk activate latest
     echo "$(gum style --foreground 46 '🗸') Installed $(gum style --foreground 46 Emscripten)"
-    echo 'export EMSDK_QUIET=1' >> "${HOME}/.zshrc"
-    echo 'source "/emsdk/emsdk_env.sh"' >> "${HOME}/.zshrc"
+    append_if_missing 'export EMSDK_QUIET=1' "${HOME}/.zshrc"
+    append_if_missing "${EMSDK_ENV_LINE}" "${HOME}/.zshrc"
     cd "${HOME}" || exit
 }
 install_rust_targets_and_tools() {
@@ -105,14 +109,15 @@ main() {
         case "${CHOICE}" in
             Cosmonic)
                 bash -c "$(curl -fsSL https://cosmonic.sh/install.sh)"
-                echo 'export PATH="/root/.cosmo/bin:${PATH}"' >> "${HOME}/.zshrc"
-                export PATH="/root/.cosmo/bin:${PATH}"
+                # shellcheck disable=SC2016
+                append_if_missing 'export PATH="${HOME}/.cosmo/bin:${PATH}"' "${HOME}/.zshrc"
+                export PATH="${HOME}/.cosmo/bin:${PATH}"
                 complete "${CHOICE}"
                 ;;
             Emscripten)
                 install_emscripten
                 # shellcheck disable=SC1091
-                source "/emsdk/emsdk_env.sh"
+                source "${EMSDK_DIRECTORY}/emsdk_env.sh"
                 complete "${CHOICE}"
                 ;;
             MoonBit)
@@ -153,7 +158,8 @@ main() {
                 ;;
             WasmEdge)
                 curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
-                echo '. "${HOME}/.wasmedge/env"' >> "${HOME}/.zshrc"
+                # shellcheck disable=SC2016
+                append_if_missing '. "${HOME}/.wasmedge/env"' "${HOME}/.zshrc"
                 # shellcheck disable=SC1091
                 . "${HOME}/.wasmedge/env"
                 complete "${CHOICE}"
@@ -166,8 +172,10 @@ main() {
                 ;;
             Wasmtime)
                 curl https://wasmtime.dev/install.sh -sSf | bash
-                echo 'export WASMTIME_HOME="${HOME}/.wasmtime"' >> "${HOME}/.zshrc"
-                echo 'export PATH="${WASMTIME_HOME}/bin:${PATH}"' >> "${HOME}/.zshrc"
+                # shellcheck disable=SC2016
+                append_if_missing 'export WASMTIME_HOME="${HOME}/.wasmtime"' "${HOME}/.zshrc"
+                # shellcheck disable=SC2016
+                append_if_missing 'export PATH="${WASMTIME_HOME}/bin:${PATH}"' "${HOME}/.zshrc"
                 export WASMTIME_HOME="${HOME}/.wasmtime"
                 export PATH="${WASMTIME_HOME}/bin:${PATH}"
                 complete "${CHOICE}"

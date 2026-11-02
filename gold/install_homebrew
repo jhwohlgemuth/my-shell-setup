@@ -1,8 +1,13 @@
 #! /bin/bash
 set -e
 
-requires curl
+requires \
+    append_if_missing \
+    curl
 main() {
+    # shellcheck disable=SC2016
+    local SHELLENV_LINE='eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+    local ZSHRC="${HOME}/.zshrc"
     # WORKAROUND
     # Need to ensure /.dockerenv exists in order for install script to work
     touch /.dockerenv
@@ -10,7 +15,6 @@ main() {
     # Install Homebrew
     #
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # shellcheck disable=SC2016
-    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> "${HOME}/.zshrc"
+    append_if_missing "${SHELLENV_LINE}" "${ZSHRC}"
 }
 main "$@"
