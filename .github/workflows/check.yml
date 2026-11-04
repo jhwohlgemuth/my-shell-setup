@@ -18,6 +18,8 @@ jobs:
       - uses: jdx/mise-action@v5
         with:
           version: 2026.10.24
+      - name: Install Stow
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends --yes stow
       - name: Install Nushell
         run: mise use --global nu@0.116.1
       - name: Run repository checks

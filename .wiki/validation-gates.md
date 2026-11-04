@@ -6,7 +6,7 @@ difficulty: low
 impact: high
 package: [my-shell-setup]
 tags: [make, ci, validation]
-status: planned
+status: in-progress
 execution: phased
 phase_budget_hours: 5
 ---
@@ -36,7 +36,7 @@ CI runs the nonmutating `make check` gate on every pull request and push to the 
 
 ## VAL-03 — Provision Stow for the hosted gate
 
-- Status: ready
+- Status: in-progress
 - Budget: 5 active hours maximum
 - Prerequisites: none; the first hosted run identified missing `stow`.
 - Exact write set: `.github/workflows/check.yml`.

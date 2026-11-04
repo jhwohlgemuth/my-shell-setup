@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — reliable validation gates
+
+- Plan: `.wiki/validation-gates.md`; active phase: VAL-03; state: in progress.
+- Authorized scope and decisions: Provision Stow in the hosted repository check, use the repaired hosted result to finish VAL-02, and retire the plan only after its acceptance criteria are evidenced.
+- Baseline and local work: `bd58345` on clean `main`, matching the local `origin/main`; added an Ubuntu APT step that installs Stow before the hosted `make check` invocation.
+- Verified state: Compatible Ruby/Psych assertions verified the `push`, `pull_request`, and `workflow_dispatch` triggers plus the Stow step; local GNU Stow 2.4.1 is available; `make check` passed with the expected 15-file agent inventory; and `git diff --check` passed. The recorded first hosted run failed because `stow` was absent. GitHub CLI authentication is invalid, so hosted evidence must come from the push trigger and public Actions API unless authentication changes.
+- Remaining work: Commit and push the repair, inspect its hosted run, then reconcile VAL-03 and VAL-02.
+- Budget: VAL-03 has used under 30 active minutes (estimate); more than 4.5 hours remain.
+- Blockers / failed approaches: `gh auth status` reports an invalid token, preventing authenticated dispatch and run inspection. SSH push access and public Actions visibility remain to be tested after local validation.
+- Next action: Commit and push the validated repair to trigger the hosted repository check.
+
 ## Implementation — platform guards, Prusti PATH, and Nushell history
 
 - Plans: `.wiki/installer-platforms.md` (PLT-02 complete; PLT-03 remains), `.wiki/prusti-path.md` (retired), and `.wiki/nushell-history.md` (retired); active phase: none.
