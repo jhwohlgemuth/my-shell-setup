@@ -2,11 +2,10 @@
 
 Only ready phases appear below. Give each listed phase its primary integration lock; phases with a shared exact write set must merge sequentially even when their plan outcomes are independent.
 
-The [validation gate](validation-gates.md) needs Stow provisioning after its first hosted failure. The [Waza validation phases](waza-skill-workflow.md), [Rust guidelines](guidelines-rust-skill.md), [Rust sorting](sort-rust-skill.md), and [Pikchr diagram](pikchr-diagram-skill.md) validation phases await authenticated model access or a hosted CI run, so they are outside the ready-phase table.
+The [Waza validation phases](waza-skill-workflow.md), [Rust guidelines](guidelines-rust-skill.md), [Rust sorting](sort-rust-skill.md), and [Pikchr diagram](pikchr-diagram-skill.md) validation phases await authenticated model access or a hosted CI run, so they are outside the ready-phase table.
 
 | Ready phase | Primary integration lock | Shared-file exclusion |
 | --- | --- | --- |
-| [VAL-03](validation-gates.md) | CI check workflow | none |
 | [ASD-01](agent-skills-web-distribution.md) | Agents package build interface | none |
 | [PLT-03](installer-platforms.md) | Distro-specific system installer guards | none |
 | [SEC-01](verified-bootstrap.md) | Nix installer | none |

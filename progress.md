@@ -2,14 +2,14 @@
 
 ## Implementation — reliable validation gates
 
-- Plan: `.wiki/validation-gates.md`; active phase: VAL-03; state: in progress.
+- Plan: `.wiki/validation-gates.md` retired; active phase: none; state: complete.
 - Authorized scope and decisions: Provision Stow in the hosted repository check, use the repaired hosted result to finish VAL-02, and retire the plan only after its acceptance criteria are evidenced.
-- Baseline and local work: `bd58345` on clean `main`, matching the local `origin/main`; added an Ubuntu APT step that installs Stow before the hosted `make check` invocation.
-- Verified state: Compatible Ruby/Psych assertions verified the `push`, `pull_request`, and `workflow_dispatch` triggers plus the Stow step; local GNU Stow 2.4.1 is available; `make check` passed with the expected 15-file agent inventory; and `git diff --check` passed. The recorded first hosted run failed because `stow` was absent. GitHub CLI authentication is invalid, so hosted evidence must come from the push trigger and public Actions API unless authentication changes.
-- Remaining work: Commit and push the repair, inspect its hosted run, then reconcile VAL-03 and VAL-02.
-- Budget: VAL-03 has used under 30 active minutes (estimate); more than 4.5 hours remain.
-- Blockers / failed approaches: `gh auth status` reports an invalid token, preventing authenticated dispatch and run inspection. SSH push access and public Actions visibility remain to be tested after local validation.
-- Next action: Commit and push the validated repair to trigger the hosted repository check.
+- Baseline and local work: Started from `bd58345` on clean `main`; commit `0010826` added an Ubuntu APT step that installs Stow before the hosted `make check` invocation and was pushed to `main`.
+- Verified state: Compatible Ruby/Psych assertions verified the `push`, `pull_request`, and `workflow_dispatch` triggers plus the Stow step; local GNU Stow 2.4.1 and `make check` passed with the expected 15-file agent inventory; and `git diff --check` passed. [Push-triggered GitHub Actions run `41754885682`](https://github.com/jhwohlgemuth/my-shell-setup/actions/runs/41754885682) for exact commit `0010826846245b46433cb129dabdab0920170740` completed successfully; its `Install Stow` and `Run repository checks` steps both passed.
+- Remaining work: None within VAL-03 or VAL-02; both phases are complete and the plan is retired.
+- Budget: VAL-03 and VAL-02 each completed in under one active hour (estimates), within their separate five-hour ceilings.
+- Blockers / failed approaches: GitHub CLI authentication is invalid, so the public Actions API supplied the hosted evidence. The unauthenticated log-download endpoint returned 403, preventing extraction of the hosted APT package version; the job and step conclusions remain publicly verified.
+- Next action: Review and commit the plan retirement and portfolio reconciliation.
 
 ## Implementation — platform guards, Prusti PATH, and Nushell history
 
