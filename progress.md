@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — verified remote bootstrap inputs
+
+- Plan: `.wiki/verified-bootstrap.md`; active phase: none; state: complete within the authorized phases.
+- Authorized scope and decisions: Execute SEC-01, SEC-06, SEC-02, SEC-07, SEC-08, SEC-03, and SEC-05 as separate bounded phases. Preserve installer interfaces while replacing mutable or unchecked execution with fixed upstream identifiers and SHA-256 verification.
+- Baseline and local work: `da8d548` on clean `main`, matching `origin/main`; upstream immutable inputs and hashes were resolved from official release or repository sources before implementation.
+- Verified state: All seven authorized phases passed Bash syntax, shfmt diff, ShellCheck, and focused success/corrupt/failed-download validation. SEC-01 pins Nix 2.34.0; SEC-06 accepts only the recorded SDKMAN 5.24.0 payload; SEC-02 pins Homebrew installer commit `d6a2423c5973e04b45a5f17dc1948f6c9e5e651a`; SEC-07 installs verified choosenim 0.8.16 Linux artifacts; SEC-08 verifies zsh-in-docker 1.2.0; SEC-03 verifies Cosmonic 0.25.0 and MoonBit `0.10.19+bee578715` artifacts; and SEC-05 verifies Miniconda `py312_26.9.4-0`. An Ubuntu 24.04 amd64 build installed the real Miniconda input and reported Conda 26.9.4. The full `make check-gold` gate passed.
+- Remaining work: None within the authorized phases. SEC-09 is ready; SEC-10, SEC-04, SEC-11, and SEC-12 remain behind its WASM-menu sequence and are outside this authorization.
+- Budget: Each of SEC-01, SEC-06, SEC-02, SEC-07, SEC-08, SEC-03, and SEC-05 completed in under one active hour (estimates), within its separate five-hour ceiling.
+- Blockers / failed approaches: MoonBit's obsolete `ubuntu_x86_64_moon_setup.sh` returned AccessDenied, so SEC-03 uses current official versioned toolchain and core archives directly. SDKMAN lacks a versioned generated-installer URL, so its payload embeds version 5.24.0 and is accepted only at the recorded digest. Two Docker builds on the default remote context lost their SSH transport; a stable alternate context completed the Ubuntu amd64 Miniconda smoke. The first smoke exposed Miniconda's `.sh` filename requirement, which the final temporary-directory implementation satisfies.
+- Next action: Review and commit the seven completed phases; execute SEC-09 only when separately authorized.
+
 ## Implementation — reliable validation gates
 
 - Plan: `.wiki/validation-gates.md` retired; active phase: none; state: complete.

@@ -3,12 +3,25 @@ set -e
 
 requires \
     curl \
+    mktemp \
+    shasum \
     zsh
 main() {
+    local NIX_VERSION='2.34.0'
+    local NIX_CONFIG_FILE="${NIX_CONFIG_FILE:-/etc/nix/nix.conf}"
+    local NIX_INSTALLER_SHA256='78de59f69d95bdb7ba7d54949ddc402c9e98c1ba55c35c73704b21b432c66f8a'
+    local NIX_INSTALLER_URL="https://releases.nixos.org/nix/nix-${NIX_VERSION}/install"
+    local NIX_INSTALLER
+    NIX_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_nix.XXXXXX")"
+    trap 'rm -f -- "${NIX_INSTALLER}"' EXIT
     #
     # install Nix
     #
-    curl -L https://nixos.org/nix/install | sh -s -- --no-daemon --yes
+    curl --fail --location --silent --show-error --output "${NIX_INSTALLER}" "${NIX_INSTALLER_URL}"
+    printf '%s  %s\n' "${NIX_INSTALLER_SHA256}" "${NIX_INSTALLER}" | shasum -a 256 --check --status
+    sh "${NIX_INSTALLER}" --no-daemon --yes
+    rm -f -- "${NIX_INSTALLER}"
+    trap - EXIT
     # shellcheck disable=SC1091
     if [[ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]]; then
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
@@ -23,7 +36,7 @@ main() {
     #
     # Enable experimental features
     #
-    touch /etc/nix/nix.conf
-    echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    touch "${NIX_CONFIG_FILE}"
+    echo "experimental-features = nix-command flakes" >> "${NIX_CONFIG_FILE}"
 }
 main "$@"

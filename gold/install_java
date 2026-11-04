@@ -2,15 +2,27 @@
 set -e
 
 requires \
-    curl
+    curl \
+    mktemp \
+    shasum
 clear_directory() {
     local DIRECTORY="$1"
     [[ -d "${DIRECTORY}" ]] || return 0
     find "${DIRECTORY}" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
 }
 main() {
+    local SDKMAN_INSTALLER_VERSION='5.24.0'
+    local SDKMAN_INSTALLER_SHA256='d2ad12c3702fa42967e48114f01ebd266f0c901a53fa8fd739c9b6a007cc91d0'
+    local SDKMAN_INSTALLER_URL='https://get.sdkman.io'
+    local SDKMAN_INSTALLER
     local VERSION=${1:-"23-open"}
-    curl -s "https://get.sdkman.io" | bash
+    SDKMAN_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_java-sdkman-${SDKMAN_INSTALLER_VERSION}.XXXXXX")"
+    trap 'rm -f -- "${SDKMAN_INSTALLER}"' EXIT
+    curl --fail --location --silent --show-error --output "${SDKMAN_INSTALLER}" "${SDKMAN_INSTALLER_URL}"
+    printf '%s  %s\n' "${SDKMAN_INSTALLER_SHA256}" "${SDKMAN_INSTALLER}" | shasum -a 256 --check --status
+    bash "${SDKMAN_INSTALLER}"
+    rm -f -- "${SDKMAN_INSTALLER}"
+    trap - EXIT
     # shellcheck source=/dev/null
     source "${HOME}/.sdkman/bin/sdkman-init.sh"
     yes | sdk install java "${VERSION}"

@@ -5,7 +5,7 @@ description: Replace unverified downloaded shell execution with pinned and check
 difficulty: medium
 impact: high
 package: [gold]
-tags: [security, installers, provenance]
+tags: [security, installers, provenance, "os:linux", "os:macos"]
 status: planned
 execution: phased
 phase_budget_hours: 5
@@ -15,7 +15,21 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`install_nix`, `install_java`, `install_conda`, `install_homebrew`, `install_nim`, `install_ohmyzsh`, and many choices in `install_wasm_tools` execute downloaded shell code. Use a fixed release or commit and a checked SHA-256 for each exact script or artifact, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
+The standalone Nix, Java, Conda, Homebrew, Nim, and Oh My Zsh installers now use fixed, SHA-256-verified bootstrap inputs. Cosmonic and MoonBit do the same in `install_wasm_tools`; Scale, Spin, WasmCloud, WasmEdge, Wasmtime, Wazero, WANIX, and WWS still execute mutable downloaded scripts. Use a fixed release or commit and a checked SHA-256 for each remaining exact script or artifact, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
+
+`install_nix` now downloads the Nix 2.34.0 installer, verifies SHA-256 `78de59f69d95bdb7ba7d54949ddc402c9e98c1ba55c35c73704b21b432c66f8a`, and executes it only after verification.
+
+`install_java` accepts the SDKMAN 5.24.0 installer payload only when it matches SHA-256 `d2ad12c3702fa42967e48114f01ebd266f0c901a53fa8fd739c9b6a007cc91d0`; a changed payload fails before Bash executes it.
+
+`install_homebrew` downloads `install.sh` at commit `d6a2423c5973e04b45a5f17dc1948f6c9e5e651a`, verifies SHA-256 `5f333bbe53bc490e51e7ccb1df8779b3dd6ee73a1a7379efda216edb08ccb148`, and runs Bash only after verification.
+
+`install_nim` installs choosenim 0.8.16 directly from its fixed GitHub release after selecting and verifying the Linux x86-64 or arm64 artifact; it no longer executes the rolling `init.sh` bootstrap.
+
+`install_ohmyzsh` verifies the fixed zsh-in-docker 1.2.0 payload at SHA-256 `f74e5b08c295b6c3886654bb63c688e5ea16c58a4209435c4ddbab2c42fe9b41` before passing the existing plugin arguments to `sh`.
+
+The Cosmonic choice installs verified 0.25.0 binaries for the four previously supported Linux/macOS x86-64/arm64 combinations. The MoonBit choice replaces its unavailable legacy bootstrap with verified Linux x86-64 toolchain and core archives for `0.10.19+bee578715`, then performs the official core bundle steps locally.
+
+`install_conda` pins `Miniconda3-py312_26.9.4-0-Linux-x86_64.sh` at SHA-256 `9d95948a2f9ba5cc5e1c36d1e66e7607db3f3d21263f5fe812bc50e47b9bc289`; an Ubuntu 24.04 amd64 container smoke installed it and reported Conda 26.9.4.
 
 ## Acceptance criteria
 
@@ -23,77 +37,11 @@ None of the named scripts execute a mutable URL directly. Every downloaded insta
 
 # Execution phases
 
-## SEC-01 — Verify the Nix bootstrap input
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_nix`.
-- Primary integration lock: Nix installer.
-- Outcome: Nix executes only a verified fixed installer.
-- Focused validation: ShellCheck, shfmt diff, and mocked successful, corrupt, and failed downloads.
-- Handoff: Record the upstream identifier and checksum in the script.
-
-## SEC-06 — Verify the Java bootstrap input
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_java`.
-- Primary integration lock: Java installer.
-- Outcome: SDKMAN executes only a verified fixed installer.
-- Focused validation: ShellCheck, shfmt diff, and mocked successful, corrupt, and failed downloads.
-- Handoff: Record the upstream identifier and checksum in the script.
-
-## SEC-02 — Verify the Homebrew bootstrap input
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_homebrew`.
-- Primary integration lock: Homebrew installer.
-- Outcome: Homebrew executes only a verified fixed installer.
-- Focused validation: ShellCheck, shfmt diff, mocked checksum failure, and a supported-host smoke test.
-- Handoff: Record the upstream identifier and test result.
-
-## SEC-07 — Verify the Nim bootstrap input
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_nim`.
-- Primary integration lock: Nim installer.
-- Outcome: Nim executes only a verified fixed installer.
-- Focused validation: ShellCheck, shfmt diff, mocked checksum failure, and a supported-host smoke test.
-- Handoff: Record the upstream identifier and test result.
-
-## SEC-08 — Verify the Oh My Zsh bootstrap input
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_ohmyzsh`.
-- Primary integration lock: Oh My Zsh installer.
-- Outcome: Oh My Zsh executes only a verified fixed installer.
-- Focused validation: ShellCheck, shfmt diff, mocked checksum failure, and a supported-host smoke test.
-- Handoff: Record the upstream identifier and test result.
-
-## SEC-03 — Verify Cosmonic and MoonBit choices
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_wasm_tools`.
-- Primary integration lock: WASM installer menu.
-- Outcome: Cosmonic and MoonBit use verified fixed bootstrap inputs.
-- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
-- Handoff: Record pins and checksums for subsequent menu phases.
-
 ## SEC-09 — Verify Scale and Spin choices
 
-- Status: planned
+- Status: ready
 - Budget: 5 active hours maximum
-- Prerequisites: SEC-03.
+- Prerequisites: none.
 - Exact write set: `gold/install_wasm_tools`.
 - Primary integration lock: WASM installer menu.
 - Outcome: Scale and Spin use verified fixed bootstrap inputs.
@@ -143,14 +91,3 @@ None of the named scripts execute a mutable URL directly. Every downloaded insta
 - Outcome: WWS uses a verified fixed bootstrap input, completing the scoped remote-script choices.
 - Focused validation: ShellCheck, shfmt diff, a mocked corrupt download, and an inventory of direct downloaded-script execution.
 - Handoff: Record the final pin and the inventory result.
-
-## SEC-05 — Verify the Miniconda bootstrap input
-
-- Status: ready
-- Budget: 5 active hours maximum
-- Prerequisites: none.
-- Exact write set: `gold/install_conda`.
-- Primary integration lock: Conda bootstrap.
-- Outcome: The downloaded Miniconda installer is versioned and verified before Bash runs it.
-- Focused validation: ShellCheck, shfmt diff, and mocked successful, corrupt, and failed-download paths.
-- Handoff: Record the installer version, checksum, and a container smoke-test result.

@@ -2,9 +2,9 @@
 
 - [Windows setup](windows-setup.md): WIN-02 awaits access to `shell.jasonwohlgemuth.me` and an isolated Windows host.
 - [Published shell bootstrap](published-bootstrap.md): PUB-02 awaits access to `shell.jasonwohlgemuth.me`.
-- [Installer platforms](installer-platforms.md): PLT-03 is ready; the downloaded-binary guards are complete, leaving SEC-05 free to edit `gold/install_conda`.
+- [Installer platforms](installer-platforms.md): PLT-03 is ready; the downloaded-binary guards and SEC-05's verified Conda bootstrap are complete.
 - [Neovim reproducibility](neovim-reproducibility.md): NVP-01 → NVP-02 → NVP-03 so each tested plugin group builds on the prior one.
-- [Verified bootstrap](verified-bootstrap.md): SEC-03 → SEC-09 → SEC-10 → SEC-04 → SEC-11 → SEC-12 for sequential edits to `gold/install_wasm_tools`; the single-installer phases are independent.
+- [Verified bootstrap](verified-bootstrap.md): SEC-09 → SEC-10 → SEC-04 → SEC-11 → SEC-12 for sequential edits to `gold/install_wasm_tools`; the single-installer phases are independent.
 - [Waza workflow](waza-skill-workflow.md): WAZ-01, WAZ-03, and WAZ-04 await authenticated model trials; WAZ-02 awaits a hosted CI run covering all six installed skills.
 - [Rust guidelines](guidelines-rust-skill.md): GDR-02 awaits an authenticated model trial.
 - [Rust sorting](sort-rust-skill.md): SOR-02 awaits an authenticated model trial.

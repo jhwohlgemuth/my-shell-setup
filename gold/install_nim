@@ -3,11 +3,50 @@ set -e
 
 requires \
     curl \
-    libzmq5
+    install \
+    libzmq5 \
+    mktemp \
+    shasum \
+    uname
 main() {
-    curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
-    sh init.sh -y
-    rm init.sh
+    local CHOOSENIM_VERSION='0.8.16'
+    local CHOOSENIM_SHA256
+    local CHOOSENIM_PLATFORM
+    local CHOOSENIM_URL
+    local CHOOSENIM_INSTALLER
+    local NIMBLE_BIN_DIRECTORY
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    if [[ "${OS}" != Linux ]]; then
+        printf '==> [ERROR] choosenim installer supports Linux, detected %s %s\n' "${OS}" "${ARCH}" >&2
+        return 1
+    fi
+    case "${ARCH}" in
+        x86_64 | amd64)
+            CHOOSENIM_PLATFORM='linux_amd64'
+            CHOOSENIM_SHA256='1034e03564b3e5b5321646f9ce290cc4d3cdff0cf0e9b523d43f0db8b9a45c74'
+            ;;
+        aarch64 | arm64)
+            CHOOSENIM_PLATFORM='linux_arm64'
+            CHOOSENIM_SHA256='0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5'
+            ;;
+        *)
+            printf '==> [ERROR] choosenim installer does not support Linux %s\n' "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    CHOOSENIM_URL="https://github.com/nim-lang/choosenim/releases/download/v${CHOOSENIM_VERSION}/choosenim-${CHOOSENIM_VERSION}_${CHOOSENIM_PLATFORM}"
+    CHOOSENIM_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_nim-choosenim-${CHOOSENIM_VERSION}.XXXXXX")"
+    trap 'rm -f -- "${CHOOSENIM_INSTALLER}"' EXIT
+    curl --fail --location --silent --show-error --output "${CHOOSENIM_INSTALLER}" "${CHOOSENIM_URL}"
+    printf '%s  %s\n' "${CHOOSENIM_SHA256}" "${CHOOSENIM_INSTALLER}" | shasum -a 256 --check --status
+    chmod +x "${CHOOSENIM_INSTALLER}"
+    "${CHOOSENIM_INSTALLER}" stable --firstInstall -y
+    NIMBLE_BIN_DIRECTORY="$("${CHOOSENIM_INSTALLER}" --getNimbleBin)"
+    install -m 0755 "${CHOOSENIM_INSTALLER}" "${NIMBLE_BIN_DIRECTORY}/choosenim"
+    rm -f -- "${CHOOSENIM_INSTALLER}"
+    trap - EXIT
     export PATH="${PATH}:${HOME}/.nimble/bin"
     choosenim stable
     nimble install jupyternim -y

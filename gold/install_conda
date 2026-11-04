@@ -4,17 +4,24 @@ set -e
 requires \
     bash \
     curl \
+    mktemp \
+    shasum \
     uname \
     zsh
 main() {
     #
     # Install miniconda (conda)
     #
-    local HOME="${1:-/home/nonroot}"
-    local CONDA_PREFIX="${HOME}/.conda"
+    local MINICONDA_VERSION='py312_26.9.4-0'
+    local MINICONDA_SHA256='9d95948a2f9ba5cc5e1c36d1e66e7607db3f3d21263f5fe812bc50e47b9bc289'
+    local MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh"
+    local MINICONDA_INSTALLER
+    local MINICONDA_TEMP_DIRECTORY
+    local TARGET_HOME="${1:-/home/nonroot}"
+    local CONDA_PREFIX="${TARGET_HOME}/.conda"
     local CONDA_ENVS_PATH="${CONDA_PREFIX}/envs"
     local CONDA_PKGS_DIRS="${CONDA_PREFIX}/pkgs"
-    local CONDA_BIN="${HOME}/miniconda3/bin/conda"
+    local CONDA_BIN="${TARGET_HOME}/miniconda3/bin/conda"
     local OS ARCH
     OS="$(uname -s)"
     ARCH="$(uname -m)"
@@ -24,8 +31,14 @@ main() {
     fi
     mkdir -p "${CONDA_PREFIX}"
     mkdir -p "${CONDA_ENVS_PATH}" "${CONDA_PKGS_DIRS}"
-    curl -fsSL -o /tmp/install_miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    bash /tmp/install_miniconda3.sh -b -u -p "${HOME}/miniconda3"
+    MINICONDA_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_miniconda-${MINICONDA_VERSION}.XXXXXX")"
+    MINICONDA_INSTALLER="${MINICONDA_TEMP_DIRECTORY}/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh"
+    trap 'rm -rf -- "${MINICONDA_TEMP_DIRECTORY}"' EXIT
+    curl --fail --location --silent --show-error --output "${MINICONDA_INSTALLER}" "${MINICONDA_URL}"
+    printf '%s  %s\n' "${MINICONDA_SHA256}" "${MINICONDA_INSTALLER}" | shasum -a 256 --check --status
+    bash "${MINICONDA_INSTALLER}" -b -u -p "${TARGET_HOME}/miniconda3"
+    rm -rf -- "${MINICONDA_TEMP_DIRECTORY}"
+    trap - EXIT
     "${CONDA_BIN}" tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
     "${CONDA_BIN}" tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
     "${CONDA_BIN}" update --name base conda

@@ -3,8 +3,15 @@ set -e
 
 requires \
     append_if_missing \
-    curl
+    bash \
+    curl \
+    mktemp \
+    shasum
 main() {
+    local HOMEBREW_INSTALLER_COMMIT='d6a2423c5973e04b45a5f17dc1948f6c9e5e651a'
+    local HOMEBREW_INSTALLER_SHA256='5f333bbe53bc490e51e7ccb1df8779b3dd6ee73a1a7379efda216edb08ccb148'
+    local HOMEBREW_INSTALLER_URL="https://raw.githubusercontent.com/Homebrew/install/${HOMEBREW_INSTALLER_COMMIT}/install.sh"
+    local HOMEBREW_INSTALLER
     # shellcheck disable=SC2016
     local SHELLENV_LINE='eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
     local ZSHRC="${HOME}/.zshrc"
@@ -14,7 +21,13 @@ main() {
     #
     # Install Homebrew
     #
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    HOMEBREW_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_homebrew-${HOMEBREW_INSTALLER_COMMIT}.XXXXXX")"
+    trap 'rm -f -- "${HOMEBREW_INSTALLER}"' EXIT
+    curl --fail --location --silent --show-error --output "${HOMEBREW_INSTALLER}" "${HOMEBREW_INSTALLER_URL}"
+    printf '%s  %s\n' "${HOMEBREW_INSTALLER_SHA256}" "${HOMEBREW_INSTALLER}" | shasum -a 256 --check --status
+    NONINTERACTIVE=1 bash "${HOMEBREW_INSTALLER}"
+    rm -f -- "${HOMEBREW_INSTALLER}"
+    trap - EXIT
     append_if_missing "${SHELLENV_LINE}" "${ZSHRC}"
 }
 main "$@"

@@ -4,12 +4,22 @@ set -e
 requires \
     curl \
     git \
+    mktemp \
+    shasum \
     zsh
 main() {
+    local ZSH_IN_DOCKER_VERSION='1.2.0'
+    local ZSH_IN_DOCKER_SHA256='f74e5b08c295b6c3886654bb63c688e5ea16c58a4209435c4ddbab2c42fe9b41'
+    local ZSH_IN_DOCKER_URL="https://github.com/deluan/zsh-in-docker/releases/download/v${ZSH_IN_DOCKER_VERSION}/zsh-in-docker.sh"
+    local ZSH_IN_DOCKER_INSTALLER
     #
     # Install oh-my-zsh
     #
-    sh -c "$(curl -L https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)" -- \
+    ZSH_IN_DOCKER_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_ohmyzsh-${ZSH_IN_DOCKER_VERSION}.XXXXXX")"
+    trap 'rm -f -- "${ZSH_IN_DOCKER_INSTALLER}"' EXIT
+    curl --fail --location --silent --show-error --output "${ZSH_IN_DOCKER_INSTALLER}" "${ZSH_IN_DOCKER_URL}"
+    printf '%s  %s\n' "${ZSH_IN_DOCKER_SHA256}" "${ZSH_IN_DOCKER_INSTALLER}" | shasum -a 256 --check --status
+    sh "${ZSH_IN_DOCKER_INSTALLER}" \
         -x \
         -p encode64 \
         -p fzf \
@@ -21,5 +31,7 @@ main() {
         -p https://github.com/conda-incubator/conda-zsh-completion \
         -p https://github.com/jhwohlgemuth/zsh-handy-helpers \
         -p https://github.com/jhwohlgemuth/zsh-pentest
+    rm -f -- "${ZSH_IN_DOCKER_INSTALLER}"
+    trap - EXIT
 }
 main "$@"

@@ -5,7 +5,7 @@ This portfolio contains 11 executable plans, ranked by impact, readiness, and re
 | Priority | Plan | Impact | Difficulty | Next phase |
 | --- | --- | --- | --- | --- |
 | 1 | [Make installer platform support explicit](installer-platforms.md) | High | Medium | PLT-03 |
-| 2 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-01 |
+| 2 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-09 |
 | 3 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-01 for OpenCode and Codex artifacts |
 | 4 | [Flatten extension installation](extension-install.md) | Medium | Medium | EXT-01 |
 | 5 | [Make Neovim plugin setup reproducible](neovim-reproducibility.md) | Medium | Medium | NVP-01 |
@@ -20,6 +20,7 @@ See [plan network](plan-network.md) for prerequisites and [parallel execution](p
 
 ## Portfolio currency review
 
+- 2026-11-03 — SEC-01, SEC-06, SEC-02, SEC-07, SEC-08, SEC-03, and SEC-05 replaced mutable or unchecked Nix, SDKMAN, Homebrew, choosenim, zsh-in-docker, Cosmonic, MoonBit, and Miniconda bootstrap inputs with fixed SHA-256-verified inputs. Focused failure-path tests and the Gold gate passed; Ubuntu 24.04 amd64 installed the pinned Miniconda build and reported Conda 26.9.4. These phases were pruned and SEC-09 is ready.
 - 2026-11-03 — VAL-03 provisioned Stow through Ubuntu APT before the root gate, and the [push-triggered Repository checks run](https://github.com/jhwohlgemuth/my-shell-setup/actions/runs/41754885682) for `0010826` passed both the installation and `make check` steps. The same hosted run completed VAL-02; the validation-gates plan was retired with 11 executable plans remaining.
 - 2026-11-02 — At `a931a43` plus this worktree, PLT-02's three Linux x86-64 guards, PRU-01's retained `~/.local/bin` path, and NUH-01's conditional OneDrive history path passed focused checks; PLT-02 was pruned and the two finished plans retired. PLT-03 and the independent SEC phases remain ready. The first hosted validation-gate run failed because CI lacked `stow`; hosted bootstrap publication and authenticated model trials remain external blockers.
 - 2026-11-01 — VAL-02 added a root `make check` workflow for pull requests and pushes to `main`; local workflow, tool-provisioning, and gate validation pass, while the first hosted run awaits commit and push. PLT-01 documented all 39 Gold installers and all 16 WASM choices, then retired. PLT-02 and PLT-03 are ready alongside the independent SEC phases; PLT-02 and SEC-05 must serialize their shared `gold/install_conda` edit.
