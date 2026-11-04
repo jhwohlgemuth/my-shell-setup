@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — parallel platform, bootstrap, packaging, extension, and Neovim phases
+
+- Plans: `.wiki/installer-platforms.md` and `.wiki/extension-install.md` retired; `.wiki/verified-bootstrap.md`, `.wiki/agent-skills-web-distribution.md`, and `.wiki/neovim-reproducibility.md` continue; active phase: none; state: complete within the authorized phases.
+- Authorized scope and decisions: Complete PLT-03, SEC-09, ASD-01, EXT-01, and NVP-01, starting PLT-03 and SEC-09 first and using disjoint write sets and integration locks for parallel work.
+- Baseline and local work: Clean `main` at `4dc36cf`, matching `origin/main`; changed the five phase write sets plus portfolio and progress records. No `.codegraph/` index is present.
+- Verified state: PLT-03 rejects unsupported distro, architecture, and UID combinations before mutation; SEC-09 verifies Scale CLI 0.2.0 and Spin 4.2.6 across their Linux/macOS x86-64/arm64 artifacts, with native macOS arm64 version smokes; ASD-01 packages all six runtime skills deterministically with seven focused tests and exact Stow-inventory agreement; EXT-01 passed direct, fallback, and partial-group failure mocks; NVP-01 passed a network-disabled clean-start smoke and built its explicit Docker plugin-setup stage. Bash syntax, shfmt, ShellCheck, all 20 agent tooling tests, `make check`, wiki validation, and `git diff --check` passed.
+- Remaining work: None within the five authorized phases. SEC-10, ASD-05, and NVP-02 are ready but outside this authorization.
+- Budget: Each phase completed in under one active hour (estimate), within its separate five-hour ceiling.
+- Blockers / failed approaches: Scale's rolling endpoint has an invalid TLS certificate and its project is archived, so SEC-09 uses the official archived CLI 0.2.0 release and checksum manifest. A first Linux-binary smoke on macOS produced the expected format error; matching macOS arm64 artifacts passed. NVP-01's final rolling-plugin smoke exposes an existing `nvim-orgmode`/Neovim 0.10.4 incompatibility assigned to the remaining pinning phases.
+- Next action: Review and commit the five completed phases; execute SEC-10, ASD-05, or NVP-02 only when separately authorized.
+
 ## Implementation — verified remote bootstrap inputs
 
 - Plan: `.wiki/verified-bootstrap.md`; active phase: none; state: complete within the authorized phases.

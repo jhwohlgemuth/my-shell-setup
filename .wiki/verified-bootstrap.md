@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-The standalone Nix, Java, Conda, Homebrew, Nim, and Oh My Zsh installers now use fixed, SHA-256-verified bootstrap inputs. Cosmonic and MoonBit do the same in `install_wasm_tools`; Scale, Spin, WasmCloud, WasmEdge, Wasmtime, Wazero, WANIX, and WWS still execute mutable downloaded scripts. Use a fixed release or commit and a checked SHA-256 for each remaining exact script or artifact, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
+The standalone Nix, Java, Conda, Homebrew, Nim, and Oh My Zsh installers now use fixed, SHA-256-verified bootstrap inputs. Cosmonic, MoonBit, Scale, and Spin do the same in `install_wasm_tools`; WasmCloud, WasmEdge, Wasmtime, Wazero, WANIX, and WWS still execute mutable downloaded scripts. Use a fixed release or commit and a checked SHA-256 for each remaining exact script or artifact, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
 
 `install_nix` now downloads the Nix 2.34.0 installer, verifies SHA-256 `78de59f69d95bdb7ba7d54949ddc402c9e98c1ba55c35c73704b21b432c66f8a`, and executes it only after verification.
 
@@ -29,6 +29,8 @@ The standalone Nix, Java, Conda, Homebrew, Nim, and Oh My Zsh installers now use
 
 The Cosmonic choice installs verified 0.25.0 binaries for the four previously supported Linux/macOS x86-64/arm64 combinations. The MoonBit choice replaces its unavailable legacy bootstrap with verified Linux x86-64 toolchain and core archives for `0.10.19+bee578715`, then performs the official core bundle steps locally.
 
+The Scale choice replaces its broken-TLS rolling endpoint with verified Scale CLI 0.2.0 release archives for Linux and macOS on x86-64 and arm64. Spin installs verified 4.2.6 release archives for the same host matrix. Native macOS arm64 smokes reported Scale 0.2.0 and Spin 4.2.6.
+
 `install_conda` pins `Miniconda3-py312_26.9.4-0-Linux-x86_64.sh` at SHA-256 `9d95948a2f9ba5cc5e1c36d1e66e7607db3f3d21263f5fe812bc50e47b9bc289`; an Ubuntu 24.04 amd64 container smoke installed it and reported Conda 26.9.4.
 
 ## Acceptance criteria
@@ -37,22 +39,11 @@ None of the named scripts execute a mutable URL directly. Every downloaded insta
 
 # Execution phases
 
-## SEC-09 — Verify Scale and Spin choices
+## SEC-10 — Verify the WasmCloud choice
 
 - Status: ready
 - Budget: 5 active hours maximum
 - Prerequisites: none.
-- Exact write set: `gold/install_wasm_tools`.
-- Primary integration lock: WASM installer menu.
-- Outcome: Scale and Spin use verified fixed bootstrap inputs.
-- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
-- Handoff: Record both pins and checksums.
-
-## SEC-10 — Verify the WasmCloud choice
-
-- Status: planned
-- Budget: 5 active hours maximum
-- Prerequisites: SEC-09.
 - Exact write set: `gold/install_wasm_tools`.
 - Primary integration lock: WASM installer menu.
 - Outcome: WasmCloud uses a verified fixed bootstrap input.

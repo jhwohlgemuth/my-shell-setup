@@ -1,25 +1,24 @@
 # Improvement plans
 
-This portfolio contains 11 executable plans, ranked by impact, readiness, and remaining difficulty. Ready local work precedes phases awaiting hosted access or model validation.
+This portfolio contains 9 executable plans, ranked by impact, readiness, and remaining difficulty. Ready local work precedes phases awaiting hosted access or model validation.
 
 | Priority | Plan | Impact | Difficulty | Next phase |
 | --- | --- | --- | --- | --- |
-| 1 | [Make installer platform support explicit](installer-platforms.md) | High | Medium | PLT-03 |
-| 2 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-09 |
-| 3 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-01 for OpenCode and Codex artifacts |
-| 4 | [Flatten extension installation](extension-install.md) | Medium | Medium | EXT-01 |
-| 5 | [Make Neovim plugin setup reproducible](neovim-reproducibility.md) | Medium | Medium | NVP-01 |
-| 6 | [Make Windows setup executable](windows-setup.md) | High | Medium | WIN-02 awaits hosted publication and Windows validation |
-| 7 | [Validate Waza skill improvement](waza-skill-workflow.md) | High | Medium | WAZ-01, WAZ-03, and WAZ-04 await model access; WAZ-02 awaits hosted CI |
-| 8 | [Validate Rust guidelines](guidelines-rust-skill.md) | Medium | Medium | GDR-02 awaits model access |
-| 9 | [Validate Rust sorting](sort-rust-skill.md) | Medium | Medium | SOR-02 awaits model access |
-| 10 | [Validate Pikchr diagrams](pikchr-diagram-skill.md) | Medium | Medium | PIK-02 awaits model access |
-| 11 | [Track the published shell bootstrap](published-bootstrap.md) | Medium | Medium | PUB-02 awaits hosted publication |
+| 1 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-10 |
+| 2 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-05 ready; ASD-02 awaits Pages configuration |
+| 3 | [Make Neovim plugin setup reproducible](neovim-reproducibility.md) | Medium | Medium | NVP-02 |
+| 4 | [Make Windows setup executable](windows-setup.md) | High | Medium | WIN-02 awaits hosted publication and Windows validation |
+| 5 | [Validate Waza skill improvement](waza-skill-workflow.md) | High | Medium | WAZ-01, WAZ-03, and WAZ-04 await model access; WAZ-02 awaits hosted CI |
+| 6 | [Validate Rust guidelines](guidelines-rust-skill.md) | Medium | Medium | GDR-02 awaits model access |
+| 7 | [Validate Rust sorting](sort-rust-skill.md) | Medium | Medium | SOR-02 awaits model access |
+| 8 | [Validate Pikchr diagrams](pikchr-diagram-skill.md) | Medium | Medium | PIK-02 awaits model access |
+| 9 | [Track the published shell bootstrap](published-bootstrap.md) | Medium | Medium | PUB-02 awaits hosted publication |
 
 See [plan network](plan-network.md) for prerequisites and [parallel execution](parallel-execution.md) for integration locks. Published bootstrap verification requires access to `shell.jasonwohlgemuth.me`; local implementation phases remain ready.
 
 ## Portfolio currency review
 
+- 2026-11-04 — PLT-03 added pre-mutation platform and privilege guards to the CUDA toolkit, .NET, and Docker installers; SEC-09 installed verified Scale 0.2.0 and Spin 4.2.6 release artifacts; ASD-01 added deterministic OpenCode and ZIP packaging for all six runtime skills; EXT-01 bounded extension fallback and failure reporting; and NVP-01 separated network-free startup from explicit plugin bootstrap. Focused checks and the integrated repository gate passed. The platform and extension plans were retired; SEC-10, ASD-05, and NVP-02 are ready.
 - 2026-11-03 — SEC-01, SEC-06, SEC-02, SEC-07, SEC-08, SEC-03, and SEC-05 replaced mutable or unchecked Nix, SDKMAN, Homebrew, choosenim, zsh-in-docker, Cosmonic, MoonBit, and Miniconda bootstrap inputs with fixed SHA-256-verified inputs. Focused failure-path tests and the Gold gate passed; Ubuntu 24.04 amd64 installed the pinned Miniconda build and reported Conda 26.9.4. These phases were pruned and SEC-09 is ready.
 - 2026-11-03 — VAL-03 provisioned Stow through Ubuntu APT before the root gate, and the [push-triggered Repository checks run](https://github.com/jhwohlgemuth/my-shell-setup/actions/runs/41754885682) for `0010826` passed both the installation and `make check` steps. The same hosted run completed VAL-02; the validation-gates plan was retired with 11 executable plans remaining.
 - 2026-11-02 — At `a931a43` plus this worktree, PLT-02's three Linux x86-64 guards, PRU-01's retained `~/.local/bin` path, and NUH-01's conditional OneDrive history path passed focused checks; PLT-02 was pruned and the two finished plans retired. PLT-03 and the independent SEC phases remain ready. The first hosted validation-gate run failed because CI lacked `stow`; hosted bootstrap publication and authenticated model trials remain external blockers.

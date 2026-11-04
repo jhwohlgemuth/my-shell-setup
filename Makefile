@@ -1,8 +1,9 @@
-.PHONY: check check-bootstrap check-gold check-nushell check-powershell check-stow format help neovim
+.PHONY: check check-agent-skills check-bootstrap check-gold check-nushell check-powershell check-stow format help neovim package-agent-skills
 .DEFAULT_GOAL := help
 MISE ?= mise
 MISE_EXEC ?= $(MISE) exec --
 GOLD_DIR ?= ./gold
+AGENT_SKILLS_OUTPUT ?=
 POWERSHELL_CHECK_HOME ?= $(or $(TEMP),/tmp)
 STOW_PACKAGES = agents clojure elixir git gold hunk neovim nushell ocaml ohmyposh powerlevel10k powershell starship
 
@@ -12,7 +13,16 @@ help:
 	@printf '\nAgent tasks: make -C agents help\n'
 
 ## Run all nonmutating shell, config, and Stow checks.
-check: check-bootstrap check-gold check-nushell check-powershell check-stow
+check: check-agent-skills check-bootstrap check-gold check-nushell check-powershell check-stow
+
+## Test deterministic agent-skill packaging and runtime inventory alignment.
+check-agent-skills:
+	@$(MISE_EXEC) python3 -m unittest discover -s agents/scripts -p 'test_package_skills.py'
+
+## Build agent-skill web and ZIP artifacts into AGENT_SKILLS_OUTPUT.
+package-agent-skills:
+	@test -n "$(AGENT_SKILLS_OUTPUT)" || { echo 'Set AGENT_SKILLS_OUTPUT to a new or empty directory' >&2; exit 2; }
+	@$(MISE_EXEC) python3 agents/scripts/package_skills.py --output "$(AGENT_SKILLS_OUTPUT)"
 
 ## Check the repository's shell bootstrap without rewriting it.
 check-bootstrap:

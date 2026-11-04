@@ -5,40 +5,74 @@ requires \
     code-server \
     download_extensions \
     curl \
-    jq
-try_download() {
-    local EXTENSION="${ARG}.vsix"
-    echo "Failed to install ${ARG}, attempting to download and install from local copy..."
-    download_extensions "${ARG}"
-    install_extensions "${EXTENSION}"
-    rm "${EXTENSION}"
+    jq \
+    mktemp
+install_extension() {
+    local EXTENSION="${1}"
+    local VSIX_DIRECTORY VSIX_PATH
+    echo "Identified ${EXTENSION}..."
+    if code-server --config "${CONFIG}" --install-extension "${EXTENSION}" --force; then
+        return 0
+    fi
+    echo "Failed to install ${EXTENSION}, attempting to download and install from local copy..."
+    VSIX_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_extensions.XXXXXX")"
+    VSIX_PATH="${VSIX_DIRECTORY}/${EXTENSION}.vsix"
+    if ! (cd "${VSIX_DIRECTORY}" && download_extensions "${EXTENSION}"); then
+        rm -f -- "${VSIX_PATH}"
+        rmdir -- "${VSIX_DIRECTORY}"
+        return 1
+    fi
+    if ! code-server --config "${CONFIG}" --install-extension "${VSIX_PATH}" --force; then
+        rm -f -- "${VSIX_PATH}"
+        rmdir -- "${VSIX_DIRECTORY}"
+        return 1
+    fi
+    rm -f -- "${VSIX_PATH}"
+    rmdir -- "${VSIX_DIRECTORY}"
 }
 main() {
+    local ARG EXTENSION EXTENSIONS_OUTPUT
+    local CONFIG="${CODE_SERVER_CONFIG_DIR:-/app/code-server/config}/config.yaml"
+    local EXTENSIONS_JSON="${CODE_SERVER_CONFIG_DIR:-/app/code-server/config}/Extensions.json"
+    local -a ARGS EXTENSIONS FAILED_EXTENSIONS
     #
     # Download Extensions listing
     #
-    CONFIG="${CODE_SERVER_CONFIG_DIR:-/app/code-server/config}/config.yaml"
-    EXTENSIONS_JSON="${CODE_SERVER_CONFIG_DIR:-/app/code-server/config}/Extensions.json"
-    curl -o "${EXTENSIONS_JSON}" https://raw.githubusercontent.com/jhwohlgemuth/purple/main/artifacts/Extensions.json
+    curl --fail --location --silent --show-error --output "${EXTENSIONS_JSON}" \
+        https://raw.githubusercontent.com/jhwohlgemuth/purple/main/artifacts/Extensions.json
     #
     # Install Code Server extensions
     #
-    if [[ -z "$1" ]]; then
-        ARGS=development
+    if [[ "$#" -eq 0 ]]; then
+        ARGS=(development)
     else
         ARGS=("$@")
     fi
     for ARG in "${ARGS[@]}"; do
-        if echo "${ARG}" | grep -iq "[.]"; then
-            trap try_download ERR
-            echo "Identified ${ARG}..."
-            code-server --config "${CONFIG}" --install-extension "${ARG}" --force
+        if [[ "${ARG}" == *.* ]]; then
+            EXTENSIONS=("${ARG}")
         else
-            EXTENSIONS="$(jq -r ".${ARG}[]" "${EXTENSIONS_JSON}")"
-            for EXTENSION in ${EXTENSIONS}; do
-                install_extensions "${EXTENSION}" || true
-            done
+            if ! EXTENSIONS_OUTPUT="$(jq -er --arg group "${ARG}" '.[$group][]' "${EXTENSIONS_JSON}")"; then
+                printf 'Failed to resolve extension group: %s\n' "${ARG}" >&2
+                FAILED_EXTENSIONS+=("${ARG}")
+                continue
+            fi
+            EXTENSIONS=()
+            while IFS= read -r EXTENSION; do
+                EXTENSIONS+=("${EXTENSION}")
+            done <<< "${EXTENSIONS_OUTPUT}"
         fi
+        for EXTENSION in "${EXTENSIONS[@]}"; do
+            # shellcheck disable=SC2310
+            if ! install_extension "${EXTENSION}"; then
+                printf 'Failed to install extension: %s\n' "${EXTENSION}" >&2
+                FAILED_EXTENSIONS+=("${EXTENSION}")
+            fi
+        done
     done
+    if [[ "${#FAILED_EXTENSIONS[@]}" -gt 0 ]]; then
+        printf 'Extension installation failed for: %s\n' "${FAILED_EXTENSIONS[*]}" >&2
+        return 1
+    fi
 }
 main "$@"

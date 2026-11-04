@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-`general/plugins.vim` downloads vim-plug from `master` and runs `PlugInstall` during ordinary startup. Its plugin declarations mostly follow moving branches. The Dockerfile exercises plugin installation but does not pin its base image or Neovim version. Keep first-run setup available as an explicit documented command and pin a tested plugin set.
+Ordinary Neovim startup is now network-free: when vim-plug is absent, the plugin layer is skipped with an informational message. The documented headless bootstrap sets `g:bootstrap_plugins`, downloads vim-plug, and runs `PlugInstall`; the Dockerfile's named `plugin-setup` stage exercises that path. Its plugin declarations still mostly follow moving branches, and the Dockerfile does not pin its base image or Neovim version. The current final Docker smoke also exposes a rolling `nvim-orgmode` incompatibility with Debian's Neovim 0.10.4, reinforcing the remaining version-set work.
 
 ## Acceptance criteria
 
@@ -23,22 +23,11 @@ Opening Neovim does not download code or change plugins. A documented setup comm
 
 # Execution phases
 
-## NVP-01 — Separate editor startup from plugin installation
+## NVP-02 — Pin completion, navigation, and editing plugins
 
 - Status: ready
 - Budget: 5 active hours maximum
 - Prerequisites: none.
-- Exact write set: `neovim/.config/nvim/general/plugins.vim`, `neovim/README.md`, `neovim/Dockerfile`.
-- Primary integration lock: Neovim plugin bootstrap.
-- Outcome: Normal startup is network-free and an explicit setup path installs plugins.
-- Focused validation: Start Neovim headlessly without an installed plugin manager; run the Dockerfile's plugin setup smoke test.
-- Handoff: Record the setup command and startup behavior.
-
-## NVP-02 — Pin completion, navigation, and editing plugins
-
-- Status: planned
-- Budget: 5 active hours maximum
-- Prerequisites: NVP-01.
 - Exact write set: `neovim/.config/nvim/general/plugins.vim`, `neovim/Dockerfile`, `neovim/README.md`.
 - Primary integration lock: Neovim plugin version set.
 - Outcome: The plugin manager and completion, navigation, and editing plugins use tested revisions.

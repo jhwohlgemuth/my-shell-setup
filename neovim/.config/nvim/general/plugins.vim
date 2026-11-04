@@ -1,27 +1,21 @@
-" Install vim-plug if not found
+" Install vim-plug only through the explicit bootstrap command.
 let s:plug_vim = stdpath('data') . '/site/autoload/plug.vim'
-if empty(glob(s:plug_vim)) && executable('curl')
+let s:bootstrap_plugins = get(g:, 'bootstrap_plugins', 0)
+if empty(glob(s:plug_vim)) && s:bootstrap_plugins && executable('curl')
     silent execute '!curl -fLo ' . shellescape(s:plug_vim)
         \ . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif
 
 if empty(glob(s:plug_vim))
-    echoerr 'vim-plug is missing and could not be installed; ensure curl is available'
+    echohl WarningMsg
+    echomsg 'vim-plug is not installed; run the explicit plugin setup command from neovim/README.md'
+    echohl None
     finish
 endif
 
 if !exists('*plug#begin')
     execute 'source' fnameescape(s:plug_vim)
 endif
-
-" Automatically install missing plugins on startup
-augroup vim_plug_install
-    autocmd!
-    autocmd VimEnter *
-      \  if exists('g:plugs') && len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-      \|   PlugInstall --sync | execute 'source' fnameescape($MYVIMRC)
-      \| endif
-augroup END
 
 call plug#begin()
 

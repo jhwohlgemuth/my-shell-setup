@@ -10,7 +10,7 @@ The runtime path mapping is:
 agents/.agents/skills/<skill>/SKILL.md -> ~/.agents/skills/<skill>/SKILL.md
 ```
 
-The package-local `.stow-local-ignore` excludes each skill's `evals/` directory and `trigger_tests.yaml`, plus the package-level Makefile, coverage manifest, and scripts, from the target. These files remain beside the skill source so Waza can use its standalone-skill workflow.
+The package-local `.stow-local-ignore` excludes each skill's `evals/` and `tests/` directories and `trigger_tests.yaml`, plus the package-level Makefile, coverage manifest, and scripts, from the target. These files remain beside the skill source so Waza can use its standalone-skill workflow.
 
 The package currently contains `blank-test`, `guidelines-rust`, `sort-rust`, `pikchr-diagram`, `rust-best-practices`, and `rust-review`. The imported Rust practice and review skills also retain their existing non-Waza evaluation fixtures under `evals/`.
 
@@ -29,6 +29,7 @@ make -C agents ci
 make -C agents coverage
 make -C agents assess AGENT_SKILL=guidelines-rust
 make -C agents dev
+make check-agent-skills
 ```
 
 `stow-check` uses a temporary target and compares every installed path with the expected runtime inventory without changing `~/.agents`. It catches leaked development files and missing references or scripts; `install` runs it before installation. `check` performs Waza's static and spec coverage checks. `preflight` checks every root suite for valid tasks and the expected executor. `test` runs only `evals/eval.yaml` with the mock executor; it verifies harness wiring, not model behavior. `ci` discovers every skill source with `SKILL.md` and runs all those offline checks. `dev` starts Waza's interactive skill improvement workflow. CI runs `ci`, the Stow inventory check, and the tooling tests without model credentials.
@@ -41,6 +42,26 @@ make -C agents preflight AGENT_SKILL=my-skill
 make -C agents test AGENT_SKILL=my-skill
 make -C agents dev AGENT_SKILL=my-skill
 ```
+
+## Build distributable runtime skills
+
+The standard-library packager discovers every immediate child of `agents/.agents/skills/` that contains `SKILL.md`. It applies the package's Stow exclusions so evaluation fixtures stay private while runtime `agents/`, `assets/`, `references/`, and `scripts/` remain available. The source skill directories are never modified.
+
+Choose a new or empty output directory and run the root Make target:
+
+```shell
+output="$(mktemp -d /tmp/my-shell-setup-agent-skills.XXXXXX)"
+make package-agent-skills AGENT_SKILLS_OUTPUT="${output}"
+```
+
+The output contains:
+
+- `index.json`, an OpenCode v2 HTTP catalog;
+- `<skill>/`, the raw same-origin files fetched for each catalog entry;
+- `<skill>-skill.zip`, one repository-ready archive rooted at `.agents/skills/<skill>/`; and
+- `agents-skills.zip`, an aggregate archive with every discovered runtime skill.
+
+Catalog entries list safe paths relative to their skill directory and use the full SHA-256 digest of the sorted runtime paths and bytes as `version`. ZIP member order, timestamps, permissions, and storage are normalized so identical source produces identical artifact hashes. The packager refuses a nonempty output directory instead of deleting caller-owned files. Run `make check-agent-skills` to test deterministic output, path safety, content-derived version changes, and agreement with the Stow runtime inventory.
 
 ## Create, test, and improve a new skill
 

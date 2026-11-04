@@ -2,9 +2,40 @@
 set -e
 
 requires \
+    awk \
     curl \
+    dpkg \
+    id \
+    uname \
     sudo
 main() {
+    local ARCH
+    local DISTRO_ID
+    local DISTRO_VERSION
+    local OS
+    local OS_RELEASE_FILE="${OS_RELEASE_FILE:-/etc/os-release}"
+    local VERSION="${1:-"7.0"}"
+    OS="$(uname -s)"
+    ARCH="$(dpkg --print-architecture)"
+    if [[ ! -r "${OS_RELEASE_FILE}" ]]; then
+        printf '==> [ERROR] .NET installer requires a readable os-release file at %s\n' "${OS_RELEASE_FILE}" >&2
+        return 1
+    fi
+    DISTRO_ID="$(awk -F= '$1 == "ID" {gsub(/"/, "", $2); print $2}' "${OS_RELEASE_FILE}")"
+    DISTRO_VERSION="$(awk -F= '$1 == "VERSION_ID" {gsub(/"/, "", $2); print $2}' "${OS_RELEASE_FILE}")"
+    if [[ "${OS}" != Linux || "${DISTRO_ID}" != ubuntu || "${DISTRO_VERSION}" != 20.04 || "$(id -u)" != 0 ]]; then
+        printf '==> [ERROR] .NET installer supports Ubuntu 20.04 Linux on amd64 or arm64 as root, detected %s %s %s %s uid=%s\n' \
+            "${DISTRO_ID:-unknown}" "${DISTRO_VERSION:-unknown}" "${OS}" "${ARCH}" "$(id -u)" >&2
+        return 1
+    fi
+    case "${ARCH}" in
+        amd64 | arm64) ;;
+        *)
+            printf '==> [ERROR] .NET installer supports Ubuntu 20.04 Linux on amd64 or arm64 as root, detected %s %s %s %s uid=%s\n' \
+                "${DISTRO_ID}" "${DISTRO_VERSION}" "${OS}" "${ARCH}" "$(id -u)" >&2
+            return 1
+            ;;
+    esac
     #
     # Add Microsoft PPA
     #
@@ -14,7 +45,6 @@ main() {
     #
     # Install dotnet and PowerShell core
     #
-    local VERSION="${1:-"7.0"}"
     apt-get update
     apt-get install --no-install-recommends --yes \
         "dotnet-sdk-${VERSION}" \

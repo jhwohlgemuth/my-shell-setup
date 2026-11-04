@@ -20,9 +20,17 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow neovim
 
 This installs the configuration at `~/.config/nvim` on Linux and macOS.
 
-2. Start Neovim. If plugins are missing, vim-plug will auto-install them on startup.
+2. Install vim-plug and the declared plugins explicitly:
 
-3. Optional health checks:
+```bash
+nvim --headless --cmd 'let g:bootstrap_plugins = 1' '+PlugInstall --sync' +qa
+```
+
+Ordinary Neovim startup never downloads vim-plug or installs plugins. Until the
+setup command runs, the configuration starts without the plugin layer and shows
+an informational message.
+
+3. Start Neovim and optionally run health checks:
 
 ```vim
 :checkhealth

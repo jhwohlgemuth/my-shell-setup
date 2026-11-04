@@ -10,7 +10,8 @@ requires \
     is_command \
     sed \
     su \
-    tee
+    tee \
+    uname
 add_user_to_docker_group() {
     local TARGET_USER="${1}"
     if [[ -z "${TARGET_USER}" ]] || ! id -u "${TARGET_USER}" > /dev/null 2>&1; then
@@ -94,25 +95,55 @@ install_nvidia_container_toolkit() {
 }
 main() {
     # https://docs.docker.com/engine/install/debian/
+    local ARCH
+    local CODENAME
+    local DISTRO_ID
+    local KEY_ROOT="/etc/apt/keyrings"
+    local KEY="${KEY_ROOT}/docker.gpg"
+    local OS
+    local OS_RELEASE_FILE="${OS_RELEASE_FILE:-/etc/os-release}"
+    local ROOTLESS_USER="${ROOTLESS_USER:-nonroot}"
+    local ROOTLESS_ONLY="${ROOTLESS_ONLY:-1}"
+    OS="$(uname -s)"
+    ARCH="$(dpkg --print-architecture)"
+    if [[ ! -r "${OS_RELEASE_FILE}" ]]; then
+        printf '==> [ERROR] Docker installer requires a readable os-release file at %s\n' "${OS_RELEASE_FILE}" >&2
+        return 1
+    fi
+    DISTRO_ID="$(awk -F= '$1 == "ID" {gsub(/"/, "", $2); print $2}' "${OS_RELEASE_FILE}")"
+    CODENAME="$(awk -F= '$1 == "VERSION_CODENAME" {gsub(/"/, "", $2); print $2}' "${OS_RELEASE_FILE}")"
+    if [[ "${OS}" != Linux || -z "${CODENAME}" || "$(id -u)" != 0 ]]; then
+        printf '==> [ERROR] Docker installer supports Debian or Ubuntu Linux on amd64, arm64, armhf, ppc64el, or s390x as root, detected %s %s %s uid=%s\n' \
+            "${DISTRO_ID:-unknown}" "${OS}" "${ARCH}" "$(id -u)" >&2
+        return 1
+    fi
+    case "${DISTRO_ID}" in
+        debian | ubuntu) ;;
+        *)
+            printf '==> [ERROR] Docker installer supports Debian or Ubuntu Linux on amd64, arm64, armhf, ppc64el, or s390x as root, detected %s %s %s uid=%s\n' \
+                "${DISTRO_ID:-unknown}" "${OS}" "${ARCH}" "$(id -u)" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        amd64 | arm64 | armhf | ppc64el | s390x) ;;
+        *)
+            printf '==> [ERROR] Docker installer supports Debian or Ubuntu Linux on amd64, arm64, armhf, ppc64el, or s390x as root, detected %s %s %s uid=%s\n' \
+                "${DISTRO_ID}" "${OS}" "${ARCH}" "$(id -u)" >&2
+            return 1
+            ;;
+    esac
     #
     # Add Docker GPG key
     #
-    # shellcheck source=/dev/null
-    . /etc/os-release
-    local ID="${ID:-"debian"}"
-    local CODENAME="${VERSION_CODENAME:-"bullseye"}"
-    local KEY_ROOT="/etc/apt/keyrings"
-    local KEY="${KEY_ROOT}/docker.gpg"
-    local ROOTLESS_USER="${ROOTLESS_USER:-nonroot}"
-    local ROOTLESS_ONLY="${ROOTLESS_ONLY:-1}"
     apt-get update
     apt-get install --no-install-recommends --yes \
         ca-certificates \
         gnupg
     install -m 0755 -d "${KEY_ROOT}"
-    curl -fsSL "https://download.docker.com/linux/${ID}/gpg" | gpg --dearmor -o "${KEY}"
+    curl -fsSL "https://download.docker.com/linux/${DISTRO_ID}/gpg" | gpg --dearmor -o "${KEY}"
     chmod a+r "${KEY}"
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=${KEY}] https://download.docker.com/linux/${ID} ${CODENAME} stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+    echo "deb [arch=${ARCH} signed-by=${KEY}] https://download.docker.com/linux/${DISTRO_ID} ${CODENAME} stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
     apt-get update
     if [[ "${ROOTLESS_ONLY}" = "1" ]]; then
         apt-get install --no-install-recommends --yes \
