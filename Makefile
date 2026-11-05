@@ -117,6 +117,8 @@ GOLD = \
 	install_wasmedge \
 	install_wasm_tools \
 	install_wasmtime \
+	install_wanix \
+	install_wazero \
 	install_xr0 \
 	is_command \
 	is_installed \

@@ -1,0 +1,110 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    dirname \
+    grep \
+    install \
+    mktemp \
+    shasum \
+    tar \
+    uname \
+    unzip
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local BIN_DIRECTORY="${1:-/usr/local/bin}"
+    local WANIX_SOURCE_DIRECTORY="${2:-/wanix}"
+    local WANIX_VERSION='0.3'
+    local WANIX_COMMIT='f86be01c12da8251c2bb515874595cccea1d7f4a'
+    local WANIX_SOURCE_SHA256='10a1b7ad301a14aca0418a22e06445b20b51e129d22aae4c9d9c2392af8b3819'
+    local WANIX_ARCHIVE_SHA256
+    local WANIX_ARCHIVE
+    local WANIX_ARCH
+    local WANIX_OS
+    local WANIX_PLATFORM
+    local WANIX_SOURCE_ARCHIVE="wanix-${WANIX_COMMIT}.tar.gz"
+    local WANIX_SOURCE_URL="https://github.com/tractordev/wanix/archive/${WANIX_COMMIT}.tar.gz"
+    local WANIX_TEMP_DIRECTORY
+    local WANIX_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    if [[ -z "${WANIX_SOURCE_DIRECTORY}" || "${WANIX_SOURCE_DIRECTORY}" == / ]]; then
+        printf '==> [ERROR] Refusing unsafe WANIX source directory: %s\n' "${WANIX_SOURCE_DIRECTORY:-<empty>}" >&2
+        return 1
+    fi
+    if [[ -e "${WANIX_SOURCE_DIRECTORY}" ]] && { [[ ! -f "${WANIX_SOURCE_DIRECTORY}/go.mod" ]] || ! grep -qx 'module tractor.dev/wanix' "${WANIX_SOURCE_DIRECTORY}/go.mod"; }; then
+        printf '==> [ERROR] Refusing to replace non-WANIX path: %s\n' "${WANIX_SOURCE_DIRECTORY}" >&2
+        return 1
+    fi
+    case "${OS}" in
+        Linux)
+            WANIX_OS='linux'
+            ;;
+        Darwin)
+            WANIX_OS='darwin'
+            ;;
+        *)
+            printf '==> [ERROR] WANIX %s does not support %s %s\n' "${WANIX_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            WANIX_ARCH='amd64'
+            ;;
+        aarch64 | arm64)
+            WANIX_ARCH='arm64'
+            ;;
+        *)
+            printf '==> [ERROR] WANIX %s does not support %s %s\n' "${WANIX_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    WANIX_PLATFORM="${WANIX_OS}_${WANIX_ARCH}"
+    case "${WANIX_PLATFORM}" in
+        darwin_amd64)
+            WANIX_ARCHIVE_SHA256='61fb03ba2247c62ab5d35344abbe5556ff8f1fe19e0ad3e5f2f1ae7708773dcc'
+            ;;
+        darwin_arm64)
+            WANIX_ARCHIVE_SHA256='670520e60728bfe00ab4f8cda1d814c5260811977184eed0987c02356878491e'
+            ;;
+        linux_amd64)
+            WANIX_ARCHIVE_SHA256='1a04a3b9d0a7f60849fcf8678641bc5152e3e5c4aed34e213598748da061d09b'
+            ;;
+        linux_arm64)
+            WANIX_ARCHIVE_SHA256='f3e8bb0f489147db40e95baa86173f5c2cdba65611a7fbdbc2687d6b9486f1e9'
+            ;;
+        *)
+            printf '==> [ERROR] WANIX %s does not support %s\n' "${WANIX_VERSION}" "${WANIX_PLATFORM}" >&2
+            return 1
+            ;;
+    esac
+    WANIX_ARCHIVE="wanix_${WANIX_VERSION}_${WANIX_PLATFORM}.zip"
+    WANIX_URL="https://github.com/tractordev/wanix/releases/download/v${WANIX_VERSION}/${WANIX_ARCHIVE}"
+    WANIX_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_wanix-${WANIX_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${WANIX_TEMP_DIRECTORY}"' EXIT
+    download_verified "${WANIX_URL}" "${WANIX_ARCHIVE_SHA256}" "${WANIX_TEMP_DIRECTORY}/${WANIX_ARCHIVE}"
+    download_verified "${WANIX_SOURCE_URL}" "${WANIX_SOURCE_SHA256}" "${WANIX_TEMP_DIRECTORY}/${WANIX_SOURCE_ARCHIVE}"
+    unzip -q "${WANIX_TEMP_DIRECTORY}/${WANIX_ARCHIVE}" -d "${WANIX_TEMP_DIRECTORY}/bin"
+    tar -xf "${WANIX_TEMP_DIRECTORY}/${WANIX_SOURCE_ARCHIVE}" --directory="${WANIX_TEMP_DIRECTORY}"
+    mkdir -p "${BIN_DIRECTORY}" "$(dirname "${WANIX_SOURCE_DIRECTORY}")"
+    install -m 0755 "${WANIX_TEMP_DIRECTORY}/bin/wanix" "${BIN_DIRECTORY}/wanix"
+    rm -rf -- "${WANIX_SOURCE_DIRECTORY}"
+    mv "${WANIX_TEMP_DIRECTORY}/wanix-${WANIX_COMMIT}" "${WANIX_SOURCE_DIRECTORY}"
+    rm -rf -- "${WANIX_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"

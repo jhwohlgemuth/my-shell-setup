@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — verified Wazero and WANIX installers
+
+- Plan: `.wiki/verified-bootstrap.md`; active phase: none; state: complete within SEC-11.
+- Authorized scope and decisions: Replace Wazero and WANIX mutable bootstrap execution with fixed, verified inputs. Follow the current standalone WASM-installer architecture, with the menu retaining its integration lock and custom binary-directory behavior.
+- Baseline and local work: Started from clean `main` at `3f2a3a0`, matching `origin/main`; no `.codegraph/` index is present. Added standalone Wazero and WANIX installers, menu delegation, Gold inventory, and support documentation.
+- Verified state: Wazero pins official 1.12.0 archives for Linux/macOS x86-64/arm64. WANIX pins official 0.3 CLI archives and source commit `f86be01c12da8251c2bb515874595cccea1d7f4a`; code records every artifact checksum plus source SHA-256 `10a1b7ad301a14aca0418a22e06445b20b51e129d22aae4c9d9c2392af8b3819`. Native macOS arm64 fixture installs and a real Ubuntu 24.04 arm64 container reported Wazero 1.12.0 and WANIX `v0.3-f86be01`. Corrupt CLI/source inputs, unavailable downloads, unsupported hosts, repeat installation, unrelated-target protection, menu delegation, Bash syntax, shfmt, ShellCheck, and `make check` passed.
+- Remaining work: None within SEC-11. SEC-12 is ready but outside this authorization.
+- Budget: SEC-11 completed within its five-active-hour ceiling.
+- Blockers / failed approaches: WANIX deleted its rolling installer in 2025, and its 0.4 preview release no longer provides a native CLI. The newest stable CLI release, 0.3, preserves the existing command and matches the pinned source commit.
+- Next action: Review and commit SEC-11; execute SEC-12 only when separately authorized.
+
 ## Implementation — verified runtimes, plugin marketplace, and complete Neovim pins
 
 - Plans: `.wiki/verified-bootstrap.md` and `.wiki/agent-skills-web-distribution.md` continue; `.wiki/neovim-reproducibility.md` retired; active phase: none; state: SEC-04 and NVP-03 complete, ASD-03 waiting on external validation.

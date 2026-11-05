@@ -4,7 +4,7 @@ This portfolio contains 8 executable plans, ranked by impact, readiness, and rem
 
 | Priority | Plan | Impact | Difficulty | Next phase |
 | --- | --- | --- | --- | --- |
-| 1 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-11 ready |
+| 1 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-12 ready |
 | 2 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-03 awaits clean Codex install and invocation; ASD-02 awaits Pages configuration |
 | 3 | [Make Windows setup executable](windows-setup.md) | High | Medium | WIN-02 awaits hosted publication and Windows validation |
 | 4 | [Validate Waza skill improvement](waza-skill-workflow.md) | High | Medium | WAZ-01, WAZ-03, and WAZ-04 await model access; WAZ-02 awaits hosted CI |
@@ -17,6 +17,7 @@ See [plan network](plan-network.md) for prerequisites and [parallel execution](p
 
 ## Portfolio currency review
 
+- 2026-11-04 — SEC-11 replaced Wazero and WANIX rolling installers with standalone, verified Wazero 1.12.0 and WANIX 0.3 installers. Native macOS arm64 and Ubuntu 24.04 arm64 smokes, corrupt and unavailable downloads, unsupported hosts, menu delegation, and the integrated repository gate passed; SEC-12 is ready.
 - 2026-11-04 — SEC-04 replaced mutable WasmEdge and Wasmtime scripts with verified 0.18.1 and 50.0.1 release archives; NVP-03 pinned and container-verified all 36 Neovim plugins, retiring the reproducibility plan; and ASD-03 added the Codex marketplace plus CI drift and schema gates. ASD-03 remains open for a clean-profile install and authenticated new-session `blank-test` invocation; SEC-11 is ready.
 - 2026-11-04 — SEC-10 replaced mutable WasmCloud Packagecloud setup with verified `wash` 2.12.0 binaries; ASD-05 and repair ASD-07 generated portable plugin version 0.1.0 while preserving the 15-file Stow inventory; and NVP-02 pinned vim-plug plus 16 completion, navigation, and editing plugins against a checksum-verified Neovim 0.12.6 container baseline. Focused smokes and the integrated repository gate passed; SEC-04, ASD-03, and NVP-03 are ready.
 - 2026-11-04 — PLT-03 added pre-mutation platform and privilege guards to the CUDA toolkit, .NET, and Docker installers; SEC-09 installed verified Scale 0.2.0 and Spin 4.2.6 release artifacts; ASD-01 added deterministic OpenCode and ZIP packaging for all six runtime skills; EXT-01 bounded extension fallback and failure reporting; and NVP-01 separated network-free startup from explicit plugin bootstrap. Focused checks and the integrated repository gate passed. The platform and extension plans were retired; SEC-10, ASD-05, and NVP-02 are ready.

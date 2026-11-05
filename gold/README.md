@@ -55,6 +55,8 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | `install_wasmedge` | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmedge` and shell configuration | Verified WasmEdge 0.18.1 release archive |
 | `install_wasm_tools` | Mixed; see the per-choice matrix below | Mixed; default binary target is `/usr/local/bin` | Gum menu plus Cargo, Homebrew, Rustup, and choice-specific installers |
 | `install_wasmtime` | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmtime` and shell configuration | Verified Wasmtime 50.0.1 release archive |
+| `install_wanix` | Linux or macOS, x86-64 or arm64 | Selected binary directory plus source directory, defaults `/usr/local/bin` and `/wanix` | Verified WANIX 0.3 CLI and source archives |
+| `install_wazero` | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | Verified Wazero 1.12.0 release archive |
 | `install_xr0` | Unix-like source build | Current user and `~/.local/bin` | Bison, Flex, Git, Make |
 
 ### `install_wasm_tools` choices
@@ -73,8 +75,8 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | Wasmer | Any host supported by the active Homebrew installation | Homebrew prefix | Homebrew |
 | Wasmtime | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmtime` | `install_wasmtime` |
 | WAVM | Debian-family Linux; package architecture is not checked | Root for APT | Downloaded prerelease `.deb` |
-| Wazero | Upstream-defined; no local host or architecture guard | Permission to write the selected binary directory | Downloaded shell installer |
-| WANIX | Unix-like host; no architecture guard | Permission to create `/wanix` | Git and downloaded shell installer |
+| Wazero | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | `install_wazero` |
+| WANIX | Linux or macOS, x86-64 or arm64 | Selected binary directory plus `/wanix` source tree | `install_wanix` |
 | WEPL | Unix-like source build | Current user/Cargo installation | Git and Cargo |
 | WWS | Upstream-defined; no local host or architecture guard | Permission to write the selected binary directory | Downloaded shell installer |
 

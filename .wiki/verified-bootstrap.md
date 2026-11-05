@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-The standalone Nix, Java, Conda, Homebrew, Nim, Oh My Zsh, Cosmonic, MoonBit, Scale, Spin, WasmCloud, WasmEdge, and Wasmtime installers now use fixed, SHA-256-verified bootstrap inputs. Their `install_wasm_tools` choices delegate to the standalone commands. Wazero, WANIX, and WWS still execute mutable downloaded scripts. Use a fixed release or commit and a checked SHA-256 for each remaining exact script or artifact, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
+The standalone Nix, Java, Conda, Homebrew, Nim, Oh My Zsh, Cosmonic, MoonBit, Scale, Spin, WasmCloud, WasmEdge, Wasmtime, Wazero, and WANIX installers now use fixed, SHA-256-verified bootstrap inputs. Their `install_wasm_tools` choices delegate to the standalone commands. WWS still executes a mutable downloaded script. Use a fixed release or commit and a checked SHA-256 for the remaining exact input, and fail before execution if download or verification fails. Preserve installer interfaces unless a pinned version requires a documented update. The repository's own hosted quick-start source is tracked in [published bootstrap](published-bootstrap.md) and [Windows setup](windows-setup.md).
 
 `install_nix` now downloads the Nix 2.34.0 installer, verifies SHA-256 `78de59f69d95bdb7ba7d54949ddc402c9e98c1ba55c35c73704b21b432c66f8a`, and executes it only after verification.
 
@@ -35,6 +35,8 @@ The standalone WasmCloud installer installs the verified `wash` 2.12.0 binary fo
 
 The standalone `install_wasmedge` command installs the verified 0.18.1 release archive for Linux or macOS on x86-64 or arm64 and writes the existing `~/.wasmedge/env` interface locally. The standalone `install_wasmtime` command installs the verified 50.0.1 release binary for the same host matrix, and the corresponding `install_wasm_tools` choices delegate to these commands. Native macOS arm64 smokes reported WasmEdge 0.18.1 and Wasmtime 50.0.1; corrupt mocked downloads for both choices failed before extraction or installation.
 
+The standalone Wazero installer uses verified 1.12.0 release archives for Linux and macOS on x86-64 and arm64. WANIX's rolling installer was deleted upstream and its newer 0.4 preview does not ship a native CLI, so the standalone WANIX installer pins the newest stable CLI release, 0.3, together with its matching source commit `f86be01c12da8251c2bb515874595cccea1d7f4a`; it verifies both inputs before installing the CLI and replacing the `/wanix` source tree. Native macOS arm64 and Ubuntu 24.04 arm64 smokes reported Wazero 1.12.0 and WANIX `v0.3-f86be01`.
+
 `install_conda` pins `Miniconda3-py312_26.9.4-0-Linux-x86_64.sh` at SHA-256 `9d95948a2f9ba5cc5e1c36d1e66e7607db3f3d21263f5fe812bc50e47b9bc289`; an Ubuntu 24.04 amd64 container smoke installed it and reported Conda 26.9.4.
 
 ## Acceptance criteria
@@ -43,22 +45,11 @@ None of the named scripts execute a mutable URL directly. Every downloaded insta
 
 # Execution phases
 
-## SEC-11 — Verify Wazero and WANIX choices
+## SEC-12 — Verify the WWS choice
 
 - Status: ready
 - Budget: 5 active hours maximum
 - Prerequisites: none.
-- Exact write set: `gold/install_wasm_tools`.
-- Primary integration lock: WASM installer menu.
-- Outcome: Wazero and WANIX use verified fixed bootstrap inputs.
-- Focused validation: ShellCheck, shfmt diff, and mocked corrupt downloads for both choices.
-- Handoff: Record both pins and checksums.
-
-## SEC-12 — Verify the WWS choice
-
-- Status: planned
-- Budget: 5 active hours maximum
-- Prerequisites: SEC-11.
 - Exact write set: `gold/install_wasm_tools`.
 - Primary integration lock: WASM installer menu.
 - Outcome: WWS uses a verified fixed bootstrap input, completing the scoped remote-script choices.

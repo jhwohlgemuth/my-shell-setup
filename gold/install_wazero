@@ -1,0 +1,90 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    install \
+    mktemp \
+    shasum \
+    tar \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local BIN_DIRECTORY="${1:-/usr/local/bin}"
+    local WAZERO_VERSION='1.12.0'
+    local WAZERO_ARCHIVE_SHA256
+    local WAZERO_ARCHIVE
+    local WAZERO_ARCH
+    local WAZERO_OS
+    local WAZERO_PLATFORM
+    local WAZERO_TEMP_DIRECTORY
+    local WAZERO_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    case "${OS}" in
+        Linux)
+            WAZERO_OS='linux'
+            ;;
+        Darwin)
+            WAZERO_OS='darwin'
+            ;;
+        *)
+            printf '==> [ERROR] Wazero %s does not support %s %s\n' "${WAZERO_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            WAZERO_ARCH='amd64'
+            ;;
+        aarch64 | arm64)
+            WAZERO_ARCH='arm64'
+            ;;
+        *)
+            printf '==> [ERROR] Wazero %s does not support %s %s\n' "${WAZERO_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    WAZERO_PLATFORM="${WAZERO_OS}_${WAZERO_ARCH}"
+    case "${WAZERO_PLATFORM}" in
+        darwin_amd64)
+            WAZERO_ARCHIVE_SHA256='4a142b30ab0c7cfeae3fb453c5d2f3beca5af823d5aeeb4c0de458f89e9d5bb8'
+            ;;
+        darwin_arm64)
+            WAZERO_ARCHIVE_SHA256='c9e811bb8638163a294de8579923a4ce759846dc04f964468855a23e69bbe73c'
+            ;;
+        linux_amd64)
+            WAZERO_ARCHIVE_SHA256='88019896950340e8839b94af0510b248c3400d8d8f4a9b335dcaad93ac0484ff'
+            ;;
+        linux_arm64)
+            WAZERO_ARCHIVE_SHA256='b5e5105a8bc4817a117e52402713f0628ebe13ecec5c4e63d541c430ca9bf259'
+            ;;
+        *)
+            printf '==> [ERROR] Wazero %s does not support %s\n' "${WAZERO_VERSION}" "${WAZERO_PLATFORM}" >&2
+            return 1
+            ;;
+    esac
+    WAZERO_ARCHIVE="wazero_${WAZERO_VERSION}_${WAZERO_PLATFORM}.tar.gz"
+    WAZERO_URL="https://github.com/wazero/wazero/releases/download/v${WAZERO_VERSION}/${WAZERO_ARCHIVE}"
+    WAZERO_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_wazero-${WAZERO_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${WAZERO_TEMP_DIRECTORY}"' EXIT
+    download_verified "${WAZERO_URL}" "${WAZERO_ARCHIVE_SHA256}" "${WAZERO_TEMP_DIRECTORY}/${WAZERO_ARCHIVE}"
+    tar -xf "${WAZERO_TEMP_DIRECTORY}/${WAZERO_ARCHIVE}" --directory="${WAZERO_TEMP_DIRECTORY}"
+    mkdir -p "${BIN_DIRECTORY}"
+    install -m 0755 "${WAZERO_TEMP_DIRECTORY}/wazero" "${BIN_DIRECTORY}/wazero"
+    rm -rf -- "${WAZERO_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"
