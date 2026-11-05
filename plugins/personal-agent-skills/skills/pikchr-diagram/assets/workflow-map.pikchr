@@ -1,0 +1,36 @@
+// Rounded pastel boxes and green arrows match the ACORN book.
+scale = 1
+fontscale = 1.15
+color = 0x183C43
+S: box "Submit highlight" bold "New highlight" wid 2.2in ht 0.8in rad 0.08in fill 0xE8F1FB thickness 0
+SL: box "Keep every receipt" bold "Receipt export + Teams" "Logbook: every 5 min" same fill 0xE7F3E9 at S+(2.7in,0)
+SD: box "Download JSONL" bold "All originals + corrections" "Check export freshness" same fill 0xFFF4D6 at SL+(2.7in,0)
+E: box "My submissions" bold "Edit selected" "Latest confirmed highlight" same fill 0xE8F1FB at S+(0,1.15in)
+C: box "Save correction" bold "New receipt ID" "Links original + previous" same fill 0xE8F1FB at SL+(0,1.15in)
+arrow from E.e to C.w thick color 0x00662C
+arrow from C.s to SL.n+(0,0.12in) thick color 0x00662C
+arrow from S.e to SL.w thick color 0x00662C
+arrow from SL.e to SD.w thick color 0x00662C
+Join: line from SD.e right 0.3in then down 0.65in color 0x00662C
+R: box "Stage + inspect" bold "Review latest content" wid 1.8in ht 0.75in rad 0.08in fill 0xF3F0FF thickness 0 at S+(0,-1.45in)
+A: box "Apply" bold "Confirm changes" same fill 0xF3F0FF at R+(2in,0)
+P: box "run --index" bold "Optional promotion" same fill 0xF3F0FF at A+(2in,0)
+F: box "Report" bold "New local PDF" same fill 0xF3F0FF at P+(2in,0)
+arrow from Join.end to (R.x,Join.end.y) then to R.n+(0,0.12in) thick color 0x00662C
+arrow from R.e to A.w thick color 0x00662C
+arrow from A.e to P.w thick color 0x00662C
+arrow from P.e to F.w thick color 0x00662C
+N: box "OWNER-TRIGGERED MILESTONES" bold "Teams: workspace created / no report changes" "Email: review requested / report ready / actionable failure" wid 7.8in ht 0.85in rad 0.08in fill 0xFFF4D6 thickness 0 at A+(1in,-1.15in)
+arrow from A.s to (A.x,N.n.y) dashed color 0x506A70
+arrow from F.s to (F.x,N.n.y) dashed color 0x506A70
+ellipse "NEW" bold wid 0.7in ht 0.34in fill 0xFFE466 color 0x754300 thickness 0.012in at S.nw+(0.4in,0)
+box "USER" bold small wid 0.7in ht 0.24in rad 0.06in fill 0x205795 color 0xFFFFFF thickness 0 at S.ne+(-0.5in,0)
+box "USER" bold small wid 0.7in ht 0.24in rad 0.06in fill 0x205795 color 0xFFFFFF thickness 0 at E.n
+box "USER" bold small wid 0.7in ht 0.24in rad 0.06in fill 0x205795 color 0xFFFFFF thickness 0 at C.n
+box "AUTOMATED" bold small wid 1.2in ht 0.24in rad 0.06in fill 0x00662C color 0xFFFFFF thickness 0 at SL.n
+box "DEV / REVIEWER" bold small wid 1.65in ht 0.24in rad 0.06in fill 0x805A0B color 0xFFFFFF thickness 0 at SD.n
+box "DEVELOPER" bold small wid 1.25in ht 0.24in rad 0.06in fill 0x62408A color 0xFFFFFF thickness 0 at R.n
+box "DEVELOPER" bold small wid 1.25in ht 0.24in rad 0.06in fill 0x62408A color 0xFFFFFF thickness 0 at A.n
+box "DEVELOPER" bold small wid 1.25in ht 0.24in rad 0.06in fill 0x62408A color 0xFFFFFF thickness 0 at P.n
+box "DEVELOPER" bold small wid 1.25in ht 0.24in rad 0.06in fill 0x62408A color 0xFFFFFF thickness 0 at F.n
+box "DEV / REVIEWER" bold small wid 1.65in ht 0.24in rad 0.06in fill 0x805A0B color 0xFFFFFF thickness 0 at N.n

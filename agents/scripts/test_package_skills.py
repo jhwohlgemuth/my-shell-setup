@@ -16,6 +16,19 @@ class PackageSkillsTests(unittest.TestCase):
         source_ignore = Path(__file__).resolve().parents[1] / ".stow-local-ignore"
         package.mkdir(parents=True)
         (package / ".stow-local-ignore").write_bytes(source_ignore.read_bytes())
+        (package / "plugin.json").write_text(
+            json.dumps(
+                {
+                    "$schema": package_skills.PLUGIN_SCHEMA,
+                    "name": "test-skills",
+                    "version": "0.1.0",
+                    "description": "Test runtime skills",
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         for skill in ("alpha-skill", "beta-skill"):
             skill_root = package / ".agents/skills" / skill
             files = {
@@ -145,6 +158,68 @@ class PackageSkillsTests(unittest.TestCase):
             PurePosixPath(path.as_posix()) for path in check_stow.expected_files(repo)
         }
         self.assertEqual(discovered, expected)
+
+    def test_plugin_tree_matches_manifest_and_runtime_inventory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            repo = self.make_repo(root / "repo")
+            destination, digest = package_skills.write_plugin_tree(repo)
+            self.assertEqual(digest, package_skills.check_plugin_tree(repo))
+            self.assertEqual(
+                (destination / "plugin.json").read_bytes(),
+                (repo / "agents/plugin.json").read_bytes(),
+            )
+            expected = {
+                PurePosixPath("plugin.json"),
+                *{
+                    PurePosixPath("skills", skill.name, *path.parts)
+                    for skill in package_skills.discover_skills(repo)
+                    for path, _ in skill.files
+                },
+            }
+            actual = {
+                PurePosixPath(path.relative_to(destination).as_posix())
+                for path in destination.rglob("*")
+                if path.is_file()
+            }
+            self.assertEqual(actual, expected)
+            self.assertFalse(any("evals" in path.parts for path in actual))
+
+    def test_plugin_tree_is_deterministic_and_repairs_drift(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            repo = self.make_repo(root / "repo")
+            destination, first_digest = package_skills.write_plugin_tree(repo)
+            first_hashes = self.output_hashes(destination)
+            changed = destination / "skills/alpha-skill/SKILL.md"
+            changed.write_text("changed\n", encoding="utf-8")
+            (destination / "unexpected.txt").write_text("drift\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "out of date"):
+                package_skills.check_plugin_tree(repo)
+            destination, second_digest = package_skills.write_plugin_tree(repo)
+            self.assertEqual(first_digest, second_digest)
+            self.assertEqual(first_hashes, self.output_hashes(destination))
+            self.assertEqual(second_digest, package_skills.check_plugin_tree(repo))
+
+    def test_plugin_manifest_requires_portable_schema_and_semver(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo = self.make_repo(Path(temporary) / "repo")
+            manifest_path = repo / "agents/plugin.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["$schema"] = "https://example.test/wrong-schema.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "must declare"):
+                package_skills.load_plugin_manifest(repo)
+            manifest["$schema"] = package_skills.PLUGIN_SCHEMA
+            manifest["version"] = "latest"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "semantic version"):
+                package_skills.load_plugin_manifest(repo)
+
+    def test_repository_plugin_tree_is_current(self):
+        repo = Path(__file__).resolve().parents[2]
+        digest = package_skills.check_plugin_tree(repo)
+        self.assertRegex(digest, r"^[0-9a-f]{64}$")
 
     def test_nonempty_output_is_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:

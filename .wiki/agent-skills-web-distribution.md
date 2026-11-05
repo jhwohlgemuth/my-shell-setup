@@ -17,15 +17,17 @@ phase_budget_hours: 5
 
 The Stow package installs runtime files from `agents/.agents/skills/` into `~/.agents/skills/`. It currently contains six skills: `blank-test`, `guidelines-rust`, `sort-rust`, `pikchr-diagram`, `rust-best-practices`, and `rust-review`. Waza evaluation fixtures live beside skill sources but `.stow-local-ignore` deliberately excludes `evals/`, `tests/`, `trigger_tests.yaml`, workflow metadata, and package README files from the runtime installation.
 
-The standard-library `agents/scripts/package_skills.py` builder discovers every immediate child containing `SKILL.md`, applies the Stow runtime exclusions, retains runtime `references/`, `scripts/`, `assets/`, and agent metadata, and emits a deterministic OpenCode v2 catalog, raw trees, per-skill ZIPs, and an aggregate ZIP into a caller-selected empty directory. `make check-agent-skills` verifies deterministic metadata, safe paths, content-derived versions, and agreement with the Stow inventory; `make package-agent-skills AGENT_SKILLS_OUTPUT=<directory>` is the publishing interface. The repository still has no GitHub Pages workflow, portable plugin manifest, marketplace catalog, or tagged skill-release workflow. Preserve `agents/.agents/skills/` as the only maintained runtime source.
+The standard-library `agents/scripts/package_skills.py` builder discovers every immediate child containing `SKILL.md`, applies the Stow runtime exclusions, retains runtime `references/`, `scripts/`, `assets/`, and agent metadata, and emits a deterministic OpenCode v2 catalog, raw trees, per-skill ZIPs, and an aggregate ZIP into a caller-selected empty directory. `make check-agent-skills` verifies deterministic metadata, safe paths, content-derived versions, and agreement with the Stow inventory; `make package-agent-skills AGENT_SKILLS_OUTPUT=<directory>` is the publishing interface. The repository still has no GitHub Pages publishing workflow, marketplace catalog, or tagged skill-release workflow. Preserve `agents/.agents/skills/` as the only maintained runtime source.
+
+The source manifest `agents/plugin.json` declares portable plugin version 0.1.0. The builder's `--write-plugin` and `--check-plugin` modes generate and verify `plugins/personal-agent-skills/` with the six runtime skills and no Waza fixtures; its deterministic content digest is `9e2c4b7db03fdb9fa616c75b4faf39e1e3c1a0f46a5edd2103298bf9208897b1`. The source manifest is excluded from Stow, preserving the established 15-file runtime inventory.
 
 OpenCode v2 natively accepts an HTTP skill-catalog base URL in the `skills` array of `opencode.json`. The base must serve `index.json`; every entry lists safe same-origin files beneath `<base>/<skill>/` and changes its string `version` when content changes. Make the Pages catalog directly consumable by OpenCode, using the full SHA-256 digest of each skill's sorted runtime paths and bytes as its version. OpenCode 1 remains supported through the Stow-installed `~/.agents/skills/` tree or by extracting a repository-ready ZIP.
 
-Do not use `agents/.agents/` directly as the plugin root: its skill folders contain Waza fixtures that Stow omits but a plugin source checkout would retain. Generate a checked-in mirror at `plugins/personal-agent-skills/` with root `plugin.json` and `skills/`, and gate it against the source inventory so no runtime skill is maintained twice. The repo marketplace points at this clean plugin tree. The planning skill is maintained in the separate `okf-plan-browser` project and is outside this package. This layout follows the [OpenAI Docs plugin packaging guide](https://developers.openai.com/plugins/build/plugins).
+Do not use `agents/.agents/` directly as the plugin root: its skill folders contain Waza fixtures that Stow omits but a plugin source checkout would retain. The checked-in generated mirror at `plugins/personal-agent-skills/` has root `plugin.json` and `skills/`, and its drift gate keeps the source inventory authoritative. The repo marketplace will point at this clean plugin tree. The planning skill is maintained in the separate `okf-plan-browser` project and is outside this package. This layout follows the [OpenAI Docs plugin packaging guide](https://developers.openai.com/plugins/build/plugins).
 
 A read-only probe on 2026-10-30 found that the proposed `github.io` catalog URL redirected to `shell.jasonwohlgemuth.com/agent-skills/catalog.json` and returned 404; the repository Pages API also returned 404. Treat the catalog as unpublished. Configure this repository's project Pages with GitHub Actions and no custom domain, then verify the canonical project URL after deployment. The Pages artifact must have a top-level `index.html` and an `agent-skills/` subtree; [GitHub Pages requires a top-level entry file](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
-ASD-02 and ASD-05 both extend the completed builder, so integrate those edits sequentially.
+ASD-02 will extend the completed builder for Pages output; ASD-03 consumes the generated portable plugin tree independently.
 
 ## Public interfaces
 
@@ -53,22 +55,11 @@ Every runtime skill beneath `agents/.agents/skills/` appears in the generated Op
 - Focused validation: Build the Pages artifact locally, verify its top-level entrypoint, links and MIME-readable files, compare published ZIP contents with the source commit, then fetch `index.json` and every catalog file over HTTPS, configure a clean OpenCode v2 profile with the catalog base URL, invoke `@blank-test`, and confirm no redirect to the old host.
 - Handoff: Preserve the workflow run, source commit, public URLs, OpenCode configuration and invocation result, catalog contents and versions, and artifact hashes.
 
-## ASD-05 — Generate the clean portable plugin tree
+## ASD-03 — Expose the package through a plugin marketplace
 
 - Status: ready
 - Budget: 5 active hours maximum
-- Prerequisites: none; serialize builder edits with ASD-02.
-- Exact write set: `agents/plugin.json`, `plugins/personal-agent-skills/`, `agents/scripts/package_skills.py`, `agents/scripts/test_package_skills.py`, `agents/README.md`.
-- Primary integration lock: generated plugin tree.
-- Outcome: A source manifest at `agents/plugin.json` and the builder produce the checked-in, clean `plugins/personal-agent-skills/` tree from the Stow runtime inventory.
-- Focused validation: Validate the portable manifest schema, regenerate the tree twice and compare hashes, confirm no Waza fixtures appear, and compare its skill files with the Stow result.
-- Handoff: Record the manifest version, generated tree hash, and regeneration/check commands.
-
-## ASD-03 — Expose the package through a plugin marketplace
-
-- Status: planned
-- Budget: 5 active hours maximum
-- Prerequisites: ASD-05.
+- Prerequisites: none.
 - Exact write set: `.agents/plugins/marketplace.json`, `.github/workflows/agent-skills-plugin-check.yml`, `agents/README.md`, `README.md`.
 - Primary integration lock: personal-agent-skills plugin identity.
 - Outcome: Marketplace `my-shell-setup` resolves the generated plugin tree and CI fails if that tree drifts from `agents/.agents/skills/`.

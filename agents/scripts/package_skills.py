@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import sys
 import zipfile
 from dataclasses import dataclass
@@ -14,6 +15,9 @@ from pathlib import Path, PurePosixPath
 
 
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+SEMANTIC_VERSION = re.compile(r"^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$")
+PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+PLUGIN_DIRECTORY = Path("plugins/personal-agent-skills")
 ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 
 
@@ -74,6 +78,31 @@ def content_version(files: tuple[tuple[PurePosixPath, bytes], ...]) -> str:
     return digest.hexdigest()
 
 
+def load_plugin_manifest(repo: Path) -> tuple[dict, bytes]:
+    source = repo / "agents/plugin.json"
+    try:
+        contents = source.read_bytes()
+        manifest = json.loads(contents)
+    except OSError as error:
+        raise ValueError(f"Cannot read {source}: {error}") from error
+    except json.JSONDecodeError as error:
+        raise ValueError(f"Invalid JSON in {source}: {error}") from error
+    if not isinstance(manifest, dict):
+        raise ValueError(f"Portable plugin manifest must be an object: {source}")
+    if manifest.get("$schema") != PLUGIN_SCHEMA:
+        raise ValueError(f"Portable plugin manifest must declare {PLUGIN_SCHEMA}")
+    name = manifest.get("name")
+    if not isinstance(name, str) or not SKILL_NAME.fullmatch(name):
+        raise ValueError("Portable plugin name must be lowercase kebab-case")
+    version = manifest.get("version")
+    if not isinstance(version, str) or not SEMANTIC_VERSION.fullmatch(version):
+        raise ValueError("Portable plugin version must be a three-part semantic version")
+    description = manifest.get("description")
+    if not isinstance(description, str) or not description.strip():
+        raise ValueError("Portable plugin description must be a nonempty string")
+    return manifest, contents
+
+
 def discover_skills(repo: Path) -> tuple[RuntimeSkill, ...]:
     package = repo / "agents"
     skills_root = package / ".agents/skills"
@@ -111,6 +140,66 @@ def discover_skills(repo: Path) -> tuple[RuntimeSkill, ...]:
     if not skills:
         raise ValueError(f"No skill entrypoints found beneath {skills_root}")
     return tuple(skills)
+
+
+def plugin_files(
+    repo: Path, skills: tuple[RuntimeSkill, ...] | None = None
+) -> tuple[tuple[PurePosixPath, bytes], ...]:
+    repo = repo.resolve()
+    skills = skills or discover_skills(repo)
+    _, manifest = load_plugin_manifest(repo)
+    files = [(PurePosixPath("plugin.json"), manifest)]
+    files.extend(
+        (PurePosixPath("skills", skill.name, *path.parts), contents)
+        for skill in skills
+        for path, contents in skill.files
+    )
+    return tuple(files)
+
+
+def write_plugin_tree(repo: Path) -> tuple[Path, str]:
+    repo = repo.resolve()
+    destination = repo / PLUGIN_DIRECTORY
+    files = plugin_files(repo)
+    if destination.is_symlink():
+        raise ValueError(f"Generated plugin directory cannot be a symbolic link: {destination}")
+    if destination.exists():
+        if not destination.is_dir():
+            raise ValueError(f"Generated plugin path is not a directory: {destination}")
+        shutil.rmtree(destination)
+    for path, contents in files:
+        output = destination.joinpath(*path.parts)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(contents)
+    return destination, content_version(files)
+
+
+def check_plugin_tree(repo: Path) -> str:
+    repo = repo.resolve()
+    destination = repo / PLUGIN_DIRECTORY
+    expected = {path: contents for path, contents in plugin_files(repo)}
+    if not destination.is_dir() or destination.is_symlink():
+        raise ValueError(f"Generated plugin directory is missing or unsafe: {destination}")
+    actual_paths = {
+        PurePosixPath(path.relative_to(destination).as_posix())
+        for path in destination.rglob("*")
+        if path.is_file() or path.is_symlink()
+    }
+    expected_paths = set(expected)
+    errors = []
+    for path in sorted(expected_paths - actual_paths):
+        errors.append(f"missing {path}")
+    for path in sorted(actual_paths - expected_paths):
+        errors.append(f"unexpected {path}")
+    for path in sorted(expected_paths & actual_paths):
+        source = destination.joinpath(*path.parts)
+        if source.is_symlink():
+            errors.append(f"symbolic link {path}")
+        elif source.read_bytes() != expected[path]:
+            errors.append(f"changed {path}")
+    if errors:
+        raise ValueError("Generated plugin tree is out of date: " + ", ".join(errors))
+    return content_version(tuple((path, expected[path]) for path in sorted(expected)))
 
 
 def zip_bytes(entries: tuple[tuple[PurePosixPath, bytes], ...], destination: Path) -> None:
@@ -167,9 +256,22 @@ def main() -> int:
     parser.add_argument(
         "--repo-root", type=Path, default=Path(__file__).resolve().parents[2]
     )
-    parser.add_argument("--output", type=Path, required=True)
+    targets = parser.add_mutually_exclusive_group(required=True)
+    targets.add_argument("--output", type=Path)
+    targets.add_argument("--write-plugin", action="store_true")
+    targets.add_argument("--check-plugin", action="store_true")
     args = parser.parse_args()
     try:
+        if args.write_plugin:
+            destination, digest = write_plugin_tree(args.repo_root)
+            manifest, _ = load_plugin_manifest(args.repo_root.resolve())
+            print(f"{destination}\t{manifest['version']}\t{digest}")
+            return 0
+        if args.check_plugin:
+            digest = check_plugin_tree(args.repo_root)
+            manifest, _ = load_plugin_manifest(args.repo_root.resolve())
+            print(f"{PLUGIN_DIRECTORY}\t{manifest['version']}\t{digest}")
+            return 0
         skills = build(args.repo_root, args.output)
     except (OSError, ValueError, zipfile.BadZipFile) as error:
         print(f"Skill packaging error: {error}", file=sys.stderr)

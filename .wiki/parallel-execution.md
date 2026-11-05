@@ -6,8 +6,8 @@ The [Waza validation phases](waza-skill-workflow.md), [Rust guidelines](guidelin
 
 | Ready phase | Primary integration lock | Shared-file exclusion |
 | --- | --- | --- |
-| [ASD-05](agent-skills-web-distribution.md) | Generated plugin tree | ASD-02 builder edits |
-| [SEC-10](verified-bootstrap.md) | WASM installer menu | subsequent SEC menu phases |
-| [NVP-02](neovim-reproducibility.md) | Neovim plugin version set | NVP-03 |
+| [ASD-03](agent-skills-web-distribution.md) | Personal-agent-skills plugin identity | none |
+| [SEC-04](verified-bootstrap.md) | WASM installer menu | subsequent SEC menu phases |
+| [NVP-03](neovim-reproducibility.md) | Neovim plugin version set | none |
 
-After their prerequisites, schedule [WIN-02](windows-setup.md) and [PUB-02](published-bootstrap.md) only when the hosted deployment system is available. Serialize ASD-02 and ASD-05 builder edits; schedule ASD-03 after ASD-05, ASD-04 after ASD-03, and ASD-06 after ASD-04 and release immutability is enabled. Schedule NVP-03 after NVP-02 and the SEC menu phases in network order. Run the six skill behavior suites when authenticated model access is available, and run WAZ-02 after the workflow is on a branch with hosted CI. Keep shared-file exclusions above when later phases become ready.
+After their prerequisites, schedule [WIN-02](windows-setup.md) and [PUB-02](published-bootstrap.md) only when the hosted deployment system is available. Schedule ASD-04 after ASD-03 and ASD-06 after ASD-04 and release immutability is enabled; ASD-02 remains separate until Pages is configured. Schedule the SEC menu phases in network order. Run the six skill behavior suites when authenticated model access is available, and reconcile WAZ-02 against the successful hosted run. Keep shared-file exclusions above when later phases become ready.

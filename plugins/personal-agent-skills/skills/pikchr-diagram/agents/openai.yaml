@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pikchr Diagrams"
+  short_description: "Create role-labeled flowcharts in the ACORN style"
+  default_prompt: "Use $pikchr-diagram to create a readable workflow diagram with explicit roles and clean arrows."

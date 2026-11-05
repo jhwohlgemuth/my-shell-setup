@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — verified WasmCloud, portable skill plugin, and pinned Neovim subset
+
+- Plans: `.wiki/verified-bootstrap.md`, `.wiki/agent-skills-web-distribution.md`, and `.wiki/neovim-reproducibility.md`; active phase: none; state: complete within SEC-10, ASD-05 plus repair ASD-07, and NVP-02.
+- Authorized scope and decisions: Execute SEC-10, ASD-05, and NVP-02 concurrently, preserving their disjoint WASM installer, generated plugin tree, and Neovim plugin-version locks; use bounded ASD-07 for the Stow validation defect.
+- Baseline and local work: Clean `main` at `d5a53d6`, matching `origin/main`; changed the three phase write sets, `agents/.stow-local-ignore` for ASD-07, and portfolio/progress records. No `.codegraph/` index is present.
+- Verified state: SEC-10 verifies official `wash` 2.12.0 binaries for Linux x86-64, arm64, and s390x; corrupt, unavailable, and unsupported-host paths fail before installation, and a Debian x86-64 smoke reported 2.12.0. ASD-05 generates portable plugin 0.1.0 at digest `9e2c4b7db03fdb9fa616c75b4faf39e1e3c1a0f46a5edd2103298bf9208897b1`; ASD-07 preserves the exact 15-file Stow inventory. NVP-02 pins vim-plug and 16 plugins, and its clean-cache Neovim 0.12.6 `pinned-subset` stage verifies commits and headless loading. All 24 agent tooling tests, plugin drift validation, Bash syntax, shfmt, ShellCheck, `make check`, wiki validation, and `git diff --check` passed.
+- Remaining work: None within the authorized phases. SEC-04, ASD-03, and NVP-03 are ready but outside this authorization.
+- Budget: SEC-10, ASD-05, ASD-07, and NVP-02 each completed within its separate five-active-hour ceiling.
+- Blockers / failed approaches: ASD-05's initial Stow check exposed the source manifest leak, repaired by ASD-07. CodeCompanion's ACP workflow requires a newer Neovim baseline, so NVP-02 verifies against official Neovim 0.12.6; the full unpinned orgmode path still needs a C compiler and remains NVP-03 work. `gold/README.md` still describes WasmCloud's former Packagecloud route because it was outside SEC-10's exact write set.
+- Next action: Review and commit the completed phases; execute SEC-04, ASD-03, or NVP-03 only when separately authorized.
+
 ## Implementation — parallel platform, bootstrap, packaging, extension, and Neovim phases
 
 - Plans: `.wiki/installer-platforms.md` and `.wiki/extension-install.md` retired; `.wiki/verified-bootstrap.md`, `.wiki/agent-skills-web-distribution.md`, and `.wiki/neovim-reproducibility.md` continue; active phase: none; state: complete within the authorized phases.

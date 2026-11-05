@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "personal-agent-skills",
+  "version": "0.1.0",
+  "description": "Reusable personal agent skills for coding, review, sorting, and diagrams.",
+  "author": {
+    "name": "Jason Wohlgemuth"
+  },
+  "homepage": "https://github.com/jhwohlgemuth/my-shell-setup/tree/main/agents",
+  "repository": "https://github.com/jhwohlgemuth/my-shell-setup",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "rust",
+    "developer-tools"
+  ]
+}

@@ -63,6 +63,19 @@ The output contains:
 
 Catalog entries list safe paths relative to their skill directory and use the full SHA-256 digest of the sorted runtime paths and bytes as `version`. ZIP member order, timestamps, permissions, and storage are normalized so identical source produces identical artifact hashes. The packager refuses a nonempty output directory instead of deleting caller-owned files. Run `make check-agent-skills` to test deterministic output, path safety, content-derived version changes, and agreement with the Stow runtime inventory.
 
+### Generate the portable plugin
+
+The same builder generates the checked-in `plugins/personal-agent-skills/` tree from the runtime inventory. Its root `plugin.json` is copied from the validated source manifest at `agents/plugin.json`; each runtime skill appears under `skills/<skill>/`. This follows the [portable Agent Plugins structure](https://developers.openai.com/plugins/build/plugins) and keeps Waza-only fixtures out of the installed plugin.
+
+Regenerate the canonical tree and verify that it has not drifted:
+
+```shell
+mise exec -- python3 agents/scripts/package_skills.py --write-plugin
+mise exec -- python3 agents/scripts/package_skills.py --check-plugin
+```
+
+The write command replaces only the generated `plugins/personal-agent-skills/` directory. The check command is nonmutating and fails on missing, changed, unexpected, or symbolic-link files. Do not maintain files directly in the generated tree; update `agents/plugin.json` or the runtime skill source and regenerate it instead.
+
 ## Create, test, and improve a new skill
 
 There is no Make target for scaffolding. From the repository root, create the skill with Waza and move its generated project evals into the layout used by this package:

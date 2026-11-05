@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="font-size:initial;font-family:Arial,Helvetica,sans-serif;" viewBox="0 0 1156.32 680.4">
+<path d="M13.68,300.24L307.44,300.24A11.52 11.52 0 0 0 318.96 288.72L318.96,196.56A11.52 11.52 0 0 0 307.44 185.04L13.68,185.04A11.52 11.52 0 0 0 2.16 196.56L2.16,288.72A11.52 11.52 0 0 0 13.68 300.24Z" style="fill:rgb(232,241,251);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="160.56" y="231.048" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Submit highlight</text>
+<text x="160.56" y="254.232" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">New highlight</text>
+<path d="M402.48,300.24L696.24,300.24A11.52 11.52 0 0 0 707.76 288.72L707.76,196.56A11.52 11.52 0 0 0 696.24 185.04L402.48,185.04A11.52 11.52 0 0 0 390.96 196.56L390.96,288.72A11.52 11.52 0 0 0 402.48 300.24Z" style="fill:rgb(231,243,233);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="549.36" y="219.456" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Keep every receipt</text>
+<text x="549.36" y="242.64" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Receipt export + Teams</text>
+<text x="549.36" y="265.824" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Logbook: every 5 min</text>
+<path d="M791.28,300.24L1085.04,300.24A11.52 11.52 0 0 0 1096.56 288.72L1096.56,196.56A11.52 11.52 0 0 0 1085.04 185.04L791.28,185.04A11.52 11.52 0 0 0 779.76 196.56L779.76,288.72A11.52 11.52 0 0 0 791.28 300.24Z" style="fill:rgb(255,244,214);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="938.16" y="219.456" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Download JSONL</text>
+<text x="938.16" y="242.64" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">All originals + corrections</text>
+<text x="938.16" y="265.824" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Check export freshness</text>
+<path d="M13.68,134.64L307.44,134.64A11.52 11.52 0 0 0 318.96 123.12L318.96,30.96A11.52 11.52 0 0 0 307.44 19.44L13.68,19.44A11.52 11.52 0 0 0 2.16 30.96L2.16,123.12A11.52 11.52 0 0 0 13.68 134.64Z" style="fill:rgb(232,241,251);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="160.56" y="53.856" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">My submissions</text>
+<text x="160.56" y="77.04" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Edit selected</text>
+<text x="160.56" y="100.224" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Latest confirmed highlight</text>
+<path d="M402.48,134.64L696.24,134.64A11.52 11.52 0 0 0 707.76 123.12L707.76,30.96A11.52 11.52 0 0 0 696.24 19.44L402.48,19.44A11.52 11.52 0 0 0 390.96 30.96L390.96,123.12A11.52 11.52 0 0 0 402.48 134.64Z" style="fill:rgb(232,241,251);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="549.36" y="53.856" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Save correction</text>
+<text x="549.36" y="77.04" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">New receipt ID</text>
+<text x="549.36" y="100.224" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Links original + previous</text>
+<polygon points="390.96,77.04 373.68,83.52 373.68,70.56" style="fill:rgb(0,102,44)" />
+<path d="M318.96,77.04L382.32,77.04" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<polygon points="549.36,167.76 542.88,150.48 555.84,150.48" style="fill:rgb(0,102,44)" />
+<path d="M549.36,134.64L549.36,159.12" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<polygon points="390.96,242.64 373.68,249.12 373.68,236.16" style="fill:rgb(0,102,44)" />
+<path d="M318.96,242.64L382.32,242.64" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<polygon points="779.76,242.64 762.48,249.12 762.48,236.16" style="fill:rgb(0,102,44)" />
+<path d="M707.76,242.64L771.12,242.64" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<path d="M1096.56,242.64L1139.76,242.64L1139.76,336.24" style="fill:none;stroke-width:2.16;stroke-linejoin:round;stroke:rgb(0,102,44);" />
+<path d="M42.48,505.44L278.64,505.44A11.52 11.52 0 0 0 290.16 493.92L290.16,408.96A11.52 11.52 0 0 0 278.64 397.44L42.48,397.44A11.52 11.52 0 0 0 30.96 408.96L30.96,493.92A11.52 11.52 0 0 0 42.48 505.44Z" style="fill:rgb(243,240,255);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="160.56" y="439.848" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Stage + inspect</text>
+<text x="160.56" y="463.032" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Review latest content</text>
+<path d="M330.48,505.44L566.64,505.44A11.52 11.52 0 0 0 578.16 493.92L578.16,408.96A11.52 11.52 0 0 0 566.64 397.44L330.48,397.44A11.52 11.52 0 0 0 318.96 408.96L318.96,493.92A11.52 11.52 0 0 0 330.48 505.44Z" style="fill:rgb(243,240,255);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="448.56" y="439.848" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Apply</text>
+<text x="448.56" y="463.032" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Confirm changes</text>
+<path d="M618.48,505.44L854.64,505.44A11.52 11.52 0 0 0 866.16 493.92L866.16,408.96A11.52 11.52 0 0 0 854.64 397.44L618.48,397.44A11.52 11.52 0 0 0 606.96 408.96L606.96,493.92A11.52 11.52 0 0 0 618.48 505.44Z" style="fill:rgb(243,240,255);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="736.56" y="439.848" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">run --index</text>
+<text x="736.56" y="463.032" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Optional promotion</text>
+<path d="M906.48,505.44L1142.64,505.44A11.52 11.52 0 0 0 1154.16 493.92L1154.16,408.96A11.52 11.52 0 0 0 1142.64 397.44L906.48,397.44A11.52 11.52 0 0 0 894.96 408.96L894.96,493.92A11.52 11.52 0 0 0 906.48 505.44Z" style="fill:rgb(243,240,255);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="1024.56" y="439.848" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Report</text>
+<text x="1024.56" y="463.032" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">New local PDF</text>
+<polygon points="160.56,380.16 154.08,362.88 167.04,362.88" style="fill:rgb(0,102,44)" />
+<path d="M1139.76,336.24L160.56,336.24L160.56,371.52" style="fill:none;stroke-width:3.24;stroke-linejoin:round;stroke:rgb(0,102,44);" />
+<polygon points="318.96,451.44 301.68,457.92 301.68,444.96" style="fill:rgb(0,102,44)" />
+<path d="M290.16,451.44L310.32,451.44" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<polygon points="606.96,451.44 589.68,457.92 589.68,444.96" style="fill:rgb(0,102,44)" />
+<path d="M578.16,451.44L598.32,451.44" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<polygon points="894.96,451.44 877.68,457.92 877.68,444.96" style="fill:rgb(0,102,44)" />
+<path d="M866.16,451.44L886.32,451.44" style="fill:none;stroke-width:3.24;stroke:rgb(0,102,44);" />
+<path d="M42.48,678.24L1142.64,678.24A11.52 11.52 0 0 0 1154.16 666.72L1154.16,567.36A11.52 11.52 0 0 0 1142.64 555.84L42.48,555.84A11.52 11.52 0 0 0 30.96 567.36L30.96,666.72A11.52 11.52 0 0 0 42.48 678.24Z" style="fill:rgb(255,244,214);stroke-width:0;stroke:rgb(24,60,67);" />
+<text x="592.56" y="593.856" text-anchor="middle" font-weight="bold" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">OWNER-TRIGGERED MILESTONES</text>
+<text x="592.56" y="617.04" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Teams: workspace created / no report changes</text>
+<text x="592.56" y="640.224" text-anchor="middle" fill="rgb(24,60,67)" font-size="115%" dominant-baseline="central">Email: review requested / report ready / actionable failure</text>
+<polygon points="448.56,555.84 444.24,544.32 452.88,544.32" style="fill:rgb(80,106,112)" />
+<path d="M448.56,505.44L448.56,550.08" style="fill:none;stroke-width:2.16;stroke:rgb(80,106,112);stroke-dasharray:7.2,7.2;" />
+<polygon points="1024.56,555.84 1020.24,544.32 1028.88,544.32" style="fill:rgb(80,106,112)" />
+<path d="M1024.56,505.44L1024.56,550.08" style="fill:none;stroke-width:2.16;stroke:rgb(80,106,112);stroke-dasharray:7.2,7.2;" />
+<ellipse cx="63.1341" cy="188.414" rx="50.4" ry="24.48" style="fill:rgb(255,228,102);stroke-width:1.728;stroke:rgb(117,67,0);" />
+<text x="63.1341" y="188.414" text-anchor="middle" font-weight="bold" fill="rgb(117,67,0)" font-size="115%" dominant-baseline="central">NEW</text>
+<path d="M201.826,205.694L285.346,205.694A8.64 8.64 0 0 0 293.986 197.054L293.986,179.774A8.64 8.64 0 0 0 285.346 171.134L201.826,171.134A8.64 8.64 0 0 0 193.186 179.774L193.186,197.054A8.64 8.64 0 0 0 201.826 205.694Z" style="fill:rgb(32,87,149);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="243.586" y="188.414" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">USER</text>
+<path d="M118.8,36.72L202.32,36.72A8.64 8.64 0 0 0 210.96 28.08L210.96,10.8A8.64 8.64 0 0 0 202.32 2.16L118.8,2.16A8.64 8.64 0 0 0 110.16 10.8L110.16,28.08A8.64 8.64 0 0 0 118.8 36.72Z" style="fill:rgb(32,87,149);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="160.56" y="19.44" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">USER</text>
+<path d="M507.6,36.72L591.12,36.72A8.64 8.64 0 0 0 599.76 28.08L599.76,10.8A8.64 8.64 0 0 0 591.12 2.16L507.6,2.16A8.64 8.64 0 0 0 498.96 10.8L498.96,28.08A8.64 8.64 0 0 0 507.6 36.72Z" style="fill:rgb(32,87,149);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="549.36" y="19.44" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">USER</text>
+<path d="M471.6,202.32L627.12,202.32A8.64 8.64 0 0 0 635.76 193.68L635.76,176.4A8.64 8.64 0 0 0 627.12 167.76L471.6,167.76A8.64 8.64 0 0 0 462.96 176.4L462.96,193.68A8.64 8.64 0 0 0 471.6 202.32Z" style="fill:rgb(0,102,44);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="549.36" y="185.04" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">AUTOMATED</text>
+<path d="M828,202.32L1048.32,202.32A8.64 8.64 0 0 0 1056.96 193.68L1056.96,176.4A8.64 8.64 0 0 0 1048.32 167.76L828,167.76A8.64 8.64 0 0 0 819.36 176.4L819.36,193.68A8.64 8.64 0 0 0 828 202.32Z" style="fill:rgb(128,90,11);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="938.16" y="185.04" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">DEV / REVIEWER</text>
+<path d="M79.2,414.72L241.92,414.72A8.64 8.64 0 0 0 250.56 406.08L250.56,388.8A8.64 8.64 0 0 0 241.92 380.16L79.2,380.16A8.64 8.64 0 0 0 70.56 388.8L70.56,406.08A8.64 8.64 0 0 0 79.2 414.72Z" style="fill:rgb(98,64,138);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="160.56" y="397.44" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">DEVELOPER</text>
+<path d="M367.2,414.72L529.92,414.72A8.64 8.64 0 0 0 538.56 406.08L538.56,388.8A8.64 8.64 0 0 0 529.92 380.16L367.2,380.16A8.64 8.64 0 0 0 358.56 388.8L358.56,406.08A8.64 8.64 0 0 0 367.2 414.72Z" style="fill:rgb(98,64,138);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="448.56" y="397.44" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">DEVELOPER</text>
+<path d="M655.2,414.72L817.92,414.72A8.64 8.64 0 0 0 826.56 406.08L826.56,388.8A8.64 8.64 0 0 0 817.92 380.16L655.2,380.16A8.64 8.64 0 0 0 646.56 388.8L646.56,406.08A8.64 8.64 0 0 0 655.2 414.72Z" style="fill:rgb(98,64,138);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="736.56" y="397.44" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">DEVELOPER</text>
+<path d="M943.2,414.72L1105.92,414.72A8.64 8.64 0 0 0 1114.56 406.08L1114.56,388.8A8.64 8.64 0 0 0 1105.92 380.16L943.2,380.16A8.64 8.64 0 0 0 934.56 388.8L934.56,406.08A8.64 8.64 0 0 0 943.2 414.72Z" style="fill:rgb(98,64,138);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="1024.56" y="397.44" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">DEVELOPER</text>
+<path d="M482.4,573.12L702.72,573.12A8.64 8.64 0 0 0 711.36 564.48L711.36,547.2A8.64 8.64 0 0 0 702.72 538.56L482.4,538.56A8.64 8.64 0 0 0 473.76 547.2L473.76,564.48A8.64 8.64 0 0 0 482.4 573.12Z" style="fill:rgb(128,90,11);stroke-width:0;stroke:rgb(255,255,255);" />
+<text x="592.56" y="555.84" text-anchor="middle" font-weight="bold" fill="rgb(255,255,255)" font-size="92%" dominant-baseline="central">DEV / REVIEWER</text>
+</svg>

@@ -30,6 +30,32 @@ Ordinary Neovim startup never downloads vim-plug or installs plugins. Until the
 setup command runs, the configuration starts without the plugin layer and shows
 an informational message.
 
+The plugin manager and completion, navigation, and editing groups are pinned to
+reviewed commits. Their tested revisions are:
+
+- vim-plug `7e5aae5e`
+- completion: coc.nvim `5950d87e`, codeium.vim `c5c027c3`, plenary.nvim
+  `74b06c6c`, and codecompanion.nvim `9cc3c135`
+- navigation: fzf `99bfd5aa`, fzf.vim `023de3c0`, fzf-preview.vim `93383674`,
+  vim-sneak `feea86ad`, and vim-choosewin `839da609`
+- editing: vim-commentary `64a654ef`, vim-surround `3d188ed2`, nvim-autopairs
+  `3172f40c`, vim-visual-multi `a6975e7c`, vim-closetag `d0a562f8`, tabular
+  `12437cd1`, and undotree `6fa6b57c`
+
+The UI, Git, language-specific, and tools groups remain unpinned until the next
+reproducibility phase.
+
+To review an update, resolve the candidate revision in the plugin's upstream
+repository, replace its full commit in `plugins.vim` and the Docker
+`pinned-subset` check, then rebuild that stage without cached layers:
+
+```bash
+docker build --no-cache --target pinned-subset neovim
+```
+
+The container uses the checksum-verified Neovim 0.12.6 release archives so the
+test baseline supports CodeCompanion's configured ACP adapter.
+
 3. Start Neovim and optionally run health checks:
 
 ```vim
