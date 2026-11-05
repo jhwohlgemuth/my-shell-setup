@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — verified WWS installer
+
+- Plan: `.wiki/verified-bootstrap.md` retired; active phase: none; state: complete within SEC-12.
+- Authorized scope and decisions: Replaced the WWS mutable downloaded-script execution with fixed, SHA-256-verified release archives, inventoried the completed bootstrap scope, and retired the plan after that inventory proved clean. Reconciled the stale menu-only write set to the standalone-installer architecture established by the completed SEC phases.
+- Baseline and local work: Started from clean `main` at `e4a90e8`, matching `origin/main`; no `.codegraph/` index is present. Added `gold/install_wws`, menu delegation, Gold inventory, and support documentation from official WWS 1.7.0 release inputs.
+- Verified state: The installer pins all four Linux/macOS x86-64/arm64 archives and their SHA-256 values. Native macOS arm64 and Ubuntu 24.04 arm64 fixture smokes reported `wasm-workers-server 1.7.0`; corrupt and unavailable downloads failed before extraction or installation; an unsupported host failed before download; and the menu forwarded its selected binary directory. Bash syntax, shfmt, ShellCheck, `make check`, wiki validation, and the scoped downloaded-shell inventory passed.
+- Remaining work: None within SEC-12. No Gold installer directly pipes a downloaded payload into Bash or Sh, the former WWS installer endpoint is absent, and every scoped standalone installer remains in the Gold and menu inventories; the plan is retired.
+- Budget: SEC-12 completed within its five-active-hour ceiling.
+- Blockers / failed approaches: The Ubuntu image lacks `shasum`, so its smoke adapted the image's equivalent `sha256sum --check --status`; the repository installer still requires and uses `shasum`, matching the existing Gold verifier pattern.
+- Next action: Review and commit the completed phase and plan retirement.
+
 ## Implementation — verified Wazero and WANIX installers
 
 - Plan: `.wiki/verified-bootstrap.md`; active phase: none; state: complete within SEC-11.

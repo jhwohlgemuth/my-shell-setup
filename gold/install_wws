@@ -1,0 +1,91 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    install \
+    mkdir \
+    mktemp \
+    shasum \
+    tar \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local BIN_DIRECTORY="${1:-/usr/local/bin}"
+    local WWS_VERSION='1.7.0'
+    local WWS_ARCHIVE_SHA256
+    local WWS_ARCHIVE
+    local WWS_ARCH
+    local WWS_OS
+    local WWS_PLATFORM
+    local WWS_TEMP_DIRECTORY
+    local WWS_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    case "${OS}" in
+        Linux)
+            WWS_OS='linux-musl'
+            ;;
+        Darwin)
+            WWS_OS='macos-darwin'
+            ;;
+        *)
+            printf '==> [ERROR] WWS %s does not support %s %s\n' "${WWS_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            WWS_ARCH='x86_64'
+            ;;
+        aarch64 | arm64)
+            WWS_ARCH='aarch64'
+            ;;
+        *)
+            printf '==> [ERROR] WWS %s does not support %s %s\n' "${WWS_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    WWS_PLATFORM="${WWS_OS}-${WWS_ARCH}"
+    case "${WWS_PLATFORM}" in
+        linux-musl-aarch64)
+            WWS_ARCHIVE_SHA256='5c2d9a889575d99177c0ac25e66584018cdd5be58802d7b435d07149794bfdc5'
+            ;;
+        linux-musl-x86_64)
+            WWS_ARCHIVE_SHA256='c9d20bc951bfe8b1c7f1cf5d151e72cbf5f2b39625656e9d1c284dd30df19961'
+            ;;
+        macos-darwin-aarch64)
+            WWS_ARCHIVE_SHA256='7f8d273aeb55553083c051dc61d641f7436f0a02f73f647e45871465fa20a110'
+            ;;
+        macos-darwin-x86_64)
+            WWS_ARCHIVE_SHA256='27a1b03c373f74ec1fc1f166ee09c47b11ab3a34916fd6cedde7f324def32704'
+            ;;
+        *)
+            printf '==> [ERROR] WWS %s does not support %s\n' "${WWS_VERSION}" "${WWS_PLATFORM}" >&2
+            return 1
+            ;;
+    esac
+    WWS_ARCHIVE="wws-${WWS_PLATFORM}.tar.gz"
+    WWS_URL="https://github.com/vmware-labs/wasm-workers-server/releases/download/v${WWS_VERSION}/${WWS_ARCHIVE}"
+    WWS_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_wws-${WWS_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${WWS_TEMP_DIRECTORY}"' EXIT
+    download_verified "${WWS_URL}" "${WWS_ARCHIVE_SHA256}" "${WWS_TEMP_DIRECTORY}/${WWS_ARCHIVE}"
+    tar -xf "${WWS_TEMP_DIRECTORY}/${WWS_ARCHIVE}" --directory="${WWS_TEMP_DIRECTORY}"
+    mkdir -p "${BIN_DIRECTORY}"
+    install -m 0755 "${WWS_TEMP_DIRECTORY}/wws" "${BIN_DIRECTORY}/wws"
+    rm -rf -- "${WWS_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"

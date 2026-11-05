@@ -1,22 +1,22 @@
 # Improvement plans
 
-This portfolio contains 8 executable plans, ranked by impact, readiness, and remaining difficulty. Ready local work precedes phases awaiting hosted access or model validation.
+This portfolio contains 7 executable plans, ranked by impact, readiness, and remaining difficulty. Ready local work precedes phases awaiting hosted access or model validation.
 
 | Priority | Plan | Impact | Difficulty | Next phase |
 | --- | --- | --- | --- | --- |
-| 1 | [Verify remote bootstrap scripts](verified-bootstrap.md) | High | Medium | SEC-12 ready |
-| 2 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-03 awaits clean Codex install and invocation; ASD-02 awaits Pages configuration |
-| 3 | [Make Windows setup executable](windows-setup.md) | High | Medium | WIN-02 awaits hosted publication and Windows validation |
-| 4 | [Validate Waza skill improvement](waza-skill-workflow.md) | High | Medium | WAZ-01, WAZ-03, and WAZ-04 await model access; WAZ-02 awaits hosted CI |
-| 5 | [Validate Rust guidelines](guidelines-rust-skill.md) | Medium | Medium | GDR-02 awaits model access |
-| 6 | [Validate Rust sorting](sort-rust-skill.md) | Medium | Medium | SOR-02 awaits model access |
-| 7 | [Validate Pikchr diagrams](pikchr-diagram-skill.md) | Medium | Medium | PIK-02 awaits model access |
-| 8 | [Track the published shell bootstrap](published-bootstrap.md) | Medium | Medium | PUB-02 awaits hosted publication |
+| 1 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-03 awaits clean Codex install and invocation; ASD-02 awaits Pages configuration |
+| 2 | [Make Windows setup executable](windows-setup.md) | High | Medium | WIN-02 awaits hosted publication and Windows validation |
+| 3 | [Validate Waza skill improvement](waza-skill-workflow.md) | High | Medium | WAZ-01, WAZ-03, and WAZ-04 await model access; WAZ-02 awaits hosted CI |
+| 4 | [Validate Rust guidelines](guidelines-rust-skill.md) | Medium | Medium | GDR-02 awaits model access |
+| 5 | [Validate Rust sorting](sort-rust-skill.md) | Medium | Medium | SOR-02 awaits model access |
+| 6 | [Validate Pikchr diagrams](pikchr-diagram-skill.md) | Medium | Medium | PIK-02 awaits model access |
+| 7 | [Track the published shell bootstrap](published-bootstrap.md) | Medium | Medium | PUB-02 awaits hosted publication |
 
-See [plan network](plan-network.md) for prerequisites and [parallel execution](parallel-execution.md) for integration locks. Published bootstrap verification requires access to `shell.jasonwohlgemuth.me`; local implementation phases remain ready.
+See [plan network](plan-network.md) for prerequisites and [parallel execution](parallel-execution.md) for integration locks. Published bootstrap verification requires access to `shell.jasonwohlgemuth.me`; the remaining phases await hosted, writable-profile, or authenticated-model access.
 
 ## Portfolio currency review
 
+- 2026-11-04 — SEC-12 replaced WWS's mutable downloaded-script execution with a standalone installer that verifies official 1.7.0 archives for Linux/macOS x86-64/arm64. Native macOS arm64 and Ubuntu 24.04 arm64 smokes, corrupt and unavailable downloads, unsupported hosts, menu delegation, and the integrated repository gate passed. The scoped inventory contains no direct downloaded-shell execution, so the verified-bootstrap plan was retired with 7 executable plans remaining.
 - 2026-11-04 — SEC-11 replaced Wazero and WANIX rolling installers with standalone, verified Wazero 1.12.0 and WANIX 0.3 installers. Native macOS arm64 and Ubuntu 24.04 arm64 smokes, corrupt and unavailable downloads, unsupported hosts, menu delegation, and the integrated repository gate passed; SEC-12 is ready.
 - 2026-11-04 — SEC-04 replaced mutable WasmEdge and Wasmtime scripts with verified 0.18.1 and 50.0.1 release archives; NVP-03 pinned and container-verified all 36 Neovim plugins, retiring the reproducibility plan; and ASD-03 added the Codex marketplace plus CI drift and schema gates. ASD-03 remains open for a clean-profile install and authenticated new-session `blank-test` invocation; SEC-11 is ready.
 - 2026-11-04 — SEC-10 replaced mutable WasmCloud Packagecloud setup with verified `wash` 2.12.0 binaries; ASD-05 and repair ASD-07 generated portable plugin version 0.1.0 while preserving the 15-file Stow inventory; and NVP-02 pinned vim-plug plus 16 completion, navigation, and editing plugins against a checksum-verified Neovim 0.12.6 container baseline. Focused smokes and the integrated repository gate passed; SEC-04, ASD-03, and NVP-03 are ready.

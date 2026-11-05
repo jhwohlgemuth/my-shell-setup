@@ -57,6 +57,7 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | `install_wasmtime` | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmtime` and shell configuration | Verified Wasmtime 50.0.1 release archive |
 | `install_wanix` | Linux or macOS, x86-64 or arm64 | Selected binary directory plus source directory, defaults `/usr/local/bin` and `/wanix` | Verified WANIX 0.3 CLI and source archives |
 | `install_wazero` | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | Verified Wazero 1.12.0 release archive |
+| `install_wws` | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | Verified WWS 1.7.0 release archive |
 | `install_xr0` | Unix-like source build | Current user and `~/.local/bin` | Bison, Flex, Git, Make |
 
 ### `install_wasm_tools` choices
@@ -78,7 +79,7 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | Wazero | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | `install_wazero` |
 | WANIX | Linux or macOS, x86-64 or arm64 | Selected binary directory plus `/wanix` source tree | `install_wanix` |
 | WEPL | Unix-like source build | Current user/Cargo installation | Git and Cargo |
-| WWS | Upstream-defined; no local host or architecture guard | Permission to write the selected binary directory | Downloaded shell installer |
+| WWS | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | `install_wws` |
 
 ## Guarding policy
 

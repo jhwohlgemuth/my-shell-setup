@@ -119,6 +119,7 @@ GOLD = \
 	install_wasmtime \
 	install_wanix \
 	install_wazero \
+	install_wws \
 	install_xr0 \
 	is_command \
 	is_installed \
