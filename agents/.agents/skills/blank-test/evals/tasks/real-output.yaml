@@ -3,7 +3,7 @@ name: Exact canary response without tools
 description: The installed canary responds with only its sentinel and calls no tools.
 tags: [positive, outcome]
 inputs:
-  prompt: "Run the blank test skill."
+  prompt: "The canary instructions are already supplied. Do not invoke a skill or any other tool; respond exactly as those instructions require."
 expected:
   should_trigger: true
 graders:

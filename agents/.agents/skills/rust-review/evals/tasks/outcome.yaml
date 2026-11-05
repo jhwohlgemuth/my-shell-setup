@@ -19,4 +19,5 @@ graders:
   - type: tool_constraint
     name: no_review_side_effects
     config:
-      allow_only: []
+      allow_only:
+        - tool: skill

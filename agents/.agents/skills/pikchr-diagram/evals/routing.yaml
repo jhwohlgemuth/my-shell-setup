@@ -6,10 +6,11 @@ version: "1.0"
 
 config:
   trials_per_task: 1
-  timeout_seconds: 120
+  timeout_seconds: 180
   parallel: false
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: claude-sonnet-5
+  skill_directories: [".."]
   inject_skill_body: false
   trigger_skill_routing: true
 

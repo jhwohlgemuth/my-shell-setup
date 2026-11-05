@@ -15,7 +15,7 @@ phase_budget_hours: 5
 
 ## Current evidence and decision
 
-The Acorn `guidelines` skill is the official starting point. Its full instructions are restored in the package; only the metadata `name` is changed to `guidelines-rust`. The source applies to writing, reviewing, and refactoring code and retains its functional-programming and Rust-specific rules. Waza's 500-token advisory reports the original entrypoint as long; shortening it is not a prerequisite. Offline fixtures must reflect the original rules. Model-backed trials remain unrun because the available Copilot CLI is not authenticated.
+The Acorn `guidelines` skill is the official starting point. Its full instructions are restored in the package; only the metadata `name` is changed to `guidelines-rust`. The source applies to writing, reviewing, and refactoring code and retains its functional-programming and Rust-specific rules. Waza's 500-token advisory reports the original entrypoint as long; shortening it is not a prerequisite. Offline fixtures must reflect the original rules. The authenticated `claude-sonnet-5` trial passed both functional-output cases and the unrelated negative route, but invoked no skill for either positive natural-routing prompt. Results are source-bound under `/tmp/gdr02-results.bkX9Vk/guidelines-rust/`. Both positive prompts lacked a concrete file or code body and the model requested that missing input, so it is uncertain whether the failure is primarily fixture completeness or skill discovery. The imported source remains unchanged pending review.
 
 ## Acceptance criteria
 
@@ -27,9 +27,9 @@ The installed skill differs from Acorn's source only in its `name` field. Waza f
 
 - Status: blocked
 - Budget: 5 active hours maximum
-- Prerequisites: authenticated Copilot access, configured model permission, and explicit opt-in to model usage.
+- Prerequisites: none; authenticated access, model permission, explicit opt-in, and the canary gate are satisfied.
 - Exact write set: GitHub Copilot model runtime; revise `agents/.agents/skills/guidelines-rust/SKILL.md` or its real suites only for an observed defect.
 - Primary integration lock: Rust guidelines evaluation.
 - Outcome: Positive and negative trials show source-aligned routing and functional Rust output. Record failures against the original instructions before proposing a change; do not rewrite the source solely to satisfy Waza's token score.
 - Focused validation: `make -C agents real AGENT_SKILL=guidelines-rust`; inspect each grader and transcript.
-- Handoff: Record before/after trial evidence and remaining qualitative limitations.
+- Handoff: First propose self-contained positive routing fixtures with concrete Rust input and rerun them. Only if those still fail should a minimal metadata/discovery change be proposed for user review; do not change the imported instruction body solely to satisfy the routing grader.

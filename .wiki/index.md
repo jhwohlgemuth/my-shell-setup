@@ -1,21 +1,22 @@
 # Improvement plans
 
-This portfolio contains 7 executable plans, ranked by impact, readiness, and remaining difficulty. Ready local work precedes phases awaiting hosted access or model validation.
+This portfolio contains 4 executable plans, ranked by impact, readiness, and remaining difficulty. Ready local work precedes phases awaiting hosted access or model validation.
 
 | Priority | Plan | Impact | Difficulty | Next phase |
 | --- | --- | --- | --- | --- |
 | 1 | [Publish agents package skills](agent-skills-web-distribution.md) | Medium | Medium | ASD-03 awaits clean Codex install and invocation; ASD-02 awaits Pages configuration |
 | 2 | [Make Windows setup executable](windows-setup.md) | High | Medium | WIN-02 awaits hosted publication and Windows validation |
-| 3 | [Validate Waza skill improvement](waza-skill-workflow.md) | High | Medium | WAZ-01, WAZ-03, and WAZ-04 await model access; WAZ-02 awaits hosted CI |
-| 4 | [Validate Rust guidelines](guidelines-rust-skill.md) | Medium | Medium | GDR-02 awaits model access |
-| 5 | [Validate Rust sorting](sort-rust-skill.md) | Medium | Medium | SOR-02 awaits model access |
-| 6 | [Validate Pikchr diagrams](pikchr-diagram-skill.md) | Medium | Medium | PIK-02 awaits model access |
-| 7 | [Track the published shell bootstrap](published-bootstrap.md) | Medium | Medium | PUB-02 awaits hosted publication |
+| 3 | [Validate Rust guidelines](guidelines-rust-skill.md) | Medium | Medium | GDR-02 awaits a reviewed self-contained routing-fixture proposal |
+| 4 | [Track the published shell bootstrap](published-bootstrap.md) | Medium | Medium | PUB-02 awaits hosted publication |
 
 See [plan network](plan-network.md) for prerequisites and [parallel execution](parallel-execution.md) for integration locks. Published bootstrap verification requires access to `shell.jasonwohlgemuth.me`; the remaining phases await hosted, writable-profile, or authenticated-model access.
 
 ## Portfolio currency review
 
+- 2026-11-04 — WAZ-03 passed 5/5 Rust best-practices tasks; WAZ-04 passed 4/4 Rust-review tasks after WAZ-08 allowed only required skill discovery; SOR-02 passed 5/5 sorting tasks; and PIK-02 passed 4/4 diagram tasks after PIK-03 raised its routing completion budget to 180 seconds. The generated clinic workflow rendered cleanly with explicit PATIENT, RECEPTIONIST, and SYSTEM roles, legible text, and unobstructed arrows. Those three plans were retired, leaving 4 executable plans. GDR-02 remains blocked: its two outcome tasks and negative route passed, while both positive natural-routing prompts invoked no skill and need a reviewed fixture-first proposal.
+- 2026-11-04 — The five post-canary model validations ran concurrently. Rust best-practices and sorting passed every outcome, boundary, and routing task. Rust review produced the required finding but exposed an over-strict no-tool fixture; Pikchr invoked the correct skill with a perfect routing score but exceeded its render workflow's 120-second routing budget. Repairs WAZ-08 and PIK-03 are active. Guidelines-rust passed both outcome tasks but naturally invoked neither positive routing case, so GDR-02 retains that model-backed failure for review rather than changing the imported source.
+- 2026-11-04 — WAZ-01 passed all three `claude-sonnet-5` canary tasks through Copilot CLI 1.0.73 after bounded repairs updated the retired model pin, exposed each parent skill to explicit eval files, and separated output-only instructions from routing. WAZ-03, WAZ-04, GDR-02, SOR-02, and PIK-02 are in progress under separate evaluation locks.
+- 2026-11-04 — Hosted Agent skill checks run 41946849697 passed Waza 0.39.1, all six skills, 24 tooling tests, the 15-file runtime inventory, offline suites, and strict coverage at `3f2a3a0`; WAZ-02 was pruned. Copilot model discovery is now authenticated and model use is explicitly authorized, so WAZ-01 is in progress.
 - 2026-11-04 — SEC-12 replaced WWS's mutable downloaded-script execution with a standalone installer that verifies official 1.7.0 archives for Linux/macOS x86-64/arm64. Native macOS arm64 and Ubuntu 24.04 arm64 smokes, corrupt and unavailable downloads, unsupported hosts, menu delegation, and the integrated repository gate passed. The scoped inventory contains no direct downloaded-shell execution, so the verified-bootstrap plan was retired with 7 executable plans remaining.
 - 2026-11-04 — SEC-11 replaced Wazero and WANIX rolling installers with standalone, verified Wazero 1.12.0 and WANIX 0.3 installers. Native macOS arm64 and Ubuntu 24.04 arm64 smokes, corrupt and unavailable downloads, unsupported hosts, menu delegation, and the integrated repository gate passed; SEC-12 is ready.
 - 2026-11-04 — SEC-04 replaced mutable WasmEdge and Wasmtime scripts with verified 0.18.1 and 50.0.1 release archives; NVP-03 pinned and container-verified all 36 Neovim plugins, retiring the reproducibility plan; and ASD-03 added the Codex marketplace plus CI drift and schema gates. ASD-03 remains open for a clean-profile install and authenticated new-session `blank-test` invocation; SEC-11 is ready.
