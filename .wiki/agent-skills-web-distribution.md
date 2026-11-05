@@ -6,7 +6,7 @@ difficulty: medium
 impact: medium
 package: [agents]
 tags: [skills, distribution, plugins, github-pages, opencode]
-status: planned
+status: waiting-on-validation
 execution: phased
 phase_budget_hours: 5
 ---
@@ -28,6 +28,8 @@ Do not use `agents/.agents/` directly as the plugin root: its skill folders cont
 A read-only probe on 2026-10-30 found that the proposed `github.io` catalog URL redirected to `shell.jasonwohlgemuth.com/agent-skills/catalog.json` and returned 404; the repository Pages API also returned 404. Treat the catalog as unpublished. Configure this repository's project Pages with GitHub Actions and no custom domain, then verify the canonical project URL after deployment. The Pages artifact must have a top-level `index.html` and an `agent-skills/` subtree; [GitHub Pages requires a top-level entry file](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
 ASD-02 will extend the completed builder for Pages output; ASD-03 consumes the generated portable plugin tree independently.
+
+The repository marketplace now exposes the generated `personal-agent-skills` tree, and a dedicated CI workflow validates its manifests, local source resolution, semantic version, drift, and exclusion of Waza-only fixtures. Local checks with Codex CLI 0.166.0 parse the catalog and pass the deterministic plugin gate. ASD-03 remains open because this sandbox could not create a clean Codex installation or invoke `blank-test` in a new session; its installed-cache inventory and runtime discovery evidence still require a writable isolated Codex profile with network and model access.
 
 ## Public interfaces
 
@@ -55,15 +57,15 @@ Every runtime skill beneath `agents/.agents/skills/` appears in the generated Op
 - Focused validation: Build the Pages artifact locally, verify its top-level entrypoint, links and MIME-readable files, compare published ZIP contents with the source commit, then fetch `index.json` and every catalog file over HTTPS, configure a clean OpenCode v2 profile with the catalog base URL, invoke `@blank-test`, and confirm no redirect to the old host.
 - Handoff: Preserve the workflow run, source commit, public URLs, OpenCode configuration and invocation result, catalog contents and versions, and artifact hashes.
 
-## ASD-03 — Expose the package through a plugin marketplace
+## ASD-03 — Validate the plugin marketplace installation
 
-- Status: ready
+- Status: blocked
 - Budget: 5 active hours maximum
-- Prerequisites: none.
+- Prerequisites: a writable isolated Codex profile with GitHub access and permission to start an authenticated new session.
 - Exact write set: `.agents/plugins/marketplace.json`, `.github/workflows/agent-skills-plugin-check.yml`, `agents/README.md`, `README.md`.
 - Primary integration lock: personal-agent-skills plugin identity.
-- Outcome: Marketplace `my-shell-setup` resolves the generated plugin tree and CI fails if that tree drifts from `agents/.agents/skills/`.
-- Focused validation: Parse and schema-check the marketplace, regenerate the mirror and require a clean diff, verify it resolves `./plugins/personal-agent-skills`, install it in a clean Codex profile, invoke `blank-test` in a new session, and confirm Waza-only files are absent from the installed cache.
+- Outcome: A clean Codex installation adds marketplace `my-shell-setup`, installs the generated plugin tree, discovers `blank-test`, and excludes Waza-only files from its cache.
+- Focused validation: Run the existing marketplace and drift checks, install the plugin in the isolated profile, invoke `blank-test` in a new session, and inventory the installed cache.
 - Handoff: Record the manifest version, exact install commands, installed file inventory, discovery result, and required Codex version.
 
 ## ASD-04 — Publish versioned skill releases

@@ -1,0 +1,101 @@
+#! /bin/bash
+# shellcheck disable=SC2016
+set -e
+
+requires \
+    append_if_missing \
+    curl \
+    mktemp \
+    shasum \
+    tar \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local WASMEDGE_VERSION='0.18.1'
+    local WASMEDGE_ARCHIVE_SHA256
+    local WASMEDGE_ARCHIVE
+    local WASMEDGE_HOME="${HOME}/.wasmedge"
+    local WASMEDGE_PLATFORM
+    local WASMEDGE_TEMP_DIRECTORY
+    local WASMEDGE_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    case "${OS}" in
+        Linux)
+            OS='manylinux_2_28'
+            ;;
+        Darwin)
+            OS='darwin'
+            ;;
+        *)
+            printf '==> [ERROR] WasmEdge %s does not support %s %s\n' "${WASMEDGE_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            ARCH='x86_64'
+            ;;
+        aarch64 | arm64)
+            ARCH='arm64'
+            if [[ "${OS}" == manylinux_2_28 ]]; then
+                ARCH='aarch64'
+            fi
+            ;;
+        *)
+            printf '==> [ERROR] WasmEdge %s does not support %s %s\n' "${WASMEDGE_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    WASMEDGE_PLATFORM="${OS}_${ARCH}"
+    case "${WASMEDGE_PLATFORM}" in
+        darwin_arm64)
+            WASMEDGE_ARCHIVE_SHA256='32165a058abee03718f8fa3b7ffd64e5133443486f54a5b79221910fb1ae0628'
+            ;;
+        darwin_x86_64)
+            WASMEDGE_ARCHIVE_SHA256='c0dff63d5171a4fa24732761348b07972d82cc07dbabb67ca6ef2c8e65aa3689'
+            ;;
+        manylinux_2_28_aarch64)
+            WASMEDGE_ARCHIVE_SHA256='06778876947a0ce3d3d747661ccbd5b3a65de82ef6f34e94cd8ac59dd272d430'
+            ;;
+        manylinux_2_28_x86_64)
+            WASMEDGE_ARCHIVE_SHA256='ec97ccfc172a1fbb2116e9dd00ca12d41f9f9ad3d7b1c89a63b8477703fa67c9'
+            ;;
+        *)
+            printf '==> [ERROR] WasmEdge %s does not support %s\n' "${WASMEDGE_VERSION}" "${WASMEDGE_PLATFORM}" >&2
+            return 1
+            ;;
+    esac
+    WASMEDGE_ARCHIVE="WasmEdge-${WASMEDGE_VERSION}-${WASMEDGE_PLATFORM}.tar.gz"
+    WASMEDGE_URL="https://github.com/WasmEdge/WasmEdge/releases/download/${WASMEDGE_VERSION}/${WASMEDGE_ARCHIVE}"
+    WASMEDGE_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_wasmedge-${WASMEDGE_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${WASMEDGE_TEMP_DIRECTORY}"' EXIT
+    download_verified "${WASMEDGE_URL}" "${WASMEDGE_ARCHIVE_SHA256}" "${WASMEDGE_TEMP_DIRECTORY}/${WASMEDGE_ARCHIVE}"
+    mkdir -p "${WASMEDGE_HOME}"
+    tar -xf "${WASMEDGE_TEMP_DIRECTORY}/${WASMEDGE_ARCHIVE}" --directory="${WASMEDGE_HOME}"
+    {
+        printf '%s\n' 'export WASMEDGE_HOME="${HOME}/.wasmedge"'
+        printf '%s\n' 'export PATH="${WASMEDGE_HOME}/bin:${PATH}"'
+        printf '%s\n' 'export LD_LIBRARY_PATH="${WASMEDGE_HOME}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"'
+        printf '%s\n' 'export DYLD_LIBRARY_PATH="${WASMEDGE_HOME}/lib${DYLD_LIBRARY_PATH:+:${DYLD_LIBRARY_PATH}}"'
+    } > "${WASMEDGE_HOME}/env"
+    # shellcheck disable=SC2016
+    append_if_missing '. "${HOME}/.wasmedge/env"' "${HOME}/.zshrc"
+    # shellcheck disable=SC1091
+    . "${WASMEDGE_HOME}/env"
+    rm -rf -- "${WASMEDGE_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"

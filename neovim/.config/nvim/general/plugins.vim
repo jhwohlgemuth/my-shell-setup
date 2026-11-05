@@ -34,13 +34,13 @@ Plug 'justinmk/vim-sneak', {'commit': 'feea86adcfbf8e6b5e71fdd5f4f5736fd8819fdb'
 Plug 't9md/vim-choosewin', {'commit': '839da609d9b811370216bdd9d4512ec2d0ac8644'}
 
 " === UI / Appearance ===
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'joshdick/onedark.vim'
-Plug 'luochen1990/rainbow'
-Plug 'liuchengxu/vim-which-key'
-Plug 'catgoose/nvim-colorizer.lua', {'as': 'colorizer'}
-Plug 'chrisbra/csv.vim'
+Plug 'vim-airline/vim-airline', {'commit': '8dc1bd0a116de527f6bc58c1d04386ba357c624f'}
+Plug 'vim-airline/vim-airline-themes', {'commit': '77aab8c6cf7179ddb8a05741da7e358a86b2c3ab'}
+Plug 'joshdick/onedark.vim', {'commit': '47bec7a6196a843dad195d2666c3ac84c6e80c78'}
+Plug 'luochen1990/rainbow', {'commit': '76ca1a20aa42edb5c65c19029968aad4625790dc'}
+Plug 'liuchengxu/vim-which-key', {'commit': '72a4267b46a76f541b3e9500a7503575575d4f57'}
+Plug 'catgoose/nvim-colorizer.lua', {'as': 'colorizer', 'commit': '72a05f62c52241bc7441c820eb53946f92b2e6a4'}
+Plug 'chrisbra/csv.vim', {'commit': '375c1a81a4f186ce8949824f3b87ddc6727a63af'}
 
 " === Editing ===
 Plug 'tpope/vim-commentary', {'commit': '64a654ef4a20db1727938338310209b6a63f60c9'}
@@ -52,24 +52,24 @@ Plug 'godlygeek/tabular', {'commit': '12437cd1b53488e24936ec4b091c9324cafee311'}
 Plug 'mbbill/undotree', {'commit': '6fa6b57cda8459e1e4b2ca34df702f55242f4e4d'}
 
 " === Git ===
-Plug 'tpope/vim-fugitive'
-Plug 'mhinz/vim-signify'
+Plug 'tpope/vim-fugitive', {'commit': '3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0'}
+Plug 'mhinz/vim-signify', {'commit': 'e7557022f94270e887cbb391a746c1818e570d7f'}
 
 " === Language-Specific ===
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'LnL7/vim-nix'
-Plug 'sheerun/vim-polyglot'
-Plug 'rust-lang/rust.vim'
-Plug 'saecki/crates.nvim'
+Plug 'maxmellon/vim-jsx-pretty', {'commit': '6989f1663cc03d7da72b5ef1c03f87e6ddb70b41'}
+Plug 'LnL7/vim-nix', {'commit': '7235c7ce2cea530cb6b59bc3e46d4bfe917d15c8'}
+Plug 'sheerun/vim-polyglot', {'commit': 'f061eddb7cdcc614c8406847b2bfb53099832a4e'}
+Plug 'rust-lang/rust.vim', {'commit': '2beee60144703b574fd95adaa07e0dfd83e71006'}
+Plug 'saecki/crates.nvim', {'commit': '7039bc1d130e424232a7aa64ceddb170a154ff5b'}
 
 " === Tools ===
-Plug 'nvim-orgmode/orgmode'
-Plug 'dense-analysis/ale'
-Plug 'folke/snacks.nvim'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'MattesGroeger/vim-bookmarks'
+Plug 'nvim-orgmode/orgmode', {'commit': 'a7fdbd3cfdd94b425c655cc72e3a6c4dd0a3959f'}
+Plug 'dense-analysis/ale', {'commit': '422c0e8ef42e2315a5b58dc281fccc59b816c37a'}
+Plug 'folke/snacks.nvim', {'commit': '882c996cf28183f4d63640de0b4c02ec886d01f2'}
+Plug 'iamcco/markdown-preview.nvim', { 'commit': 'a923f5fc5ba36a3b17e289dc35dc17f66d0548ee', 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'MattesGroeger/vim-bookmarks', {'commit': '9cc5fa7ecc23b052bd524d07c85356c64b92aeef'}
 " vim-devicons must load after the plugins it decorates.
-Plug 'ryanoasis/vim-devicons'
+Plug 'ryanoasis/vim-devicons', {'commit': '71f239af28b7214eebb60d4ea5bd040291fb7e33'}
 
 call plug#end()
 

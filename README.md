@@ -117,6 +117,15 @@ make -C agents dev
 The included `blank-test` skill is a canary for skill discovery. Ask an agent to run the blank test skill after installation; a successful invocation returns `BLANK_TEST_SKILL_OK`.
 Pass `AGENT_SKILL=<name>` to the Waza Make targets to develop another skill. See the [agent skills guide](./agents/README.md) for Waza installation and scaffolding.
 
+These commands require the `codex plugin` command, which is present in Codex CLI 0.166.0 used for local CLI checks:
+
+```shell
+codex plugin marketplace add jhwohlgemuth/my-shell-setup --ref main
+codex plugin add personal-agent-skills@my-shell-setup
+```
+
+Start a new Codex session after installation and invoke `blank-test` to verify discovery. See the [agent skills plugin guide](./agents/README.md#install-the-plugin-with-codex) for the generated package and drift-check details.
+
 To improve a skill, capture a real-agent assessment, inspect failures, make one focused change, and assess again. Repeat the same command for every revision; it saves numbered runs and compares each one with the previous completed run. Keep the imported Acorn instructions as the starting point:
 
 ```shell

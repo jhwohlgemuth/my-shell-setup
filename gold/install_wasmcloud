@@ -1,0 +1,63 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    install \
+    mktemp \
+    shasum \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local BIN_DIRECTORY="${1:-/usr/local/bin}"
+    local WASH_VERSION='2.12.0'
+    local WASH_SHA256
+    local WASH_PLATFORM
+    local WASH_URL
+    local WASH_BINARY
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    if [[ "${OS}" != Linux ]]; then
+        printf '==> [ERROR] wash %s supports Linux, detected %s %s\n' "${WASH_VERSION}" "${OS}" "${ARCH}" >&2
+        return 1
+    fi
+    case "${ARCH}" in
+        x86_64 | amd64)
+            WASH_PLATFORM='x86_64-unknown-linux-gnu'
+            WASH_SHA256='dee88141ab963fa91bf296c03abe7b4cf42c1385d350c7d149d3562cde6345ec'
+            ;;
+        aarch64 | arm64)
+            WASH_PLATFORM='aarch64-unknown-linux-gnu'
+            WASH_SHA256='d6d252f3412b4f977057ccb537092e0f0279dc995206c8691a2315571750f2c0'
+            ;;
+        s390x)
+            WASH_PLATFORM='s390x-unknown-linux-gnu'
+            WASH_SHA256='1b829b0cbf137ff9fb7efa6ffc6a98c215c64ac17ca0707e464f20b2399cd7e1'
+            ;;
+        *)
+            printf '==> [ERROR] wash %s does not support Linux %s\n' "${WASH_VERSION}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    WASH_URL="https://github.com/wasmCloud/wasmCloud/releases/download/v${WASH_VERSION}/wash-${WASH_PLATFORM}"
+    WASH_BINARY="$(mktemp "${TMPDIR:-/tmp}/install_wasmcloud-wash-${WASH_VERSION}.XXXXXX")"
+    trap 'rm -f -- "${WASH_BINARY}"' EXIT
+    download_verified "${WASH_URL}" "${WASH_SHA256}" "${WASH_BINARY}"
+    mkdir -p "${BIN_DIRECTORY}"
+    install -m 0755 "${WASH_BINARY}" "${BIN_DIRECTORY}/wash"
+    rm -f -- "${WASH_BINARY}"
+    trap - EXIT
+}
+main "$@"

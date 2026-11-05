@@ -76,6 +76,23 @@ mise exec -- python3 agents/scripts/package_skills.py --check-plugin
 
 The write command replaces only the generated `plugins/personal-agent-skills/` directory. The check command is nonmutating and fails on missing, changed, unexpected, or symbolic-link files. Do not maintain files directly in the generated tree; update `agents/plugin.json` or the runtime skill source and regenerate it instead.
 
+### Install the plugin with Codex
+
+These commands require the `codex plugin` command, which is present in Codex CLI 0.166.0 used for local CLI checks:
+
+```shell
+codex plugin marketplace add jhwohlgemuth/my-shell-setup --ref main
+codex plugin add personal-agent-skills@my-shell-setup
+```
+
+The repo marketplace at `.agents/plugins/marketplace.json` resolves `./plugins/personal-agent-skills` from the repository root. After installation, start a new Codex session and ask it to use `blank-test`; successful discovery returns `BLANK_TEST_SKILL_OK`. The installed plugin is generated from the same Stow-filtered runtime inventory, so Waza `evals/`, `tests/`, and `trigger_tests.yaml` fixtures are not distributed.
+
+Run the same nonmutating drift gate used by CI before publishing changes:
+
+```shell
+mise exec -- python3 agents/scripts/package_skills.py --check-plugin
+```
+
 ## Create, test, and improve a new skill
 
 There is no Make target for scaffolding. From the repository root, create the skill with Waza and move its generated project evals into the layout used by this package:

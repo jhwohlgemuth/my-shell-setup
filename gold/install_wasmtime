@@ -1,0 +1,97 @@
+#! /bin/bash
+set -e
+
+requires \
+    append_if_missing \
+    curl \
+    install \
+    mktemp \
+    shasum \
+    tar \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local WASMTIME_VERSION='50.0.1'
+    local WASMTIME_ARCHIVE_SHA256
+    local WASMTIME_ARCHIVE
+    local WASMTIME_ARCH
+    local WASMTIME_HOME="${HOME}/.wasmtime"
+    local WASMTIME_OS
+    local WASMTIME_PLATFORM
+    local WASMTIME_TEMP_DIRECTORY
+    local WASMTIME_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    case "${OS}" in
+        Linux)
+            WASMTIME_OS='linux'
+            ;;
+        Darwin)
+            WASMTIME_OS='macos'
+            ;;
+        *)
+            printf '==> [ERROR] Wasmtime %s does not support %s %s\n' "${WASMTIME_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            WASMTIME_ARCH='x86_64'
+            ;;
+        aarch64 | arm64)
+            WASMTIME_ARCH='aarch64'
+            ;;
+        *)
+            printf '==> [ERROR] Wasmtime %s does not support %s %s\n' "${WASMTIME_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    WASMTIME_PLATFORM="${WASMTIME_ARCH}-${WASMTIME_OS}"
+    case "${WASMTIME_PLATFORM}" in
+        aarch64-linux)
+            WASMTIME_ARCHIVE_SHA256='d737e077416d78fbfb0a008229ec27d6a0fd5a4924874b8c38b293c850cf4094'
+            ;;
+        aarch64-macos)
+            WASMTIME_ARCHIVE_SHA256='960e5216c7ebd7e9b45e6561d15821b8b801b7d54aee28c7b91921aeb30c65c8'
+            ;;
+        x86_64-linux)
+            WASMTIME_ARCHIVE_SHA256='685466455dd42a14774a86c36c8f2e45cbb9bd6d92a850139315df60a75498a5'
+            ;;
+        x86_64-macos)
+            WASMTIME_ARCHIVE_SHA256='ea1818fa8cbb51524847ab2ad22197e0051594fdc96cbd0cc2afb65832e11925'
+            ;;
+        *)
+            printf '==> [ERROR] Wasmtime %s does not support %s\n' "${WASMTIME_VERSION}" "${WASMTIME_PLATFORM}" >&2
+            return 1
+            ;;
+    esac
+    WASMTIME_ARCHIVE="wasmtime-v${WASMTIME_VERSION}-${WASMTIME_PLATFORM}.tar.xz"
+    WASMTIME_URL="https://github.com/bytecodealliance/wasmtime/releases/download/v${WASMTIME_VERSION}/${WASMTIME_ARCHIVE}"
+    WASMTIME_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_wasmtime-${WASMTIME_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${WASMTIME_TEMP_DIRECTORY}"' EXIT
+    download_verified "${WASMTIME_URL}" "${WASMTIME_ARCHIVE_SHA256}" "${WASMTIME_TEMP_DIRECTORY}/${WASMTIME_ARCHIVE}"
+    mkdir -p "${WASMTIME_HOME}/bin"
+    tar -xf "${WASMTIME_TEMP_DIRECTORY}/${WASMTIME_ARCHIVE}" --directory="${WASMTIME_TEMP_DIRECTORY}"
+    install -m 0755 "${WASMTIME_TEMP_DIRECTORY}/wasmtime-v${WASMTIME_VERSION}-${WASMTIME_PLATFORM}/wasmtime" "${WASMTIME_HOME}/bin/wasmtime"
+    # shellcheck disable=SC2016
+    append_if_missing 'export WASMTIME_HOME="${HOME}/.wasmtime"' "${HOME}/.zshrc"
+    # shellcheck disable=SC2016
+    append_if_missing 'export PATH="${WASMTIME_HOME}/bin:${PATH}"' "${HOME}/.zshrc"
+    export WASMTIME_HOME
+    export PATH="${WASMTIME_HOME}/bin:${PATH}"
+    rm -rf -- "${WASMTIME_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"

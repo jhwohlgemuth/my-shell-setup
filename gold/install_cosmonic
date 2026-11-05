@@ -1,0 +1,66 @@
+#! /bin/bash
+# shellcheck disable=SC2016
+set -e
+
+requires \
+    append_if_missing \
+    curl \
+    install \
+    mktemp \
+    shasum \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local COSMO_VERSION='0.25.0'
+    local COSMO_SHA256
+    local COSMO_PLATFORM
+    local COSMO_URL
+    local COSMO_INSTALLER
+    local OS ARCH
+    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    ARCH="$(uname -m)"
+    if [[ "${ARCH}" == arm64 ]]; then
+        ARCH='aarch64'
+    fi
+    COSMO_PLATFORM="${ARCH}-${OS}"
+    case "${COSMO_PLATFORM}" in
+        x86_64-linux)
+            COSMO_SHA256='c53dd35bd889c1c58507f6012855fc13d2d603d90c0193e24797d0789c3b22da'
+            ;;
+        aarch64-linux)
+            COSMO_SHA256='ab88ac79c2d869f6187e3b9db761e9c90bf4aabb6b6b43c3df609485b1377637'
+            ;;
+        x86_64-darwin)
+            COSMO_SHA256='29f369befcb1c3f4b3990e47dffd5b8c7c4baf1357a8831d6dc11924e2f54ec3'
+            ;;
+        aarch64-darwin)
+            COSMO_SHA256='b691588dd91be8ea4cddf1267a125327aefbd6f4fd0b8231274a51adb0cad8ce'
+            ;;
+        *)
+            printf '==> [ERROR] Cosmonic %s does not support %s\n' "${COSMO_VERSION}" "${COSMO_PLATFORM}" >&2
+            return 1
+            ;;
+    esac
+    COSMO_URL="https://cosmonic.sh/cosmo-${COSMO_PLATFORM}-${COSMO_VERSION}"
+    COSMO_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_cosmonic-${COSMO_VERSION}.XXXXXX")"
+    trap 'rm -f -- "${COSMO_INSTALLER}"' EXIT
+    download_verified "${COSMO_URL}" "${COSMO_SHA256}" "${COSMO_INSTALLER}"
+    mkdir -p "${HOME}/.cosmo/bin"
+    install -m 0755 "${COSMO_INSTALLER}" "${HOME}/.cosmo/bin/cosmo"
+    append_if_missing 'export PATH="${HOME}/.cosmo/bin:${PATH}"' "${HOME}/.zshrc"
+    export PATH="${HOME}/.cosmo/bin:${PATH}"
+    rm -f -- "${COSMO_INSTALLER}"
+    trap - EXIT
+}
+main "$@"

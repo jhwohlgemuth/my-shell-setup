@@ -1,0 +1,90 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    install \
+    mktemp \
+    shasum \
+    tar \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local BIN_DIRECTORY="${1:-/usr/local/bin}"
+    local SCALE_VERSION='0.2.0'
+    local SCALE_ARCHIVE_SHA256
+    local SCALE_ARCHIVE
+    local SCALE_ARCH
+    local SCALE_OS
+    local SCALE_PLATFORM
+    local SCALE_TEMP_DIRECTORY
+    local SCALE_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    case "${OS}" in
+        Linux)
+            SCALE_OS='linux'
+            ;;
+        Darwin)
+            SCALE_OS='darwin'
+            ;;
+        *)
+            printf '==> [ERROR] Scale CLI %s does not support %s %s\n' "${SCALE_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            SCALE_ARCH='amd64'
+            ;;
+        aarch64 | arm64)
+            SCALE_ARCH='arm64'
+            ;;
+        *)
+            printf '==> [ERROR] Scale CLI %s does not support %s %s\n' "${SCALE_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    SCALE_PLATFORM="${SCALE_OS}_${SCALE_ARCH}"
+    case "${SCALE_PLATFORM}" in
+        linux_amd64)
+            SCALE_ARCHIVE_SHA256='f0df449cbeb1ec0050453894924434699bb42ee9b37f47225c2b0dc37e08a6b5'
+            ;;
+        linux_arm64)
+            SCALE_ARCHIVE_SHA256='88c1fd2daa61f468beb7326b39ceb2cf6b3e0781b2b9d251bec8ef90a4cf5666'
+            ;;
+        darwin_amd64)
+            SCALE_ARCHIVE_SHA256='017ffb2ff09e2acfe260746fa7762ca8935f5671bbfab899e6ea9c968f1d5143'
+            ;;
+        darwin_arm64)
+            SCALE_ARCHIVE_SHA256='39685788a1bdd9fa8b55a1a23bc030fe110374256097a58d73aa76f58f0cd9d3'
+            ;;
+        *)
+            printf '==> [ERROR] Scale CLI %s does not support %s %s\n' "${SCALE_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    SCALE_ARCHIVE="scale-cli_${SCALE_VERSION}_${SCALE_PLATFORM}.tar.gz"
+    SCALE_URL="https://github.com/loopholelabs/scale-cli/releases/download/v${SCALE_VERSION}/${SCALE_ARCHIVE}"
+    SCALE_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_scale-${SCALE_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${SCALE_TEMP_DIRECTORY}"' EXIT
+    download_verified "${SCALE_URL}" "${SCALE_ARCHIVE_SHA256}" "${SCALE_TEMP_DIRECTORY}/${SCALE_ARCHIVE}"
+    tar -xf "${SCALE_TEMP_DIRECTORY}/${SCALE_ARCHIVE}" --directory="${SCALE_TEMP_DIRECTORY}"
+    mkdir -p "${BIN_DIRECTORY}"
+    install -m 0755 "${SCALE_TEMP_DIRECTORY}/scale-cli" "${BIN_DIRECTORY}/scale"
+    rm -rf -- "${SCALE_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"

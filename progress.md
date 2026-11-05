@@ -1,5 +1,16 @@
 # Implementation progress
 
+## Implementation — verified runtimes, plugin marketplace, and complete Neovim pins
+
+- Plans: `.wiki/verified-bootstrap.md` and `.wiki/agent-skills-web-distribution.md` continue; `.wiki/neovim-reproducibility.md` retired; active phase: none; state: SEC-04 and NVP-03 complete, ASD-03 waiting on external validation.
+- Authorized scope and decisions: Executed the three named phases concurrently, preserving their disjoint WASM installer, personal plugin identity, and Neovim plugin-version locks. ASD-03 was not promoted because its required clean-install runtime evidence is unavailable.
+- Baseline and local work: Started from clean `main` at `812b318`, matching `origin/main`; no `.codegraph/` index is present. Standalone installers now own the fixed, verified Cosmonic, MoonBit, Scale, Spin, WasmCloud, WasmEdge, and Wasmtime artifacts; the WASM menu delegates to them and preserves its custom binary-directory argument. The Codex marketplace and CI gates resolve and verify the generated plugin. All 36 Neovim plugins are pinned.
+- Verified state: Gold syntax, formatting, ShellCheck, corrupt-download rejection, and native macOS arm64 runtime smokes passed. Agent-skill packaging and marketplace structure checks passed with Codex CLI 0.166.0. A clean arm64 Neovim container build loaded the full config, Org parser, Markdown Preview, and Snacks; image manifest `sha256:1519fea244074f195b64b5a877262f8aa7eb8185a514635fa4a7b7ab5d25782e`.
+- Remaining work: In a writable isolated Codex profile with GitHub and model access, install `personal-agent-skills@my-shell-setup`, start a new session, invoke `blank-test`, and inventory the installed cache. SEC-11 is the next independent local phase.
+- Budget: SEC-04 and NVP-03 completed within their separate five-active-hour ceilings. ASD-03 implementation completed within budget; its external validation remains blocked.
+- Blockers / failed approaches: Codex clean-profile installation attempted to write protected user config/cache and failed with `Operation not permitted`; the local live schema fetch also failed DNS resolution. The workflow performs the online schema check. Neovim was rebuilt on arm64 only; amd64 remains an explicitly unverified platform, and Orgmode resolves its grammar through upstream tag `2.0.4` rather than a separately recorded grammar commit.
+- Next action: Validate ASD-03 in a writable isolated Codex profile and authenticated new session; SEC-11 may proceed independently when authorized.
+
 ## Implementation — verified WasmCloud, portable skill plugin, and pinned Neovim subset
 
 - Plans: `.wiki/verified-bootstrap.md`, `.wiki/agent-skills-web-distribution.md`, and `.wiki/neovim-reproducibility.md`; active phase: none; state: complete within SEC-10, ASD-05 plus repair ASD-07, and NVP-02.

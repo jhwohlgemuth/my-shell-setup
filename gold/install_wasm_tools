@@ -11,273 +11,14 @@ requires \
     curl \
     git \
     gum \
-    install \
-    mktemp \
-    rustup \
-    shasum \
-    tar \
-    uname
-verify_sha256() {
-    local FILE="${1}"
-    local EXPECTED="${2}"
-    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
-}
-download_verified() {
-    local URL="${1}"
-    local EXPECTED="${2}"
-    local OUTPUT="${3}"
-    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
-    verify_sha256 "${OUTPUT}" "${EXPECTED}"
-}
-install_cosmonic() {
-    local COSMO_VERSION='0.25.0'
-    local COSMO_SHA256
-    local COSMO_PLATFORM
-    local COSMO_URL
-    local COSMO_INSTALLER
-    local OS ARCH
-    OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
-    ARCH="$(uname -m)"
-    if [[ "${ARCH}" == arm64 ]]; then
-        ARCH='aarch64'
-    fi
-    COSMO_PLATFORM="${ARCH}-${OS}"
-    case "${COSMO_PLATFORM}" in
-        x86_64-linux)
-            COSMO_SHA256='c53dd35bd889c1c58507f6012855fc13d2d603d90c0193e24797d0789c3b22da'
-            ;;
-        aarch64-linux)
-            COSMO_SHA256='ab88ac79c2d869f6187e3b9db761e9c90bf4aabb6b6b43c3df609485b1377637'
-            ;;
-        x86_64-darwin)
-            COSMO_SHA256='29f369befcb1c3f4b3990e47dffd5b8c7c4baf1357a8831d6dc11924e2f54ec3'
-            ;;
-        aarch64-darwin)
-            COSMO_SHA256='b691588dd91be8ea4cddf1267a125327aefbd6f4fd0b8231274a51adb0cad8ce'
-            ;;
-        *)
-            printf '==> [ERROR] Cosmonic %s does not support %s\n' "${COSMO_VERSION}" "${COSMO_PLATFORM}" >&2
-            return 1
-            ;;
-    esac
-    COSMO_URL="https://cosmonic.sh/cosmo-${COSMO_PLATFORM}-${COSMO_VERSION}"
-    COSMO_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/install_cosmonic-${COSMO_VERSION}.XXXXXX")"
-    trap 'rm -f -- "${COSMO_INSTALLER}"' EXIT
-    download_verified "${COSMO_URL}" "${COSMO_SHA256}" "${COSMO_INSTALLER}"
-    mkdir -p "${HOME}/.cosmo/bin"
-    install -m 0755 "${COSMO_INSTALLER}" "${HOME}/.cosmo/bin/cosmo"
-    rm -f -- "${COSMO_INSTALLER}"
-    trap - EXIT
-}
-install_scale() {
-    local SCALE_VERSION='0.2.0'
-    local SCALE_ARCHIVE_SHA256
-    local SCALE_ARCHIVE
-    local SCALE_ARCH
-    local SCALE_OS
-    local SCALE_PLATFORM
-    local SCALE_TEMP_DIRECTORY
-    local SCALE_URL
-    local OS ARCH
-    OS="$(uname -s)"
-    ARCH="$(uname -m)"
-    case "${OS}" in
-        Linux)
-            SCALE_OS='linux'
-            ;;
-        Darwin)
-            SCALE_OS='darwin'
-            ;;
-        *)
-            printf '==> [ERROR] Scale CLI %s does not support %s %s\n' "${SCALE_VERSION}" "${OS}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    case "${ARCH}" in
-        x86_64 | amd64)
-            SCALE_ARCH='amd64'
-            ;;
-        aarch64 | arm64)
-            SCALE_ARCH='arm64'
-            ;;
-        *)
-            printf '==> [ERROR] Scale CLI %s does not support %s %s\n' "${SCALE_VERSION}" "${OS}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    SCALE_PLATFORM="${SCALE_OS}_${SCALE_ARCH}"
-    case "${SCALE_PLATFORM}" in
-        linux_amd64)
-            SCALE_ARCHIVE_SHA256='f0df449cbeb1ec0050453894924434699bb42ee9b37f47225c2b0dc37e08a6b5'
-            ;;
-        linux_arm64)
-            SCALE_ARCHIVE_SHA256='88c1fd2daa61f468beb7326b39ceb2cf6b3e0781b2b9d251bec8ef90a4cf5666'
-            ;;
-        darwin_amd64)
-            SCALE_ARCHIVE_SHA256='017ffb2ff09e2acfe260746fa7762ca8935f5671bbfab899e6ea9c968f1d5143'
-            ;;
-        darwin_arm64)
-            SCALE_ARCHIVE_SHA256='39685788a1bdd9fa8b55a1a23bc030fe110374256097a58d73aa76f58f0cd9d3'
-            ;;
-        *)
-            printf '==> [ERROR] Scale CLI %s does not support %s %s\n' "${SCALE_VERSION}" "${OS}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    SCALE_ARCHIVE="scale-cli_${SCALE_VERSION}_${SCALE_PLATFORM}.tar.gz"
-    SCALE_URL="https://github.com/loopholelabs/scale-cli/releases/download/v${SCALE_VERSION}/${SCALE_ARCHIVE}"
-    SCALE_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_scale-${SCALE_VERSION}.XXXXXX")"
-    trap 'rm -rf -- "${SCALE_TEMP_DIRECTORY}"' EXIT
-    download_verified "${SCALE_URL}" "${SCALE_ARCHIVE_SHA256}" "${SCALE_TEMP_DIRECTORY}/${SCALE_ARCHIVE}"
-    tar -xf "${SCALE_TEMP_DIRECTORY}/${SCALE_ARCHIVE}" --directory="${SCALE_TEMP_DIRECTORY}"
-    mkdir -p "${BIN_DIRECTORY}"
-    install -m 0755 "${SCALE_TEMP_DIRECTORY}/scale-cli" "${BIN_DIRECTORY}/scale"
-    rm -rf -- "${SCALE_TEMP_DIRECTORY}"
-    trap - EXIT
-}
-install_spin() {
-    local SPIN_VERSION='4.2.6'
-    local SPIN_ARCHIVE_SHA256
-    local SPIN_ARCHIVE
-    local SPIN_ARCH
-    local SPIN_OS
-    local SPIN_PLATFORM
-    local SPIN_TEMP_DIRECTORY
-    local SPIN_URL
-    local OS ARCH
-    OS="$(uname -s)"
-    ARCH="$(uname -m)"
-    case "${OS}" in
-        Linux)
-            SPIN_OS='linux'
-            ;;
-        Darwin)
-            SPIN_OS='macos'
-            ;;
-        *)
-            printf '==> [ERROR] Spin %s does not support %s %s\n' "${SPIN_VERSION}" "${OS}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    case "${ARCH}" in
-        x86_64 | amd64)
-            SPIN_ARCH='amd64'
-            ;;
-        aarch64 | arm64)
-            SPIN_ARCH='aarch64'
-            ;;
-        *)
-            printf '==> [ERROR] Spin %s does not support %s %s\n' "${SPIN_VERSION}" "${OS}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    SPIN_PLATFORM="${SPIN_OS}-${SPIN_ARCH}"
-    case "${SPIN_PLATFORM}" in
-        linux-amd64)
-            SPIN_ARCHIVE_SHA256='e506046c2e28329bb773b64fb349a996faace014874922094d4c67936a3fa017'
-            ;;
-        linux-aarch64)
-            SPIN_ARCHIVE_SHA256='46895c69063affb65e1e463c9ac2f86b174b1d910396ef60e979801a641159c3'
-            ;;
-        macos-amd64)
-            SPIN_ARCHIVE_SHA256='1d7be8411ed4d719c542d3ba5adc9dd38a2468b4adb36e693aaa06c6b0ac7bdb'
-            ;;
-        macos-aarch64)
-            SPIN_ARCHIVE_SHA256='48524aa7679db6382df965fb7014de1c80fc85ccd328b58b42692a881279c4bb'
-            ;;
-        *)
-            printf '==> [ERROR] Spin %s does not support %s %s\n' "${SPIN_VERSION}" "${OS}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    SPIN_ARCHIVE="spin-v${SPIN_VERSION}-${SPIN_PLATFORM}.tar.gz"
-    SPIN_URL="https://github.com/spinframework/spin/releases/download/v${SPIN_VERSION}/${SPIN_ARCHIVE}"
-    SPIN_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_spin-${SPIN_VERSION}.XXXXXX")"
-    trap 'rm -rf -- "${SPIN_TEMP_DIRECTORY}"' EXIT
-    download_verified "${SPIN_URL}" "${SPIN_ARCHIVE_SHA256}" "${SPIN_TEMP_DIRECTORY}/${SPIN_ARCHIVE}"
-    tar -xf "${SPIN_TEMP_DIRECTORY}/${SPIN_ARCHIVE}" --directory="${SPIN_TEMP_DIRECTORY}"
-    mkdir -p "${BIN_DIRECTORY}"
-    install -m 0755 "${SPIN_TEMP_DIRECTORY}/spin" "${BIN_DIRECTORY}/spin"
-    rm -rf -- "${SPIN_TEMP_DIRECTORY}"
-    trap - EXIT
-}
-install_wasmcloud() {
-    local WASH_VERSION='2.12.0'
-    local WASH_SHA256
-    local WASH_PLATFORM
-    local WASH_URL
-    local WASH_BINARY
-    local OS ARCH
-    OS="$(uname -s)"
-    ARCH="$(uname -m)"
-    if [[ "${OS}" != Linux ]]; then
-        printf '==> [ERROR] wash %s supports Linux, detected %s %s\n' "${WASH_VERSION}" "${OS}" "${ARCH}" >&2
-        return 1
-    fi
-    case "${ARCH}" in
-        x86_64 | amd64)
-            WASH_PLATFORM='x86_64-unknown-linux-gnu'
-            WASH_SHA256='dee88141ab963fa91bf296c03abe7b4cf42c1385d350c7d149d3562cde6345ec'
-            ;;
-        aarch64 | arm64)
-            WASH_PLATFORM='aarch64-unknown-linux-gnu'
-            WASH_SHA256='d6d252f3412b4f977057ccb537092e0f0279dc995206c8691a2315571750f2c0'
-            ;;
-        s390x)
-            WASH_PLATFORM='s390x-unknown-linux-gnu'
-            WASH_SHA256='1b829b0cbf137ff9fb7efa6ffc6a98c215c64ac17ca0707e464f20b2399cd7e1'
-            ;;
-        *)
-            printf '==> [ERROR] wash %s does not support Linux %s\n' "${WASH_VERSION}" "${ARCH}" >&2
-            return 1
-            ;;
-    esac
-    WASH_URL="https://github.com/wasmCloud/wasmCloud/releases/download/v${WASH_VERSION}/wash-${WASH_PLATFORM}"
-    WASH_BINARY="$(mktemp "${TMPDIR:-/tmp}/install_wasmcloud-wash-${WASH_VERSION}.XXXXXX")"
-    trap 'rm -f -- "${WASH_BINARY}"' EXIT
-    download_verified "${WASH_URL}" "${WASH_SHA256}" "${WASH_BINARY}"
-    mkdir -p "${BIN_DIRECTORY}"
-    install -m 0755 "${WASH_BINARY}" "${BIN_DIRECTORY}/wash"
-    rm -f -- "${WASH_BINARY}"
-    trap - EXIT
-}
-install_moonbit() {
-    local MOONBIT_VERSION='0.10.19+bee578715'
-    local MOONBIT_URL_VERSION='0.10.19%2Bbee578715'
-    local MOONBIT_ARCHIVE_SHA256='dd1d6d793c9675405ef32b39bce66d40041e2052a9c3f2f403e0a9da98bd94fd'
-    local MOONBIT_CORE_SHA256='b5b33afc759b8ae332346f357f42235d4c8d54afd91bb891b22ead3d746fa74f'
-    local MOONBIT_ARCHIVE_URL="https://cli.moonbitlang.com/binaries/${MOONBIT_URL_VERSION}/moonbit-linux-x86_64.tar.gz"
-    local MOONBIT_CORE_URL="https://cli.moonbitlang.com/cores/core-${MOONBIT_URL_VERSION}.tar.gz"
-    local MOONBIT_HOME="${MOON_HOME:-${HOME}/.moon}"
-    local MOONBIT_BIN="${MOONBIT_HOME}/bin/moon"
-    local MOONBIT_PATH_LINE="export PATH=\"${MOONBIT_HOME}/bin:\${PATH}\""
-    local MOONBIT_TEMP_DIRECTORY
-    local OS ARCH
-    OS="$(uname -s)"
-    ARCH="$(uname -m)"
-    if [[ "${OS}" != Linux || "${ARCH}" != x86_64 ]]; then
-        printf '==> [ERROR] MoonBit %s installer supports Linux x86-64, detected %s %s\n' "${MOONBIT_VERSION}" "${OS}" "${ARCH}" >&2
-        return 1
-    fi
-    MOONBIT_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_moonbit-${MOONBIT_VERSION}.XXXXXX")"
-    trap 'rm -rf -- "${MOONBIT_TEMP_DIRECTORY}"' EXIT
-    download_verified "${MOONBIT_ARCHIVE_URL}" "${MOONBIT_ARCHIVE_SHA256}" "${MOONBIT_TEMP_DIRECTORY}/moonbit.tar.gz"
-    download_verified "${MOONBIT_CORE_URL}" "${MOONBIT_CORE_SHA256}" "${MOONBIT_TEMP_DIRECTORY}/core.tar.gz"
-    mkdir -p "${MOONBIT_HOME}"
-    rm -rf -- "${MOONBIT_HOME:?}/lib" "${MOONBIT_HOME:?}/include"
-    tar -xf "${MOONBIT_TEMP_DIRECTORY}/moonbit.tar.gz" --directory="${MOONBIT_HOME}"
-    ln -sfn moon "${MOONBIT_HOME}/bin/moonx"
-    find "${MOONBIT_HOME}/bin" -type f -exec chmod +x {} +
-    chmod +x "${MOONBIT_HOME}/bin/internal/tcc"
-    rm -rf -- "${MOONBIT_HOME:?}/lib/core"
-    tar -xf "${MOONBIT_TEMP_DIRECTORY}/core.tar.gz" --directory="${MOONBIT_HOME}/lib"
-    PATH="${MOONBIT_HOME}/bin:${PATH}" "${MOONBIT_BIN}" -C "${MOONBIT_HOME}/lib/core" bundle --warn-list -a --all
-    PATH="${MOONBIT_HOME}/bin:${PATH}" "${MOONBIT_BIN}" -C "${MOONBIT_HOME}/lib/core" bundle --warn-list -a --target wasm-gc --quiet
-    append_if_missing "${MOONBIT_PATH_LINE}" "${HOME}/.zshrc"
-    export PATH="${MOONBIT_HOME}/bin:${PATH}"
-    rm -rf -- "${MOONBIT_TEMP_DIRECTORY}"
-    trap - EXIT
-}
+    install_cosmonic \
+    install_moonbit \
+    install_scale \
+    install_spin \
+    install_wasmcloud \
+    install_wasmedge \
+    install_wasmtime \
+    rustup
 install_emscripten() {
     local EMSDK_ENV_LINE="source \"${EMSDK_DIRECTORY}/emsdk_env.sh\""
     #
@@ -375,9 +116,6 @@ main() {
         case "${CHOICE}" in
             Cosmonic)
                 install_cosmonic
-                # shellcheck disable=SC2016
-                append_if_missing 'export PATH="${HOME}/.cosmo/bin:${PATH}"' "${HOME}/.zshrc"
-                export PATH="${HOME}/.cosmo/bin:${PATH}"
                 complete "${CHOICE}"
                 ;;
             Emscripten)
@@ -391,14 +129,14 @@ main() {
                 complete "${CHOICE}"
                 ;;
             Scale)
-                install_scale
+                install_scale "${BIN_DIRECTORY}"
                 complete "${CHOICE}"
                 ;;
             Spin)
                 #
                 # Spin microservices server (spin)
                 #
-                install_spin
+                install_spin "${BIN_DIRECTORY}"
                 complete "${CHOICE}"
                 ;;
             waPC)
@@ -413,15 +151,11 @@ main() {
                 #
                 # WAsmCloud SHell (wash)
                 #
-                install_wasmcloud
+                install_wasmcloud "${BIN_DIRECTORY}"
                 complete "${CHOICE}"
                 ;;
             WasmEdge)
-                curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
-                # shellcheck disable=SC2016
-                append_if_missing '. "${HOME}/.wasmedge/env"' "${HOME}/.zshrc"
-                # shellcheck disable=SC1091
-                . "${HOME}/.wasmedge/env"
+                install_wasmedge
                 complete "${CHOICE}"
                 ;;
             Wasmer)
@@ -431,13 +165,7 @@ main() {
                 complete "${CHOICE}"
                 ;;
             Wasmtime)
-                curl https://wasmtime.dev/install.sh -sSf | bash
-                # shellcheck disable=SC2016
-                append_if_missing 'export WASMTIME_HOME="${HOME}/.wasmtime"' "${HOME}/.zshrc"
-                # shellcheck disable=SC2016
-                append_if_missing 'export PATH="${WASMTIME_HOME}/bin:${PATH}"' "${HOME}/.zshrc"
-                export WASMTIME_HOME="${HOME}/.wasmtime"
-                export PATH="${WASMTIME_HOME}/bin:${PATH}"
+                install_wasmtime
                 complete "${CHOICE}"
                 ;;
             WAVM)

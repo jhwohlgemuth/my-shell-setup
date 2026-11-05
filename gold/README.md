@@ -17,6 +17,7 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | `install_code_server` | Linux, x86-64 | Permission to write `/app/code-server` and `/tmp` | Downloaded release tarball |
 | `install_conda` | Linux, x86-64 | Target user home, default `/home/nonroot` | Downloaded Miniconda installer |
 | `install_correctness_tools` | Inherits the selected installer's support | Inherits the selected installer | Gum menu dispatching to Gold commands |
+| `install_cosmonic` | Linux or macOS, x86-64 or arm64 | Current user's `~/.cosmo/bin` and shell configuration | Verified Cosmonic 0.25.0 binary |
 | `install_cosmopolitan` | Unix-like; downloaded bundle architecture is not checked | User home and `/tmp` | Downloaded Cosmopolitan ZIP |
 | `install_creusot` | Linux with Debian-named development packages; architecture is not checked | User home | Cargo, Git, Why3, Z3, source build |
 | `install_cuda` | Debian-family Linux, x86-64, NVIDIA-capable host | Root; APT sources, keyrings, drivers, and system libraries | APT and NVIDIA repository |
@@ -34,6 +35,7 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | `install_klee` | Linux with a Linuxbrew LLVM 16 prefix by default | Current user and `~/.local/bin` | CMake, Make, Clang, Z3, Git |
 | `install_latex` | Homebrew host with code-server rooted at `/app`; current layout is container-oriented | Homebrew prefix and code-server settings | Homebrew, TeX Live, jq, extension installer |
 | `install_lpython` | Unix-like environment supported by the repository's `environment_unix.yml` | Current user and `~/.local/bin` | Conda, Git, source build |
+| `install_moonbit` | Linux, x86-64 | Current user's `~/.moon` and shell configuration | Verified MoonBit `0.10.19+bee578715` toolchain and core archives |
 | `install_musl` | Linux; architecture is compiled locally | Permission to install under `/usr/local` | Make and downloaded source tarball |
 | `install_nim` | Linux with the Debian `libzmq5` package name; architecture is delegated to choosenim | Current user | choosenim and Nimble |
 | `install_nix` | Linux or macOS as supported by the upstream installer; current script does not guard either | Current user for single-user Nix and permission to edit `/etc/nix/nix.conf` | Upstream Nix shell installer |
@@ -46,25 +48,30 @@ This matrix documents the assumptions encoded in the current scripts. It does no
 | `install_rocq` | Linux-oriented because Bubblewrap and Debian-named GMP packages are required | Current user/opam switch and code-server extensions | opam, Bubblewrap, Zsh |
 | `install_rust2ada` | Unix-like source build | Current user and `~/.local/bin` | Rust, Git, Make |
 | `install_scala_jupyter_kernel` | Unix-like with Java and Coursier | Current user/Jupyter environment | Coursier and Scala |
+| `install_scale` | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | Verified Scale CLI 0.2.0 release archive |
+| `install_spin` | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | Verified Spin 4.2.6 release archive |
 | `install_verus` | Unix-like source build; host and architecture are selected by upstream scripts | Current user and `~/.local/bin` | Cargo, Git, wget, upstream Z3 helper |
+| `install_wasmcloud` | Linux, x86-64, arm64, or s390x | Selected binary directory, default `/usr/local/bin` | Verified wash 2.12.0 binary |
+| `install_wasmedge` | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmedge` and shell configuration | Verified WasmEdge 0.18.1 release archive |
 | `install_wasm_tools` | Mixed; see the per-choice matrix below | Mixed; default binary target is `/usr/local/bin` | Gum menu plus Cargo, Homebrew, Rustup, and choice-specific installers |
+| `install_wasmtime` | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmtime` and shell configuration | Verified Wasmtime 50.0.1 release archive |
 | `install_xr0` | Unix-like source build | Current user and `~/.local/bin` | Bison, Flex, Git, Make |
 
 ### `install_wasm_tools` choices
 
 | Choice | Current host and architecture | Privilege or target | Installer path |
 | --- | --- | --- | --- |
-| Cosmonic | Upstream-supported Unix-like host; no local guard | Current user | Downloaded shell installer |
+| Cosmonic | Linux or macOS, x86-64 or arm64 | Current user's `~/.cosmo/bin` | `install_cosmonic` |
 | Emscripten | Unix-like source/toolchain install; no architecture guard | Permission to create `/emsdk` by default, plus current-user shell configuration | Git and emsdk |
-| MoonBit | Ubuntu, x86-64 | Upstream installer target | Explicit `ubuntu_x86_64` shell installer |
-| Scale | Upstream-defined; no local host or architecture guard | Upstream installer target | Downloaded shell installer |
-| Spin | Upstream-defined; no local host or architecture guard | Permission to write the selected binary directory, default `/usr/local/bin` | Downloaded shell installer |
+| MoonBit | Linux, x86-64 | Current user's `~/.moon` | `install_moonbit` |
+| Scale | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | `install_scale` |
+| Spin | Linux or macOS, x86-64 or arm64 | Selected binary directory, default `/usr/local/bin` | `install_spin` |
 | waPC | Not installable; the branch reports under construction | None | None |
 | Wasm3 | Any host supported by the active Homebrew installation | Homebrew prefix | Homebrew |
-| WasmCloud | Debian-family Linux | Root for APT and repository setup | Packagecloud script and APT |
-| WasmEdge | Upstream-defined; no local host or architecture guard | Current user | Downloaded shell installer |
+| WasmCloud | Linux, x86-64, arm64, or s390x | Selected binary directory, default `/usr/local/bin` | `install_wasmcloud` |
+| WasmEdge | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmedge` | `install_wasmedge` |
 | Wasmer | Any host supported by the active Homebrew installation | Homebrew prefix | Homebrew |
-| Wasmtime | Unix-like host supported by the upstream installer | Current user | Downloaded shell installer |
+| Wasmtime | Linux or macOS, x86-64 or arm64 | Current user's `~/.wasmtime` | `install_wasmtime` |
 | WAVM | Debian-family Linux; package architecture is not checked | Root for APT | Downloaded prerelease `.deb` |
 | Wazero | Upstream-defined; no local host or architecture guard | Permission to write the selected binary directory | Downloaded shell installer |
 | WANIX | Unix-like host; no architecture guard | Permission to create `/wanix` | Git and downloaded shell installer |

@@ -1,0 +1,90 @@
+#! /bin/bash
+set -e
+
+requires \
+    curl \
+    install \
+    mktemp \
+    shasum \
+    tar \
+    uname
+verify_sha256() {
+    local FILE="${1}"
+    local EXPECTED="${2}"
+    printf '%s  %s\n' "${EXPECTED}" "${FILE}" | shasum -a 256 --check --status
+}
+download_verified() {
+    local URL="${1}"
+    local EXPECTED="${2}"
+    local OUTPUT="${3}"
+    curl --fail --location --silent --show-error --output "${OUTPUT}" "${URL}"
+    verify_sha256 "${OUTPUT}" "${EXPECTED}"
+}
+main() {
+    local BIN_DIRECTORY="${1:-/usr/local/bin}"
+    local SPIN_VERSION='4.2.6'
+    local SPIN_ARCHIVE_SHA256
+    local SPIN_ARCHIVE
+    local SPIN_ARCH
+    local SPIN_OS
+    local SPIN_PLATFORM
+    local SPIN_TEMP_DIRECTORY
+    local SPIN_URL
+    local OS ARCH
+    OS="$(uname -s)"
+    ARCH="$(uname -m)"
+    case "${OS}" in
+        Linux)
+            SPIN_OS='linux'
+            ;;
+        Darwin)
+            SPIN_OS='macos'
+            ;;
+        *)
+            printf '==> [ERROR] Spin %s does not support %s %s\n' "${SPIN_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    case "${ARCH}" in
+        x86_64 | amd64)
+            SPIN_ARCH='amd64'
+            ;;
+        aarch64 | arm64)
+            SPIN_ARCH='aarch64'
+            ;;
+        *)
+            printf '==> [ERROR] Spin %s does not support %s %s\n' "${SPIN_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    SPIN_PLATFORM="${SPIN_OS}-${SPIN_ARCH}"
+    case "${SPIN_PLATFORM}" in
+        linux-amd64)
+            SPIN_ARCHIVE_SHA256='e506046c2e28329bb773b64fb349a996faace014874922094d4c67936a3fa017'
+            ;;
+        linux-aarch64)
+            SPIN_ARCHIVE_SHA256='46895c69063affb65e1e463c9ac2f86b174b1d910396ef60e979801a641159c3'
+            ;;
+        macos-amd64)
+            SPIN_ARCHIVE_SHA256='1d7be8411ed4d719c542d3ba5adc9dd38a2468b4adb36e693aaa06c6b0ac7bdb'
+            ;;
+        macos-aarch64)
+            SPIN_ARCHIVE_SHA256='48524aa7679db6382df965fb7014de1c80fc85ccd328b58b42692a881279c4bb'
+            ;;
+        *)
+            printf '==> [ERROR] Spin %s does not support %s %s\n' "${SPIN_VERSION}" "${OS}" "${ARCH}" >&2
+            return 1
+            ;;
+    esac
+    SPIN_ARCHIVE="spin-v${SPIN_VERSION}-${SPIN_PLATFORM}.tar.gz"
+    SPIN_URL="https://github.com/spinframework/spin/releases/download/v${SPIN_VERSION}/${SPIN_ARCHIVE}"
+    SPIN_TEMP_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/install_spin-${SPIN_VERSION}.XXXXXX")"
+    trap 'rm -rf -- "${SPIN_TEMP_DIRECTORY}"' EXIT
+    download_verified "${SPIN_URL}" "${SPIN_ARCHIVE_SHA256}" "${SPIN_TEMP_DIRECTORY}/${SPIN_ARCHIVE}"
+    tar -xf "${SPIN_TEMP_DIRECTORY}/${SPIN_ARCHIVE}" --directory="${SPIN_TEMP_DIRECTORY}"
+    mkdir -p "${BIN_DIRECTORY}"
+    install -m 0755 "${SPIN_TEMP_DIRECTORY}/spin" "${BIN_DIRECTORY}/spin"
+    rm -rf -- "${SPIN_TEMP_DIRECTORY}"
+    trap - EXIT
+}
+main "$@"

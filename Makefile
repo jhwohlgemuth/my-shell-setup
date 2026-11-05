@@ -79,6 +79,7 @@ GOLD = \
 	install_code_server \
 	install_conda \
 	install_correctness_tools \
+	install_cosmonic \
 	install_cosmopolitan \
 	install_creusot \
 	install_cuda \
@@ -96,6 +97,7 @@ GOLD = \
 	install_java \
 	install_latex \
 	install_lpython \
+	install_moonbit \
 	install_musl \
 	install_nim \
 	install_nix \
@@ -108,8 +110,13 @@ GOLD = \
 	install_rocq \
 	install_rust2ada \
 	install_scala_jupyter_kernel \
+	install_scale \
+	install_spin \
 	install_verus \
+	install_wasmcloud \
+	install_wasmedge \
 	install_wasm_tools \
+	install_wasmtime \
 	install_xr0 \
 	is_command \
 	is_installed \

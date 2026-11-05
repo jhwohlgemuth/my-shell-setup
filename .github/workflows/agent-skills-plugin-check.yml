@@ -1,0 +1,102 @@
+name: Agent skill plugin check
+
+"on":
+  push:
+    paths:
+      - ".agents/plugins/marketplace.json"
+      - "agents/**"
+      - "plugins/personal-agent-skills/**"
+      - "README.md"
+      - ".github/workflows/agent-skills-plugin-check.yml"
+      - "mise.toml"
+  pull_request:
+    paths:
+      - ".agents/plugins/marketplace.json"
+      - "agents/**"
+      - "plugins/personal-agent-skills/**"
+      - "README.md"
+      - ".github/workflows/agent-skills-plugin-check.yml"
+      - "mise.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plugin-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v5
+        with:
+          version: 2026.10.24
+      - name: Check portable plugin schema
+        run: |
+          mise exec -- python3 -m pip install --disable-pip-version-check \
+            check-jsonschema==0.36.1
+          mise exec -- check-jsonschema \
+            --schemafile https://agent-plugins.org/schemas/1.0.0/plugin.schema.json \
+            agents/plugin.json plugins/personal-agent-skills/plugin.json
+      - name: Validate marketplace and plugin manifests
+        run: |
+          mise exec -- python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          root = Path.cwd().resolve()
+          marketplace_path = root / ".agents/plugins/marketplace.json"
+          marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
+
+          assert set(marketplace) == {"name", "interface", "plugins"}
+          assert marketplace.get("name") == "my-shell-setup"
+          interface = marketplace.get("interface")
+          assert isinstance(interface, dict) and set(interface) == {"displayName"}
+          assert isinstance(interface["displayName"], str)
+          assert interface["displayName"].strip()
+          plugins = marketplace.get("plugins")
+          assert isinstance(plugins, list) and len(plugins) == 1
+
+          entry = plugins[0]
+          assert isinstance(entry, dict)
+          assert set(entry) == {"name", "source", "policy", "category"}
+          assert entry.get("name") == "personal-agent-skills"
+          assert entry.get("policy") == {
+              "installation": "AVAILABLE",
+              "authentication": "ON_INSTALL",
+          }
+          assert isinstance(entry.get("category"), str) and entry["category"].strip()
+
+          source = entry.get("source")
+          assert source == {
+              "source": "local",
+              "path": "./plugins/personal-agent-skills",
+          }
+          source_path = source["path"]
+          assert source_path.startswith("./")
+          plugin_root = (root / source_path[2:]).resolve()
+          plugin_root.relative_to(root)
+          assert plugin_root.is_dir()
+
+          manifest = json.loads(
+              (plugin_root / "plugin.json").read_text(encoding="utf-8")
+          )
+          assert manifest.get("$schema") == (
+              "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+          )
+          assert manifest.get("name") == entry["name"]
+          assert re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\."
+                              r"(?:0|[1-9][0-9]*)", manifest.get("version", ""))
+          assert isinstance(manifest.get("description"), str)
+          assert manifest["description"].strip()
+          PY
+      - name: Check generated plugin tree
+        run: mise exec -- python3 agents/scripts/package_skills.py --check-plugin
+      - name: Reject development-only fixtures
+        run: |
+          if find plugins/personal-agent-skills/skills \
+            \( -type d \( -name evals -o -name tests \) \
+            -o -type f -name trigger_tests.yaml \) -print -quit | grep -q .; then
+              echo "Waza-only fixtures leaked into the generated plugin tree" >&2
+              exit 1
+          fi
