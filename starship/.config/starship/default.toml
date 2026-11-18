@@ -8,7 +8,8 @@ command_timeout = 5000
 format = """
 [╭─](fg:gray)\
 $os\
-$username\
+${custom.username_admin}\
+${custom.username_user}\
 $directory\
 ${custom.directory_end}\
 ${custom.git_clean}\
@@ -166,11 +167,53 @@ Arch = ""
 # User
 # ─────────────────────────────────────────────────────────────
 
-[username]
-show_always = true
-style_user = "fg:username_text bg:username_bg"
-style_root = "fg:root_text bg:red"
-format = "[](fg:black bg:username_bg)[ $user ]($style)[](fg:username_bg)"
+[custom.username_admin]
+description = "Render a red username segment for elevated administrators and root"
+shell = ["nu", "--no-config-file", "-c"]
+when = true
+command = """
+let user = (^whoami | str trim | path basename)
+let is_admin = if $nu.os-info.name == "windows" {
+    let groups = (^whoami /groups /fo csv /nh | complete)
+    $groups.exit_code == 0 and (
+        ($groups.stdout | str contains "S-1-16-12288") or
+        ($groups.stdout | str contains "S-1-16-16384")
+    )
+} else {
+    ($user | str lowercase) == "root"
+}
+if $is_admin {
+    $user
+} else {
+    exit 1
+}
+"""
+style = "fg:root_text bg:red"
+format = "([](fg:black bg:red)[   $output ]($style)[](fg:red))"
+
+[custom.username_user]
+description = "Render the standard username segment for non-administrator users"
+shell = ["nu", "--no-config-file", "-c"]
+when = true
+command = """
+let user = (^whoami | str trim | path basename)
+let is_admin = if $nu.os-info.name == "windows" {
+    let groups = (^whoami /groups /fo csv /nh | complete)
+    $groups.exit_code == 0 and (
+        ($groups.stdout | str contains "S-1-16-12288") or
+        ($groups.stdout | str contains "S-1-16-16384")
+    )
+} else {
+    ($user | str lowercase) == "root"
+}
+if $is_admin {
+    exit 1
+} else {
+    $user
+}
+"""
+style = "fg:username_text bg:username_bg"
+format = "([](fg:black bg:username_bg)[ $output ]($style)[](fg:username_bg))"
 
 # ─────────────────────────────────────────────────────────────
 # Directory
