@@ -1,2 +1,5 @@
 neovim/.config/nvim/** text eol=lf
 neovim/Dockerfile text eol=lf
+install.sh text eol=lf
+atuin/.config/atuin/shell/bash.sh text eol=lf
+atuin/.config/atuin/shell/zsh.zsh text eol=lf

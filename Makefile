@@ -1,11 +1,11 @@
-.PHONY: check check-agent-skills check-bootstrap check-gold check-nushell check-powershell check-stow format help neovim package-agent-skills
+.PHONY: check check-agent-skills check-atuin check-bootstrap check-gold check-nushell check-powershell check-stow format help neovim package-agent-skills
 .DEFAULT_GOAL := help
 MISE ?= mise
 MISE_EXEC ?= $(MISE) exec --
 GOLD_DIR ?= ./gold
 AGENT_SKILLS_OUTPUT ?=
 POWERSHELL_CHECK_HOME ?= $(or $(TEMP),/tmp)
-STOW_PACKAGES = agents clojure elixir git gold hunk neovim nushell ocaml ohmyposh powerlevel10k powershell starship
+STOW_PACKAGES = agents atuin clojure elixir git gold hunk neovim nushell ocaml ohmyposh powerlevel10k powershell starship
 
 ## Show available root tasks and where to find agent tasks.
 help:
@@ -13,7 +13,7 @@ help:
 	@printf '\nAgent tasks: make -C agents help\n'
 
 ## Run all nonmutating shell, config, and Stow checks.
-check: check-agent-skills check-bootstrap check-gold check-nushell check-powershell check-stow
+check: check-agent-skills check-atuin check-bootstrap check-gold check-nushell check-powershell check-stow
 
 ## Test deterministic agent-skill packaging and runtime inventory alignment.
 check-agent-skills:
@@ -23,6 +23,14 @@ check-agent-skills:
 package-agent-skills:
 	@test -n "$(AGENT_SKILLS_OUTPUT)" || { echo 'Set AGENT_SKILLS_OUTPUT to a new or empty directory' >&2; exit 2; }
 	@$(MISE_EXEC) python3 agents/scripts/package_skills.py --output "$(AGENT_SKILLS_OUTPUT)"
+
+## Check Atuin's Bash/Zsh startup fragments and TOML template.
+check-atuin:
+	@$(MISE_EXEC) sh -ec 'bash -n atuin/.config/atuin/shell/bash.sh; \
+		shfmt --diff --indent 4 --case-indent --space-redirects atuin/.config/atuin/shell/bash.sh; \
+		shellcheck atuin/.config/atuin/shell/bash.sh --enable all; \
+		zsh -n atuin/.config/atuin/shell/zsh.zsh; \
+		python3 -c '\''import pathlib, tomllib; tomllib.loads(pathlib.Path("atuin/.config/atuin/config.toml.template").read_text(encoding="utf-8"))'\'''
 
 ## Check the repository's shell bootstrap without rewriting it.
 check-bootstrap:

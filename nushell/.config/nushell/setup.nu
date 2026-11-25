@@ -14,7 +14,7 @@
 #   - creates required directories
 #   - registers all bundled core Nushell plugins
 #   - regenerates Starship's Nushell integration
-#   - regenerates Zoxide's Nushell integration
+#   - regenerates Zoxide's and Atuin's Nushell integrations
 #   - reports optional tool availability
 #
 # It is safe to run again after upgrading Nushell or its plugins.
@@ -129,10 +129,57 @@ def configure-zoxide [] {
     print-ok $"Generated ($zoxide_file)"
 }
 
+def configure-atuin [] {
+    print-heading "Configuring Atuin"
+
+    if not (command-exists "atuin") {
+        print-warning "Atuin is not installed; skipping."
+        return
+    }
+
+    # Nushell requires Atuin's generated integration to be loaded from a
+    # static path. Files here are sourced automatically after config.nu.
+    let autoload_dir = (
+        $nu.default-config-dir
+        | path join "autoload"
+    )
+
+    let atuin_file = (
+        $autoload_dir
+        | path join "atuin.nu"
+    )
+
+    mkdir $autoload_dir
+
+    let generated = (atuin init nu --disable-up-arrow | complete)
+    if $generated.exit_code != 0 {
+        error make {
+            msg: "Atuin failed to generate its Nushell integration."
+            help: $"The existing ($atuin_file) was preserved. ($generated.stderr | str trim)"
+        }
+    }
+    if ($generated.stdout | str trim | is-empty) {
+        error make {
+            msg: "Atuin generated an empty Nushell integration."
+            help: $"The existing ($atuin_file) was preserved."
+        }
+    }
+
+    let temporary_file = $"($atuin_file).tmp"
+    $generated.stdout | save --force $temporary_file
+    mv --force $temporary_file $atuin_file
+
+    print-ok $"Generated ($atuin_file)"
+}
+
 def check-optional-tools [] {
     print-heading "Checking optional tools"
 
     let tools = [
+        {
+            command: "atuin"
+            purpose: "Searchable shell history"
+        }
         {
             command: "carapace"
             purpose: "External command completions"
@@ -215,6 +262,7 @@ def main [] {
     register-core-plugins
     configure-starship
     configure-zoxide
+    configure-atuin
     check-optional-tools
     show-summary
 }

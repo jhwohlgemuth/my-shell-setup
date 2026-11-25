@@ -25,7 +25,7 @@ curl -fsSL https://shell.jasonwohlgemuth.me/install.sh | bash
 >
 > Package names must match directories listed under [Install packages](#install-packages). With no names, the installer uses its default package set.
 
-The repository's [shell installer](./install.sh) defaults to `gold git neovim ohmyposh powershell powerlevel10k`. It uses `$GOLD_DOTFILES` or `~/.dotfiles` for the checkout, installs Gold commands into `/usr/local/bin`, and installs other selected packages into `$HOME`.
+The repository's [shell installer](./install.sh) defaults to `atuin gold git neovim ohmyposh powershell powerlevel10k`. When run from a checkout, it uses that checkout; when piped into Bash, it uses `$GOLD_DOTFILES` or `~/.dotfiles`. It installs Gold commands into `/usr/local/bin` and other selected packages into `$HOME`. The Atuin package creates a machine-local config only when one does not already exist and connects installed Bash and Zsh shells without replacing their startup files.
 
 On Windows, run this in PowerShell:
 
@@ -39,11 +39,11 @@ To install only selected Windows packages, invoke the downloaded script with `-P
 & ([scriptblock]::Create((irm https://shell.jasonwohlgemuth.me/install.ps1))) -Packages nushell,starship
 ```
 
-The Windows installer supports `nushell`, `neovim`, `starship`, and `agents`; with no package names, it installs all four. The `agents` package copies skill runtime files to `$HOME\.agents\skills` without evaluation fixtures. Package names can be separate array values, comma-separated strings, or space-separated strings. The installer requires Git and clones the repository to `$HOME\.dotfiles` (or updates an existing clone). Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
+The Windows installer supports `atuin`, `nushell`, `neovim`, `powershell`, `starship`, and `agents`; with no package names, it installs all six. The `atuin` package preserves an existing machine-local config. The `powershell` package adds a loader to unrelated existing profiles; when it detects a full profile copied by an older My Shell Setup release, it backs that file up and replaces it with the loader to prevent duplicate initialization. The `agents` package copies skill runtime files to `$HOME\.agents\skills` without evaluation fixtures. Package names can be separate array values, comma-separated strings, or space-separated strings. The installer requires Git and clones the repository to `$HOME\.dotfiles` (or updates an existing clone). Set `$env:GOLD_DOTFILES` before running the command to use a different clone location.
 
-The repository's [Windows bootstrap](./install.ps1) updates the checkout and invokes the file-backed [package copier](./Invoke-WindowsSetup.ps1). To run exactly the source in this repository from a clone, use `bash ./install.sh` on Linux or macOS, or `& ./install.ps1 -Packages agents` in PowerShell. Hosted publication is verified separately.
+The repository's [Windows bootstrap](./install.ps1) uses the adjacent [package copier](./Invoke-WindowsSetup.ps1) when run from a checkout. When downloaded and piped into PowerShell, it updates the checkout under `$HOME\.dotfiles` and invokes the copier there. To run exactly the source in this repository, use `bash ./install.sh` on Linux or macOS, or `& ./install.ps1 -Packages agents` in PowerShell. Hosted publication is verified separately.
 
-For safe reruns, both bootstraps require an existing checkout to use this repository as its Git origin and to be on `main`. The Windows bootstrap also refuses to run a locally modified package copier.
+For safe hosted reruns, both bootstraps require the managed checkout to use this repository as its Git origin and to be on `main`; the Windows hosted bootstrap also rejects a modified package copier. Directly running a bootstrap from a local checkout intentionally uses that checkout as-is, including its current branch and uncommitted changes.
 
 The PowerShell profile does not change PSGallery's installation policy during startup. If you want to trust PSGallery for module installation, run `Set-PSRepository -Name PSGallery -InstallationPolicy Trusted` explicitly.
 
@@ -68,6 +68,7 @@ stow --dir "${HOME}/.dotfiles" --target "${HOME}" --stow git neovim ohmyposh pow
 | Package | Configuration |
 | --- | --- |
 | <img src="https://api.iconify.design/mdi/robot-outline.svg?color=%238a8a8a" width="20" height="20" alt="Agent skills logo"> [agents](./agents/README.md) | Personal AI agent skills installed into `~/.agents` — [`skills/`](./agents/.agents/skills)<br>Waza development and test workflow — [`README.md`](./agents/README.md) |
+| <img src="https://cdn.simpleicons.org/atuin" width="20" height="20" alt="Atuin logo"> [atuin](./atuin/README.md) | Cross-shell history search defaults and Bash/Zsh integration fragments — [`config.toml.template`](./atuin/.config/atuin/config.toml.template) and [`shell/`](./atuin/.config/atuin/shell/) |
 | <img src="https://cdn.simpleicons.org/clojure" width="20" height="20" alt="Clojure logo"> [clojure](./clojure/README.md) | [Leiningen](https://leiningen.org/) user profile, aliases, dependencies, and plugins — [`profiles.clj`](./clojure/.lein/profiles.clj) |
 | <img src="https://cdn.simpleicons.org/elixir" width="20" height="20" alt="Elixir logo"> [elixir](./elixir/README.md) | [IEx](https://hexdocs.pm/iex/1.12/IEx.html) configuration — [`.iex.exs`](./elixir/.iex.exs) |
 | <img src="https://cdn.simpleicons.org/git" width="20" height="20" alt="Git logo"> [git](./git/README.md) | Configures [Delta](https://github.com/dandavison/delta) and adds some useful aliases — [`.gitconfig`](./git/.gitconfig) |
@@ -93,7 +94,7 @@ make check
 make -C agents ci
 ```
 
-Make remains the task runner. Its recipes call `mise exec` for the selected tools, so shell activation is optional. `make check` is a read-only local gate for shell scripts, Nushell, PowerShell, and Stow; it needs Nushell and PowerShell installed alongside the mise-selected tools. Use `make help` and `make -C agents help` to list tasks.
+Make remains the task runner. Its recipes call `mise exec` for the selected tools, so shell activation is optional. `make check` is a read-only local gate for shell scripts, Nushell, PowerShell, and Stow; it needs Zsh, Nushell, and PowerShell installed alongside the mise-selected tools. Use `make help` and `make -C agents help` to list tasks.
 
 ### Agent skills
 

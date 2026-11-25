@@ -77,10 +77,10 @@ if (Get-Command -Name docker -ErrorAction SilentlyContinue) {
 if (Get-Command -Name glab -ErrorAction SilentlyContinue) {
     glab completion -s powershell | Out-String | Invoke-Expression
 }
-# McFly setup
-# https://github.com/cantino/mcfly
-if (Get-Command -Name mcfly -ErrorAction SilentlyContinue) {
-    mcfly init powershell | Out-String | Invoke-Expression
+# Atuin setup
+# https://atuin.sh/
+if (Get-Command -Name atuin -ErrorAction SilentlyContinue) {
+    atuin init powershell --disable-up-arrow | Out-String | Invoke-Expression
 }
 #
 # Zoxide setup

@@ -1,11 +1,11 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Position = 0)]
-    [string[]]$Packages = @("nushell", "neovim", "starship", "agents")
+    [string[]]$Packages = @("atuin", "nushell", "neovim", "powershell", "starship", "agents")
 )
 
 # Keep this list in sync with Invoke-WindowsSetup.ps1 so invalid input fails before Git changes.
-$availablePackages = @("nushell", "neovim", "starship", "agents")
+$availablePackages = @("atuin", "nushell", "neovim", "powershell", "starship", "agents")
 $selectedPackages = @(
     @(
         foreach ($argument in $Packages) {
@@ -30,6 +30,17 @@ if ($unknownPackages.Count -gt 0) {
 function Invoke-WindowsBootstrap {
     [CmdletBinding(SupportsShouldProcess)]
     param([string[]]$SelectedPackages)
+
+    # A file-backed invocation from a checkout should run that checkout's
+    # package installer. Piped invocations have no PSScriptRoot and continue
+    # through the clone/update bootstrap below.
+    $localInstaller = if ($PSScriptRoot) {
+        Join-Path $PSScriptRoot "Invoke-WindowsSetup.ps1"
+    }
+    if ($localInstaller -and (Test-Path -LiteralPath $localInstaller -PathType Leaf)) {
+        & $localInstaller -Packages $SelectedPackages -WhatIf:$WhatIfPreference
+        return
+    }
 
     $repositoryUrl = "https://github.com/jhwohlgemuth/my-shell-setup.git"
     $checkout = if ($env:GOLD_DOTFILES) { $env:GOLD_DOTFILES } else { Join-Path $HOME ".dotfiles" }

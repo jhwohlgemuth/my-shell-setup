@@ -2,8 +2,12 @@
 set -e
 
 REPOSITORY_URL="https://github.com/jhwohlgemuth/my-shell-setup.git"
-DEFAULT_PACKAGES=(gold git neovim ohmyposh powershell powerlevel10k)
-AVAILABLE_PACKAGES=(agents clojure elixir git gold hunk neovim nushell ocaml ohmyposh powerlevel10k powershell starship)
+DEFAULT_PACKAGES=(atuin gold git neovim ohmyposh powershell powerlevel10k)
+AVAILABLE_PACKAGES=(agents atuin clojure elixir git gold hunk neovim nushell ocaml ohmyposh powerlevel10k powershell starship)
+SCRIPT_DIR=""
+if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+fi
 
 # Report a bootstrap error before any further installation work.
 fail() {
@@ -97,14 +101,65 @@ install_packages() {
     done
 }
 
+# Append one exact startup line without replacing an existing shell configuration.
+append_startup_line() {
+    local file="$1"
+    local line="$2"
+    touch "${file}"
+    grep --fixed-strings --line-regexp --quiet "${line}" "${file}" || printf '\n%s\n' "${line}" >> "${file}"
+}
+
+# Create machine-local Atuin settings and connect installed Unix shells.
+configure_atuin() {
+    local checkout="$1"
+    local template="${checkout}/atuin/.config/atuin/config.toml.template"
+    local config_dir="${HOME}/.atuin"
+    local config_file="${config_dir}/config.toml"
+    # Keep HOME expansion in the installed startup files, not this installer.
+    # shellcheck disable=SC2016
+    local bash_loader='[[ -r "${HOME}/.config/atuin/shell/bash.sh" ]] && source "${HOME}/.config/atuin/shell/bash.sh"'
+    # shellcheck disable=SC2016
+    local zsh_loader='[[ -r "${HOME}/.config/atuin/shell/zsh.zsh" ]] && source "${HOME}/.config/atuin/shell/zsh.zsh"'
+
+    mkdir -p "${config_dir}"
+    if [[ ! -e "${config_file}" && ! -L "${config_file}" ]]; then
+        cp "${template}" "${config_file}"
+        printf 'Created %s from the shared Atuin template.\n' "${config_file}"
+    else
+        printf 'Preserved existing Atuin config: %s\n' "${config_file}"
+        printf '%s\n' \
+            'For cross-shell search, ensure the existing config contains:' \
+            '  [search]' \
+            '  shells = "all"' >&2
+    fi
+
+    command -v bash > /dev/null 2>&1 && append_startup_line "${HOME}/.bashrc" "${bash_loader}"
+    command -v zsh > /dev/null 2>&1 && append_startup_line "${HOME}/.zshrc" "${zsh_loader}"
+
+    if ! command -v atuin > /dev/null 2>&1; then
+        printf 'Atuin is not installed; configuration is ready for the binary.\n' >&2
+    fi
+}
+
 main() {
-    local checkout="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+    local checkout
+    local package
     [[ -n "${HOME:-}" ]] || fail "HOME is not set."
     select_packages "$@"
     command -v git > /dev/null 2>&1 || fail "Git is required."
     command -v stow > /dev/null 2>&1 || fail "GNU Stow is required."
-    update_checkout "${checkout}"
+    if [[ -n "${SCRIPT_DIR}" && (-d "${SCRIPT_DIR}/.git" || -f "${SCRIPT_DIR}/.git") ]]; then
+        checkout="${SCRIPT_DIR}"
+    else
+        checkout="${GOLD_DOTFILES:-"${HOME}/.dotfiles"}"
+        update_checkout "${checkout}"
+    fi
     install_packages "${checkout}"
+    for package in "${PACKAGES[@]}"; do
+        if [[ "${package}" == atuin ]]; then
+            configure_atuin "${checkout}"
+        fi
+    done
     printf '\033[93m==>\033[1;39m %s\033[0m\n' "Installation COMPLETE"
 }
 

@@ -1,0 +1,10 @@
+# Shared defaults for local shell history search.
+#
+# This file is copied to ~/.atuin/config.toml only when no config exists.
+# Account, server, encryption-key, and sync settings belong to the user.
+filter_mode = "global"
+bind_ctrl_r = true
+bind_up_arrow = false
+
+[search]
+shells = "all"
